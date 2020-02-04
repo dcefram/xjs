@@ -1,19 +1,17 @@
 {
+  "private": true,
   "name": "@dcefram/xjs",
   "version": "0.1.0",
   "description": "XSplit JS Framework",
-  "main": "dist/index.js",
-  "files": [
-    "dist"
-  ],
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "rimraf ./dist && tsc -p . && node tools/version.js",
-    "build:umd": "rimraf ./dist && rollup -c && node tools/version.js xjs.umd.js"
+    "build:umd": "rimraf ./dist && rollup -c && node tools/version.js xjs.umd.js",
+    "pub": "npm run build && node tools/prepublish.js && cd dist && npm publish --access public"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/xjsframework/xjs.git"
+    "url": "git+https://github.com/dcefram/xjs.git"
   },
   "keywords": [
     "xsplit",
@@ -23,9 +21,9 @@
   "author": "SplitmediaLabs, Ltd. <xjs@splitmedialabs.com>",
   "license": "SEE LICENSE IN LICENSE",
   "bugs": {
-    "url": "https://github.com/xjsframework/xjs/issues"
+    "url": "https://github.com/dcefram/xjs/issues"
   },
-  "homepage": "https://github.com/xjsframework/xjs#readme",
+  "homepage": "https://github.com/dcefram/xjs#readme",
   "devDependencies": {
     "prettier": "^1.18.2",
     "rimraf": "^2.6.3",
