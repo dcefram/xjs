@@ -64,13 +64,14 @@ export default class Xjs {
     configObj = JSON.parse(browserConfig || '{}');
 
     configObj.configUrl = url;
-    console.log('test', JSON.stringify(configObj));
+
     await this.exec(
       'SetBrowserProperty',
       'Configuration',
       JSON.stringify(configObj)
     );
 
+    // @TODO: Return an instance of the config window??
     return true;
   }
 }
