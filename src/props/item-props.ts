@@ -85,6 +85,14 @@ class ItemProps {
     getTransformer: (value: any) => value,
   };
 
+  static srcid = {
+    key: 'prop:srcid',
+    setValidator: (value: any) => true,
+    setTransformer: (value: any) => value,
+    getValidator: () => true,
+    getTransformer: (value: any) => value,
+  };
+
   static type = {
     key: 'prop:type',
     // @TODO: Verify with @mikey if we would want to prevent users from setting item type...
