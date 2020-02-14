@@ -3,6 +3,7 @@ import Internal from '../../internal';
 export interface ItemConfig {
   internal: Internal;
   attributes: any;
+  isCurrentItem?: boolean;
 }
 
 export interface PropertyType {
