@@ -3,6 +3,7 @@ import Internal from '../../internal';
 import App from '../app';
 import View from '../view';
 import Enviornment from '../../helpers/environment';
+import Environment from '../../helpers/environment';
 
 export default class Xjs {
   static version = '%XJS_VERSION%';
@@ -51,6 +52,10 @@ export default class Xjs {
   }
 
   async setConfigWindow(url: string) {
+    if (!Environment.isSourcePlugin) {
+      throw new Error('can only set configuration for the current item');
+    }
+
     let browserConfig: string = await this.exec(
       'GetLocalPropertyAsync',
       'prop:BrowserConfiguration'
