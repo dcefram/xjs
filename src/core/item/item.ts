@@ -9,7 +9,6 @@ import { ItemConfig, PropertyType } from './types';
 class Item {
   private _internal: Internal;
   private _attributes: any;
-  private _attachProp: string;
   private _isCurrentItem: boolean;
 
   static fromXMLString(xmlString: string, xjs: Xjs) {
@@ -37,14 +36,13 @@ class Item {
     this._internal = config.internal;
     this._attributes = config.attributes;
     this._isCurrentItem = !!config.isCurrentItem;
-    this._attachProp = Environment.isSourcePlugin
-      ? 'AttachVideoItem'
-      : 'SearchVideoItem';
   }
 
   setProperty(prop: PropertyType, param: any): Promise<any> {
     if (prop.setValidator(param)) {
-      this._internal.exec(this._attachProp, this._attributes.id);
+      if (!Environment.isSourcePlugin) {
+        this._internal.exec('SearchVideoItem', this._attributes.id);
+      }
       return this._internal.exec(
         'SetLocalPropertyAsync',
         prop.key,
@@ -57,7 +55,9 @@ class Item {
 
   async getProperty(prop: PropertyType, param: any): Promise<any> {
     if (prop.getValidator(param)) {
-      this._internal.exec(this._attachProp, this._attributes.id);
+      if (!Environment.isSourcePlugin) {
+        this._internal.exec('SearchVideoItem', this._attributes.id);
+      }
       const ret = await this._internal.exec('GetLocalPropertyAsync', prop.key);
       return prop.getTransformer(ret);
     }
