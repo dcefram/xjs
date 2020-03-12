@@ -5,7 +5,7 @@ import setMode from './set-mode';
 import setTabsOrder from './set-tabs-order';
 import setVisible from './set-visible';
 import emit from './emit';
-import on from './on';
+import on, { off } from './on';
 
 const sourcePropertyWindow = {
   configure,
@@ -16,6 +16,7 @@ const sourcePropertyWindow = {
   setVisible,
   emit,
   on,
+  off,
 };
 
 export default sourcePropertyWindow;
