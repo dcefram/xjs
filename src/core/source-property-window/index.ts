@@ -4,8 +4,8 @@ import setCustomTabs from './set-custom-tabs';
 import setMode from './set-mode';
 import setTabsOrder from './set-tabs-order';
 import setVisible from './set-visible';
-import send from './send';
-import subscribe from './subscribe';
+import emit from './emit';
+import on from './on';
 
 const sourcePropertyWindow = {
   configure,
@@ -14,8 +14,8 @@ const sourcePropertyWindow = {
   setMode,
   setTabsOrder,
   setVisible,
-  emit: send,
-  on: subscribe,
+  emit,
+  on,
 };
 
 export default sourcePropertyWindow;
