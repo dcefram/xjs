@@ -14,8 +14,8 @@ const sourcePropertyWindow = {
   setMode,
   setTabsOrder,
   setVisible,
-  send,
-  subscribe,
+  emit: send,
+  on: subscribe,
 };
 
 export default sourcePropertyWindow;
