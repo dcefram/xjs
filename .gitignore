@@ -1,7 +1,10 @@
 node_modules/
-.idea/
-.vscode/
 dist/
 temp/
 yarn.lock
 .DS_Store
+
+# Editor Configs
+.idea/
+.vscode/
+*.sublime-*

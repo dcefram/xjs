@@ -1,12 +1,13 @@
 {
   "private": true,
   "name": "@dcefram/xjs",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "description": "XSplit JS Framework",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "rimraf ./dist && tsc -p . && node tools/version.js",
     "build:umd": "rimraf ./dist && rollup -c && node tools/version.js xjs.umd.js",
+    "build:link": "npm run build && node tools/prepublish.js &&  cd dist && npm link",
     "pub": "npm run build && node tools/prepublish.js && cd dist && npm publish --access public"
   },
   "repository": {

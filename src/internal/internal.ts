@@ -23,8 +23,8 @@ class Internal {
     return new Promise((resolve, reject) => {
       // @TODO: Add condition for remote thingy
       if (
-        window.external &&
-        window.external[fn] &&
+        !window.external ||
+        !window.external[fn] ||
         typeof window.external[fn] !== 'function'
       ) {
         reject(
