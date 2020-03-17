@@ -4,6 +4,7 @@ import App from '../app';
 import View from '../view';
 import Enviornment from '../../helpers/environment';
 import Environment from '../../helpers/environment';
+import Item from 'core/item';
 
 export default class Xjs {
   static version = '%XJS_VERSION%';
@@ -78,5 +79,28 @@ export default class Xjs {
 
     // @TODO: Return an instance of the config window??
     return true;
+  }
+
+  async getCurrentItem() {
+    if (Environment.isExtension) {
+      throw new Error('You cannot use `getCurrentItem` in an extension plugin');
+    }
+
+    const itemsString = await this.exec('GetLocalPropertyAsync', 'itemlist');
+    const srcId = await this.exec('GetLocalPropertyAsync', 'prop:srcid');
+    const items = itemsString.split(',');
+
+    if (items.length === 0) {
+      throw new Error(
+        'Cannot get current item, itemlist did not return any ID'
+      );
+    }
+
+    return new Item({
+      internal: this._internal,
+      id: items[0],
+      srcId,
+      isCurrentItem: true,
+    });
   }
 }
