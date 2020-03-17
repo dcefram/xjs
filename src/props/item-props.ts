@@ -131,10 +131,7 @@ const ItemProps = {
       throw new Error('Setting itemlist is not supported');
     },
     getValidator: () => true,
-    getTransformer: (value: string): string[] => {
-      const decoded = decodeURIComponent(String(value));
-      return decoded.split(',');
-    },
+    getTransformer: (value: string): string[] => String(value).split(','),
   },
 };
 

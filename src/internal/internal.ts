@@ -39,7 +39,7 @@ class Internal {
 
       if (typeof ret === 'number') {
         this._callbacks[ret] = result => {
-          resolve(decodeURIComponent(result));
+          resolve(result);
         };
         return ret;
       }
