@@ -1,14 +1,15 @@
 {
   "private": true,
   "name": "@dcefram/xjs",
-  "version": "0.1.10",
+  "version": "0.1.11",
   "description": "XSplit JS Framework",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "rimraf ./dist && tsc -p . && node tools/version.js",
     "build:umd": "rimraf ./dist && rollup -c && node tools/version.js xjs.umd.js",
     "build:link": "npm run build && node tools/prepublish.js &&  cd dist && npm link",
-    "pub": "npm run build && node tools/prepublish.js && cd dist && npm publish --access public"
+    "pub": "npm run build && node tools/prepublish.js && cd dist && npm publish --access public",
+    "docs": "cd docs && bundle exec middleman build --clean && now"
   },
   "repository": {
     "type": "git",
@@ -34,7 +35,6 @@
     "rollup-plugin-terser": "^5.1.2",
     "rollup-plugin-typescript": "^1.0.1",
     "tslib": "^1.10.0",
-    "typedoc": "^0.15.0",
     "typescript": "^3.5.3"
   },
   "dependencies": {

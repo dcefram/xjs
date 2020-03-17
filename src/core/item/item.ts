@@ -11,7 +11,7 @@ class Item {
   private _attributes: any;
   private _isCurrentItem: boolean;
 
-  static fromXMLString(xmlString: string, xjs: Xjs) {
+  static fromXMLString(xjs: Xjs, xmlString: string) {
     const itemObject = parser.parse(xmlString, {
       attributeNamePrefix: '',
       ignoreAttributes: false,

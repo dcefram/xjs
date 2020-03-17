@@ -1,9 +1,5 @@
-/**
- * ItemProps testing the documentation tool
- * @type {Object}
- */
-class ItemProps {
-  static customName = {
+const ItemProps = {
+  customName: {
     key: 'prop:cname',
     setValidator: (name: any) => {
       if (typeof name !== 'string') {
@@ -15,9 +11,9 @@ class ItemProps {
     setTransformer: (name: any) => name,
     getValidator: () => true,
     getTransformer: (name: any) => name,
-  };
+  },
 
-  static position = {
+  position: {
     key: 'prop:pos',
     setValidator: (pos: any) => {
       if (typeof pos !== 'object') {
@@ -61,9 +57,9 @@ class ItemProps {
         };
       }, {});
     },
-  };
+  },
 
-  static visibility = {
+  visibility: {
     key: 'prop:visible',
     setValidator: (isVisible: any) => {
       if (typeof isVisible !== 'boolean') {
@@ -75,28 +71,28 @@ class ItemProps {
     setTransformer: (isVisible: any) => (isVisible ? '1' : '0'),
     getValidator: () => true,
     getTransformer: (isVisible: any) => isVisible === '1',
-  };
+  },
 
-  static item = {
+  item: {
     key: 'prop:item',
     setValidator: (value: any) => true,
     setTransformer: (value: any) => value,
     getValidator: () => true,
     getTransformer: (value: any) => value,
-  };
+  },
 
-  static srcid = {
+  srcid: {
     key: 'prop:srcid',
     setValidator: (value: any) => true,
     setTransformer: (value: any) => value,
     getValidator: () => true,
     getTransformer: (value: any) => value,
-  };
+  },
 
-  static type = {
+  type: {
     key: 'prop:type',
     // @TODO: Verify with @mikey if we would want to prevent users from setting item type...
-    setValidator: (invalid: any) => {
+    setValidator: (value: any) => {
       throw new Error('I believe we cannot set the item type...');
     },
     setTransformer: () => {
@@ -124,7 +120,22 @@ class ItemProps {
 
       return types[type];
     },
-  };
-}
+  },
+
+  itemList: {
+    key: 'itemlist',
+    setValidator: (_: any) => {
+      throw new Error('Setting itemlist is not supported');
+    },
+    setTransformer: () => {
+      throw new Error('Setting itemlist is not supported');
+    },
+    getValidator: () => true,
+    getTransformer: (value: string): string[] => {
+      const decoded = decodeURIComponent(String(value));
+      return decoded.split(',');
+    },
+  },
+};
 
 export default ItemProps;
