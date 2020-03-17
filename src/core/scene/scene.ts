@@ -67,7 +67,8 @@ class Scene {
     }
 
     this._items = items.map(
-      item => new Item({ internal: this._internal, attributes: item })
+      item =>
+        new Item({ internal: this._internal, id: item.id, srcId: item.srcid })
     );
 
     return this._items;

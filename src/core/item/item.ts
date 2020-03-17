@@ -8,7 +8,8 @@ import { ItemConfig, PropertyType } from './types';
 
 class Item {
   private _internal: Internal;
-  private _attributes: any;
+  private _id: string;
+  private _srcId: string; // @TODO: To be used by the fallback logic if in case the item ID is gone (ie. deleted from scene, but source still exists)
   private _isCurrentItem: boolean;
 
   static fromXMLString(xjs: Xjs, xmlString: string) {
@@ -25,7 +26,8 @@ class Item {
     ) {
       return new Item({
         internal: xjs._internal,
-        attributes: itemObject.item,
+        id: itemObject.item.id,
+        srcId: itemObject.item.srcid,
       });
     }
 
@@ -34,14 +36,15 @@ class Item {
 
   constructor(config: ItemConfig) {
     this._internal = config.internal;
-    this._attributes = config.attributes;
+    this._id = config.id;
+    this._srcId = config.srcId;
     this._isCurrentItem = !!config.isCurrentItem;
   }
 
   setProperty(prop: PropertyType, param: any): Promise<any> {
     if (prop.setValidator(param)) {
       if (!Environment.isSourcePlugin) {
-        this._internal.exec('SearchVideoItem', this._attributes.id);
+        this._internal.exec('SearchVideoItem', this._id);
       }
       return this._internal.exec(
         'SetLocalPropertyAsync',
@@ -56,7 +59,7 @@ class Item {
   async getProperty(prop: PropertyType, param: any): Promise<any> {
     if (prop.getValidator(param)) {
       if (!Environment.isSourcePlugin) {
-        this._internal.exec('SearchVideoItem', this._attributes.id);
+        this._internal.exec('SearchVideoItem', this._id);
       }
       const ret = await this._internal.exec('GetLocalPropertyAsync', prop.key);
       return prop.getTransformer(ret);

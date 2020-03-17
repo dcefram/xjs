@@ -2,7 +2,8 @@ import Internal from '../../internal';
 
 export interface ItemConfig {
   internal: Internal;
-  attributes: any;
+  id: string;
+  srcId: string;
   isCurrentItem?: boolean;
 }
 
