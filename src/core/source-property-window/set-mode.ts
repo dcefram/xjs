@@ -3,7 +3,7 @@ export enum MODES {
   TABBED = 'embedded',
 }
 
-export default function setMode(mode: string) {
+export default function setMode(mode: string = "embedded") {
   const payload = {
     event: 'set-mode',
     value: mode,

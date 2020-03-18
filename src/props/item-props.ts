@@ -1,4 +1,17 @@
 const ItemProps = {
+  browser60fps: {
+    key: 'prop:Browser60fps',
+    setValidator: (value: any) => {
+      if (typeof value !== 'boolean') {
+        throw new Error(`${value} is not a boolean`);
+      }
+      return true;
+    },
+    setTransformer: (value: any) => value ? '1' : '0',
+    getTransformer: (value: any) => value === '1',
+    getValidator: () => true,
+  },
+
   customName: {
     key: 'prop:cname',
     setValidator: (name: any) => {
@@ -42,10 +55,8 @@ const ItemProps = {
 
       return `${parsed.left},${parsed.top},${parsed.right},${parsed.bottom}`;
     },
-    getValidator: () => {
-      return true;
-    },
-    getTransformer: (value: any) => {
+    getValidator: () => true,
+    gtTransformer: (value: any) => {
       const posArray = String(value).split(',');
       const order = ['left', 'top', 'right', 'bottom'];
 
