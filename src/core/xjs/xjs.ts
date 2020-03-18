@@ -4,7 +4,7 @@ import App from '../app';
 import View from '../view';
 import Enviornment from '../../helpers/environment';
 import Environment from '../../helpers/environment';
-import Item from 'core/item';
+import Item from '../item';
 
 export default class Xjs {
   static version = '%XJS_VERSION%';
