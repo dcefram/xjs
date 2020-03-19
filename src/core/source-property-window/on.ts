@@ -1,16 +1,16 @@
 const callbacks = {};
 
 if (typeof window.OnPropsMessageReceive === 'undefined') {
-  window.OnPropsMessageReceive = (payload: string) => {
+  window.OnPropsMessageReceive = (message: string) => {
     try {
-      const { key, ...props } = JSON.parse(payload);
+      const { key, payload } = JSON.parse(message);
 
       if (typeof callbacks[key] === 'undefined') return;
 
       callbacks[key].forEach(cb => {
         if (typeof cb !== 'function') return;
 
-        cb(props);
+        cb(payload);
       });
     } catch (error) {
       console.error('OnPropsMessageReceive is invalid', error.message);
