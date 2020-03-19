@@ -42,14 +42,17 @@ class Item {
   }
 
   setProperty(prop: PropertyType, param: any): Promise<any> {
-    if (prop.setValidator(param)) {
+    if (typeof prop.setValidator !== 'function' || prop.setValidator(param)) {
       if (!Environment.isSourcePlugin) {
         this._internal.exec('SearchVideoItem', this._id);
       }
+
       return this._internal.exec(
         'SetLocalPropertyAsync',
         prop.key,
-        prop.setTransformer(param)
+        typeof prop.setTransformer !== 'function'
+          ? param
+          : prop.setTransformer(param)
       );
     }
 
@@ -57,12 +60,15 @@ class Item {
   }
 
   async getProperty(prop: PropertyType, param: any): Promise<any> {
-    if (prop.getValidator(param)) {
+    if (typeof prop.getValidator !== 'function' || prop.getValidator(param)) {
       if (!Environment.isSourcePlugin) {
         this._internal.exec('SearchVideoItem', this._id);
       }
+
       const ret = await this._internal.exec('GetLocalPropertyAsync', prop.key);
-      return prop.getTransformer(ret);
+      return typeof prop.getTransformer !== 'function'
+        ? ret
+        : prop.getTransformer(ret);
     }
 
     throw new Error(`Params "${param}" validation failed`);
