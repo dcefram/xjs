@@ -8,9 +8,6 @@ class AppProps {
 
       return true;
     },
-    setTransformer: (xml: string) => xml,
-    getValidator: () => true,
-    getTransformer: (xml: string) => xml,
   };
 
   static sceneIndex = {
@@ -29,7 +26,7 @@ class AppProps {
       return true;
     },
     setTransformer: (value: any) => value.value,
-    getValidator: param => {
+    getValidator: (param) => {
       if (typeof param !== 'object' || typeof param.view === 'undefined') {
         throw new Error(
           'Parameter should be an object with a `value` property'
@@ -38,7 +35,6 @@ class AppProps {
 
       return true;
     },
-    getTransformer: (sceneIndex: string) => sceneIndex,
   };
 
   static scenePreset = {
@@ -50,9 +46,6 @@ class AppProps {
 
       return true;
     },
-    setTransformer: (xml: string) => xml,
-    getValidator: () => true,
-    getTransformer: (xml: string) => xml,
   };
 
   static scenePresetList = {
@@ -64,9 +57,6 @@ class AppProps {
 
       return true;
     },
-    setTransformer: (xml: string) => xml,
-    getValidator: () => true,
-    getTransformer: (xml: string) => xml,
   };
 
   static microphoneDev2 = {
@@ -78,9 +68,6 @@ class AppProps {
 
       return true;
     },
-    setTransformer: (xml: string) => xml,
-    getValidator: () => true,
-    getTransformer: (xml: string) => xml,
   };
 
   static wasapiEnum = {
@@ -92,9 +79,6 @@ class AppProps {
 
       return true;
     },
-    setTransformer: (xml: string) => xml,
-    getValidator: () => true,
-    getTransformer: (xml: string) => xml,
   };
 
   static sceneItems = {
@@ -122,9 +106,6 @@ class AppProps {
 
       return true;
     },
-    // We opted to just return the exact string based on our discussion regarding the tradeoffs
-    // on return an object that would represent the "processed" xml config.
-    getTransformer: (xml: string) => xml,
   };
 
   static sceneName = {
@@ -152,7 +133,6 @@ class AppProps {
 
       return true;
     },
-    getTransformer: (name: string) => name,
   };
 
   static audioDevices = AppProps.microphoneDev2;
