@@ -65,8 +65,8 @@ class Item {
     return placements.reduce((stack: string[], scene: any) => {
       const sceneItems: any[] = scene.item || [];
       const linkedItems: string[] = sceneItems
-        .filter(item => item.srcid === this._srcId)
-        .map(item => item.id);
+        .filter((item) => item.srcid === this._srcId)
+        .map((item) => item.id);
 
       return [...stack, ...linkedItems];
     }, []);
@@ -82,7 +82,7 @@ class Item {
         items = [items];
       }
 
-      const item = items.find(item => item.srcid === this._srcId);
+      const item = items.find((item) => item.srcid === this._srcId);
 
       if (item) {
         return item.id;
@@ -115,7 +115,7 @@ class Item {
       // checking for both the string "null" and the actual null value.
       // @TODO: If core always returns null, this would cause a callstack exceeded error
       // Address this before releasing 3.x, if it is something to worry about.
-      if (result === null || result === 'null') {
+      if (!isNaN(result) && Number(result) < 0) {
         console.warn(
           'Attached item does not exist. Attempting to attach linked item...'
         );
