@@ -65,8 +65,8 @@ class Item {
     return placements.reduce((stack: string[], scene: any) => {
       const sceneItems: any[] = scene.item || [];
       const linkedItems: string[] = sceneItems
-        .filter((item) => item.srcid === this._srcId)
-        .map((item) => item.id);
+        .filter(item => item.srcid === this._srcId)
+        .map(item => item.id);
 
       return [...stack, ...linkedItems];
     }, []);
@@ -76,8 +76,13 @@ class Item {
     const placements = await this.getPlacements();
 
     for (let idx = 0; idx < placements.length; idx++) {
-      const items = placements[idx].item;
-      const item = items.find((item) => item.srcid === this._srcId);
+      let items = placements[idx].item || [];
+
+      if (!(items instanceof Array)) {
+        items = [items];
+      }
+
+      const item = items.find(item => item.srcid === this._srcId);
 
       if (item) {
         return item.id;
