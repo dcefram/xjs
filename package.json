@@ -4,6 +4,7 @@
   "version": "0.2.3",
   "description": "XSplit JS Framework",
   "scripts": {
+    "dev": "nodemon --ext ts,js,json --watch src --exec npm run build:link",
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "rimraf ./dist && ttsc && node tools/version.js",
     "build:umd": "rimraf ./dist && rollup -c && node tools/version.js xjs.umd.js",
@@ -27,6 +28,7 @@
   },
   "homepage": "https://github.com/dcefram/xjs#readme",
   "devDependencies": {
+    "nodemon": "^2.0.2",
     "prettier": "^2.0.5",
     "rimraf": "^3.0.2",
     "rollup": "^2.17.1",
