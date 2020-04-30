@@ -73,6 +73,82 @@ class Scene {
 
     return this._items;
   }
+
+  async getPresets(): Promise<string[]> {
+    const firstPreset = '{00000000-0000-0000-0000-000000000000}';
+    const presets = await this._app.getProperty(AppProps.scenePresetList, {
+      scene: this._uid,
+    });
+
+    return ['{00000000-0000-0000-0000-000000000000}', ...presets];
+  }
+
+  async getActivePreset(): Promise<string> {
+    const presetUid = await this._app.getProperty(AppProps.scenePreset, {
+      scene: this._uid,
+    });
+
+    return presetUid;
+  }
+
+  async switchToPreset(presetUid: string): Promise<boolean> {
+    const result = await this._app.setProperty(AppProps.scenePreset, {
+      scene: this._uid
+    });
+
+    return result;
+  }
+
+  async addPreset(): Promise<string> {
+    const result = await this._app.getProperty(AppProps.sceneNewPreset, {
+      scene: this._uid
+    });
+
+    return result;
+  }
+
+  async removePreset(presetId: string): Promise<boolean> {
+    const result = await this._app.setProperty(AppProps.sceneRemovePreset, {
+      scene: this._uid,
+      value: presetId,
+    });
+
+    return result;
+  }
+
+  async getPresetTransition(): Promise<string> {
+    const result = await this._app.getProperty(AppProps.scenePresetTransition, {
+      scene: this._uid,
+    })
+
+    return result;
+  }
+
+  async setPresetTransition(transition: string): Promise<boolean> {
+    const result = await this._app.setProperty(AppProps.scenePresetTransition, {
+      scene: this._uid,
+      value: transition,
+    });
+
+    return result;
+  }
+
+  async getPresetTransitionTime(): Promise<number> {
+    const result = await this._app.getProperty(AppProps.scenePresetTransitionTime, {
+      scene: this._uid,
+    });
+
+    return result;
+  }
+
+  async setPresetTransitionTime(time: number): Promise<boolean> {
+    const result = await this._app.setProperty(AppProps.scenePresetTransitionTime, {
+      scene: this._uid,
+      value: time,
+    });
+
+    return result;
+  }
 }
 
 export default Scene;
