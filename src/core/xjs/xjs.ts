@@ -1,15 +1,15 @@
+import App from 'core/app';
+import View from 'core/view';
+import Item from 'core/item';
+import Remote from 'core/remote';
+import Internal from 'internal';
+import Environment from 'helpers/environment';
 import { XjsTypes, XjsEnvironments, LogVerbosity, Config } from './types';
-import Internal from '../../internal';
-import App from '../app';
-import View from '../view';
-import Enviornment from '../../helpers/environment';
-import Environment from '../../helpers/environment';
-import Item from '../item';
 
 export default class Xjs {
   static version = '%XJS_VERSION%';
 
-  private type: XjsTypes;
+  private type: XjsTypes = XjsTypes.Local;
 
   private environment: XjsEnvironments;
 
@@ -17,15 +17,13 @@ export default class Xjs {
 
   private version: string;
 
-  private sendMessage: any;
-
-  private onMessageReceive: any;
-
   private logger: any;
 
   private exec: any;
 
   app: App;
+
+  remote: Remote;
 
   _internal: Internal;
 
@@ -37,11 +35,16 @@ export default class Xjs {
     });
 
     // Initialize the internal methods and the view
-    this._internal = new Internal();
+    this._internal = new Internal(this);
 
     this.exec = this._internal.exec.bind(this._internal);
 
     this.app = new App({ internal: this._internal });
+
+    if ([XjsTypes.Remote, XjsTypes.Proxy].includes(this.type)) {
+      this.remote = new Remote(this);
+      this.remote.setSender(config.sendMessage);
+    }
   }
 
   getView(index: number) {
@@ -102,5 +105,9 @@ export default class Xjs {
       srcId,
       isCurrentItem: true,
     });
+  }
+
+  isRemote() {
+    return this.type === XjsTypes.Remote;
   }
 }
