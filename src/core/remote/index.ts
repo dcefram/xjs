@@ -1,4 +1,4 @@
-import Xjs from 'core/xjs';
+import { XjsTypes } from 'core/xjs/types';
 import request from './request';
 import { RequestResult, RemoteRequest, ProxyRequest } from './types';
 import { parse, stringify } from 'helpers';
@@ -6,10 +6,12 @@ import { parse, stringify } from 'helpers';
 export default class Remote {
   private sender: Function;
 
-  private xjs: Xjs;
+  private type: XjsTypes;
+  private exec: Function;
 
-  constructor(xjs) {
-    this.xjs = xjs;
+  constructor({ type, exec }) {
+    this.type = type;
+    this.exec = exec;
   }
 
   setSender(sender) {
@@ -24,7 +26,7 @@ export default class Remote {
   receiveMessage(message) {
     const result = parse(message);
 
-    if (this.xjs.isRemote()) {
+    if (this.isRemote()) {
       return request.runCallback(result as RequestResult);
     }
 
@@ -33,7 +35,7 @@ export default class Remote {
   }
 
   async processRequest({ asyncId, fn, args }: ProxyRequest) {
-    const result = await this.xjs._internal.exec(fn, ...args);
+    const result = await this.exec(fn, ...args);
 
     this.sender(
       stringify({
@@ -41,5 +43,9 @@ export default class Remote {
         result,
       })
     );
+  }
+
+  private isRemote() {
+    return this.type === XjsTypes.Remote;
   }
 }
