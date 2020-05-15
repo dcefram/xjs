@@ -1,15 +1,15 @@
-import { XjsTypes, XjsEnvironments, LogVerbosity, Config } from './types';
-import Internal from '../../internal';
 import App from '../app';
 import View from '../view';
-import Enviornment from '../../helpers/environment';
-import Environment from '../../helpers/environment';
 import Item from '../item';
+import Remote from '../remote';
+import Internal from '../../internal';
+import Environment from '../../helpers/environment';
+import { XjsTypes, XjsEnvironments, LogVerbosity, Config } from './types';
 
 export default class Xjs {
   static version = '%XJS_VERSION%';
 
-  private type: XjsTypes;
+  private type: XjsTypes = XjsTypes.Local;
 
   private environment: XjsEnvironments;
 
@@ -17,15 +17,13 @@ export default class Xjs {
 
   private version: string;
 
-  private sendMessage: any;
-
-  private onMessageReceive: any;
-
   private logger: any;
 
   private exec: any;
 
   app: App;
+
+  remote: Remote;
 
   _internal: Internal;
 
@@ -37,11 +35,22 @@ export default class Xjs {
     });
 
     // Initialize the internal methods and the view
-    this._internal = new Internal();
+    this._internal = new Internal(this.type);
 
     this.exec = this._internal.exec.bind(this._internal);
 
     this.app = new App({ internal: this._internal });
+
+    // @ts-ignore
+    if ([XjsTypes.Remote, XjsTypes.Proxy].includes(this.type)) {
+      this.remote = new Remote({
+        type: this.type,
+        exec: this.exec,
+      });
+
+      this.remote.setSender(config.sendMessage);
+      this._internal.setRemote(this.remote);
+    }
   }
 
   getView(index: number) {

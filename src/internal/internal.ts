@@ -1,3 +1,8 @@
+import isFunction from 'lodash/isFunction';
+import isNumber from 'lodash/isNumber';
+import { XjsTypes } from '../core/xjs/types';
+import Remote from '../core/remote';
+
 interface CallbackType {
   [asyncId: string]: any;
 }
@@ -5,7 +10,12 @@ interface CallbackType {
 class Internal {
   private _callbacks: CallbackType = {};
 
-  constructor() {
+  private type: XjsTypes;
+  private remote: Remote;
+
+  constructor(type) {
+    this.type = type;
+
     const existingAsyncCallback = window.OnAsyncCallback;
     window.OnAsyncCallback = (asyncId: string, result: string) => {
       if (typeof this._callbacks[asyncId] === 'function') {
@@ -19,13 +29,27 @@ class Internal {
     };
   }
 
+  setRemote(remote) {
+    this.remote = remote;
+  }
+
   exec(fn: string, ...args: any[]): Promise<any> {
     return new Promise((resolve, reject) => {
+      if (this.isRemote()) {
+        return this.remote
+          .send({
+            fn,
+            args,
+          })
+          .then(resolve)
+          .catch(reject);
+      }
+
       // @TODO: Add condition for remote thingy
       if (
         !window.external ||
         !window.external[fn] ||
-        typeof window.external[fn] !== 'function'
+        !isFunction(window.external[fn])
       ) {
         reject(
           new Error(
@@ -37,7 +61,7 @@ class Internal {
 
       const ret = window.external[fn](...args);
 
-      if (typeof ret === 'number') {
+      if (isNumber(ret)) {
         this._callbacks[ret] = result => {
           resolve(result);
         };
@@ -46,6 +70,10 @@ class Internal {
 
       resolve(ret);
     });
+  }
+
+  private isRemote() {
+    return this.type === XjsTypes.Remote;
   }
 }
 
