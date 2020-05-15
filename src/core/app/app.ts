@@ -25,9 +25,9 @@ class App {
     throw new Error(`Params "${param}" validation failed`);
   }
 
-  async getProperty(prop: PropertyType, param: any): Promise<any> {
+  async getProperty(prop: PropertyType, param?: any): Promise<any> {
     if (typeof prop.getValidator !== 'function' || prop.getValidator(param)) {
-      const key = sprintf(prop.key, param);
+      const key = sprintf(prop.key, param || {});
       const ret = await this._internal.exec('AppGetPropertyAsync', key);
 
       return typeof prop.getTransformer === 'function'
