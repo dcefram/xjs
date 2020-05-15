@@ -13,9 +13,8 @@ class Internal {
   private type: XjsTypes;
   private remote: Remote;
 
-  constructor({ type, remote }) {
+  constructor(type) {
     this.type = type;
-    this.remote = remote;
 
     const existingAsyncCallback = window.OnAsyncCallback;
     window.OnAsyncCallback = (asyncId: string, result: string) => {
@@ -28,6 +27,10 @@ class Internal {
         existingAsyncCallback(asyncId, result);
       }
     };
+  }
+
+  setRemote(remote) {
+    this.remote = remote;
   }
 
   exec(fn: string, ...args: any[]): Promise<any> {

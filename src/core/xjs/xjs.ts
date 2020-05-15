@@ -35,10 +35,7 @@ export default class Xjs {
     });
 
     // Initialize the internal methods and the view
-    this._internal = new Internal({
-      type: this.type,
-      remote: this.remote,
-    });
+    this._internal = new Internal(this.type);
 
     this.exec = this._internal.exec.bind(this._internal);
 
@@ -52,6 +49,7 @@ export default class Xjs {
       });
 
       this.remote.setSender(config.sendMessage);
+      this._internal.setRemote(this.remote);
     }
   }
 
