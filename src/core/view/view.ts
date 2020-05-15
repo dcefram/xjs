@@ -1,31 +1,28 @@
 import Internal from '../../internal';
-import Scene from '../scene';
 import App from '../app';
 
 import { ViewConfig } from './types';
+import { SceneInfo } from '../scene/types';
 
 class View {
-  private _app: App;
-  private _internal: Internal;
-  private _index: number;
+  private internal: Internal;
 
   constructor(config: ViewConfig) {
-    this._app = config.app;
-    this._internal = config.internal;
-    this._index = config.index;
+    this.internal = config.internal;
   }
 
-  async getCurrentScene(): Promise<Scene> {
-    const currentSceneIndex = await this._internal.exec(
+  async getCurrentScene(index: number): Promise<SceneInfo> {
+    const sceneIndex = await this.internal.exec(
       'AppGetPropertyAsync',
-      `scene:${this._index}`
+      `scene:${index}`
     );
 
-    return new Scene({
-      app: this._app,
-      internal: this._internal,
-      index: currentSceneIndex,
-    });
+    const id = await this.internal.exec(
+      'AppGetPropertyAsync',
+      `scene:${sceneIndex}`
+    );
+
+    return { index: sceneIndex, id };
   }
 }
 

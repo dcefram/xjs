@@ -4,45 +4,17 @@ import Internal from '../../internal';
 import Environment from '../../helpers/environment';
 import Xjs from '../xjs';
 
-import { ItemConfig, PropertyType } from './types';
+import { ItemConfig, PropertyType, ItemInfo} from './types';
 
 class Item {
-  private _internal: Internal;
-  private _id: string;
-  private _srcId: string; // @TODO: To be used by the fallback logic if in case the item ID is gone (ie. deleted from scene, but source still exists)
-  private _isCurrentItem: boolean;
-
-  static fromXMLString(xjs: Xjs, xmlString: string) {
-    const itemObject = parser.parse(xmlString, {
-      attributeNamePrefix: '',
-      ignoreAttributes: false,
-    });
-
-    // Check if valid XML... we consider it valid if it has an id :D
-    if (
-      itemObject &&
-      itemObject.item &&
-      typeof itemObject.item.id !== 'undefined'
-    ) {
-      return new Item({
-        internal: xjs._internal,
-        id: itemObject.item.id,
-        srcId: itemObject.item.srcid,
-      });
-    }
-
-    throw new Error('Invalid XML passed to `fromXMLString`');
-  }
+  private internal;
 
   constructor(config: ItemConfig) {
-    this._internal = config.internal;
-    this._id = config.id;
-    this._srcId = config.srcId;
-    this._isCurrentItem = !!config.isCurrentItem;
+    this.internal = config.internal;
   }
 
-  private async getPlacements() {
-    const presentationXml = await this._internal.exec(
+  private async getPlacements(): Promise<any[]> {
+    const presentationXml = await this.internal.exec(
       'AppGetPropertyAsync',
       'sceneconfig'
     );
@@ -58,21 +30,44 @@ class Item {
     return presentationObj.configuration.placement || [];
   }
 
-  async getItemList() {
+  private async isCurrentItem(srcid): Promise<boolean> {
+    const _srcid = await this.internal.exec('GetLocalPropertyAsync', 'prop:srcid');
+    return srcid === _srcid;
+  }
+
+  async getItemList(srcid: string): Promise<string[]> {
     const placements = await this.getPlacements();
 
     // O(n^2)
     return placements.reduce((stack: string[], scene: any) => {
       const sceneItems: any[] = scene.item || [];
       const linkedItems: string[] = sceneItems
-        .filter((item) => item.srcid === this._srcId)
+        .filter((item) => item.srcid === srcid)
         .map((item) => item.id);
 
       return [...stack, ...linkedItems];
     }, []);
   }
 
-  async getLinkedItem() {
+  async getCurrentItem() {
+    if (Environment.isExtension) {
+      throw new Error('You cannot use `getCurrentItem` in an extension plugin');
+    }
+
+    const itemsString = await this.internal.exec('GetLocalPropertyAsync', 'itemlist');
+    const srcid = await this.internal.exec('GetLocalPropertyAsync', 'prop:srcid');
+    const items = itemsString.split(',');
+
+    if (items.length === 0) {
+      throw new Error(
+        'Cannot get current item, itemlist did not return any ID'
+      );
+    }
+
+    return { srcid, id: items[0] };
+  }
+
+  async getLinkedItem(srcid: string): Promise<string> {
     const placements = await this.getPlacements();
 
     for (let idx = 0; idx < placements.length; idx++) {
@@ -82,7 +77,7 @@ class Item {
         items = [items];
       }
 
-      const item = items.find((item) => item.srcid === this._srcId);
+      const item = items.find((item) => item.srcid === srcid);
 
       if (item) {
         return item.id;
@@ -101,9 +96,9 @@ class Item {
         ? 'SetLocalPropertyAsync1'
         : 'SetLocalPropertyAsync';
 
-      this._internal.exec(attachKey, this._id);
+      this.internal.exec(attachKey, param.id);
 
-      const result = await this._internal.exec(
+      const result = await this.internal.exec(
         funcKey,
         prop.key,
         typeof prop.setTransformer !== 'function'
@@ -120,10 +115,10 @@ class Item {
           'Attached item does not exist. Attempting to attach linked item...'
         );
 
-        this._id = await this.getLinkedItem();
+        const id = await this.getLinkedItem(param.srcid);
 
-        if (this._id) {
-          return this.setProperty(prop, param);
+        if (id) {
+          return this.setProperty(prop, { ...param, id });
         } else {
           console.error('Failed to find linked item.');
         }
@@ -144,9 +139,9 @@ class Item {
         ? 'GetLocalPropertyAsync1'
         : 'GetLocalPropertyAsync';
 
-      this._internal.exec(attachKey, this._id);
+      this.internal.exec(attachKey, param.id);
 
-      const result = await this._internal.exec(funcKey, prop.key);
+      const result = await this.internal.exec(funcKey, prop.key);
 
       // deadcoldbrain noted that it is much safer if we do this comparison,
       // checking for both the string "null" and the actual null value.
@@ -157,10 +152,10 @@ class Item {
           'Attached item does not exaist. Attempting to attach linked item...'
         );
 
-        this._id = await this.getLinkedItem();
+        const id = await this.getLinkedItem(param.srcid);
 
-        if (this._id) {
-          return this.getProperty(prop, param);
+        if (id) {
+          return this.getProperty(prop, { ...param, id });
         } else {
           console.error('Failed to find linked item.');
         }
@@ -174,38 +169,38 @@ class Item {
     throw new Error(`Params "${param}" validation failed`);
   }
 
-  setConfiguration(config: object) {
-    if (!this._isCurrentItem) {
-      throw new Error('You can only set configuration for the current item');
-    }
-
+  setConfiguration(config: object, info: ItemInfo) {
     if (!Environment.isSourcePlugin) {
       throw new Error('You can only set configuration in source plugins');
     }
 
-    this._internal.exec(
+    if (!this.isCurrentItem(info.srcid)) {
+      throw new Error('You can only set configuration for the current item');
+    }
+
+    this.internal.exec(
       'SetBrowserProperty',
       'Configuration',
       JSON.stringify(config)
     );
   }
 
-  async getConfiguration(): Promise<object | string> {
-    if (!this._isCurrentItem) {
-      throw new Error('You can only get configuration for the current item');
-    }
-
+  async getConfiguration(info: ItemInfo): Promise<object | string> {
     if (Environment.isExtension) {
       throw new Error('You cannot set configuration in extension plugins');
     }
 
-    let result = await this._internal.exec(
+    if (!this.isCurrentItem(info.srcid)) {
+      throw new Error('You can only get configuration for the current item');
+    }
+
+    let result = await this.internal.exec(
       'GetLocalPropertyAsync',
       'prop:BrowserConfiguration'
     );
 
     if (!result || result === 'null') {
-      result = await this._internal.exec('GetConfiguration');
+      result = await this.internal.exec('GetConfiguration');
     }
 
     return JSON.parse(result || '{}');
