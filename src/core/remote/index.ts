@@ -1,7 +1,7 @@
-import { XjsTypes } from 'core/xjs/types';
+import { XjsTypes } from '../xjs/types';
 import request from './request';
 import { RequestResult, RemoteRequest, ProxyRequest } from './types';
-import { parse, stringify } from 'helpers';
+import { parse, stringify } from '../../helpers';
 
 export default class Remote {
   private sender: Function;

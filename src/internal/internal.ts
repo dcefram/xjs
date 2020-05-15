@@ -1,7 +1,7 @@
-import { XjsTypes } from 'core/xjs/types';
 import isFunction from 'lodash/isFunction';
 import isNumber from 'lodash/isNumber';
-import Remote from 'core/remote';
+import { XjsTypes } from '../core/xjs/types';
+import Remote from '../core/remote';
 
 interface CallbackType {
   [asyncId: string]: any;

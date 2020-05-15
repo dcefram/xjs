@@ -1,9 +1,9 @@
-import App from 'core/app';
-import View from 'core/view';
-import Item from 'core/item';
-import Remote from 'core/remote';
-import Internal from 'internal';
-import Environment from 'helpers/environment';
+import App from '../app';
+import View from '../view';
+import Item from '../item';
+import Remote from '../remote';
+import Internal from '../../internal';
+import Environment from '../../helpers/environment';
 import { XjsTypes, XjsEnvironments, LogVerbosity, Config } from './types';
 
 export default class Xjs {
@@ -44,6 +44,7 @@ export default class Xjs {
 
     this.app = new App({ internal: this._internal });
 
+    // @ts-ignore
     if ([XjsTypes.Remote, XjsTypes.Proxy].includes(this.type)) {
       this.remote = new Remote({
         type: this.type,

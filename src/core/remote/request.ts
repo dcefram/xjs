@@ -1,4 +1,4 @@
-import { stringify } from 'helpers';
+import { stringify } from '../../helpers';
 import {
   AsyncId,
   CallbackHandler,
