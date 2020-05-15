@@ -36,10 +36,12 @@ class Internal {
   exec(fn: string, ...args: any[]): Promise<any> {
     return new Promise((resolve, reject) => {
       if (this.isRemote()) {
-        return this.remote.send({
-          fn,
-          args,
-        });
+        return this.remote
+          .send({
+            fn,
+            args,
+          })
+          .then(resolve);
       }
 
       // @TODO: Add condition for remote thingy
