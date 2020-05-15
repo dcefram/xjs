@@ -41,7 +41,8 @@ class Internal {
             fn,
             args,
           })
-          .then(resolve);
+          .then(resolve)
+          .catch(reject);
       }
 
       // @TODO: Add condition for remote thingy
