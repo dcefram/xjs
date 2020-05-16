@@ -5,7 +5,6 @@ import Environment from '../../helpers/environment';
 import Item from '../item';
 import Remote from '../remote';
 import Internal from '../../internal';
-import Environment from '../../helpers/environment';
 import { XjsTypes, XjsEnvironments, LogVerbosity, Config } from './types';
 
 export default class Xjs {
@@ -49,7 +48,7 @@ export default class Xjs {
     if ([XjsTypes.Remote, XjsTypes.Proxy].includes(this.type)) {
       this.remote = new Remote({
         type: this.type,
-        exec: this.exec,
+        exec: this.internal.exec,
       });
 
       this.remote.setSender(config.sendMessage);
