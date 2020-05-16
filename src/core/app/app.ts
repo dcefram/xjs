@@ -4,10 +4,10 @@ import sprintf from '../../helpers/sprintf';
 import { AppConfig, PropertyType } from './types';
 
 class App {
-  private _internal: Internal;
+  private internal: Internal;
 
   constructor(config: AppConfig) {
-    this._internal = config.internal;
+    this.internal = config.internal;
   }
 
   setProperty(prop: PropertyType, param: any): Promise<any> {
@@ -19,7 +19,7 @@ class App {
           ? prop.setTransformer(params)
           : params;
 
-      return this._internal.exec('AppSetPropertyAsync', key, value);
+      return this.internal.exec('AppSetPropertyAsync', key, value);
     }
 
     throw new Error(`Params "${param}" validation failed`);
@@ -28,7 +28,7 @@ class App {
   async getProperty(prop: PropertyType, param?: any): Promise<any> {
     if (typeof prop.getValidator !== 'function' || prop.getValidator(param)) {
       const key = sprintf(prop.key, param || {});
-      const ret = await this._internal.exec('AppGetPropertyAsync', key);
+      const ret = await this.internal.exec('AppGetPropertyAsync', key);
 
       return typeof prop.getTransformer === 'function'
         ? prop.getTransformer(ret)

@@ -2,9 +2,6 @@ import Internal from '../../internal';
 
 export interface ItemConfig {
   internal: Internal;
-  id: string;
-  srcId: string;
-  isCurrentItem?: boolean;
 }
 
 export interface PropertyType {
@@ -13,4 +10,9 @@ export interface PropertyType {
   setTransformer: (param: any) => any;
   getValidator: (param: any) => boolean;
   getTransformer: (param: any) => any;
+}
+
+export interface ItemInfo {
+  id: string;
+  srcid: string;
 }

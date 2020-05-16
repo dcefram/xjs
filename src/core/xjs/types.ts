@@ -16,7 +16,7 @@ export enum LogVerbosity {
   Debug = 'debug',
 }
 
-export interface Config {
+export type Config = {
   type?: XjsTypes;
   environment?: XjsEnvironments;
   logVerbosity?: LogVerbosity;

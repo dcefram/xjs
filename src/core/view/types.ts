@@ -1,8 +1,6 @@
 import Internal from '../../internal';
 import App from '../app';
 
-export interface ViewConfig {
-  app: App;
+export type ViewConfig = {
   internal: Internal;
-  index: number;
 }

@@ -2,9 +2,19 @@ import Internal from '../../internal';
 import App from '../app';
 
 export interface SceneConfig {
-  app: App;
   internal: Internal;
-  index?: number;
-  xml?: string;
-  uid?: string;
+}
+
+export type SceneInfo = {
+  index: number;
+  id: string;
+}
+
+export type Placement = {
+  defpos: string;
+  id: string;
+  name: string;
+  preset_id: string;
+  preset_trtime: string;
+  trtime: string;
 }

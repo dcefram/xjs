@@ -1,5 +1,7 @@
 import App from '../app';
 import View from '../view';
+import Scene from '../Scene';
+import Environment from '../../helpers/environment';
 import Item from '../item';
 import Remote from '../remote';
 import Internal from '../../internal';
@@ -11,21 +13,19 @@ export default class Xjs {
 
   private type: XjsTypes = XjsTypes.Local;
 
-  private environment: XjsEnvironments;
-
-  private logVerbosity: LogVerbosity;
-
   private version: string;
 
-  private logger: any;
+  private internal: Internal;
 
-  private exec: any;
+  App: App;
 
-  app: App;
+  View: View;
+
+  Scene: Scene;
+
+  Item: Item;
 
   remote: Remote;
-
-  _internal: Internal;
 
   constructor(config: Config = { type: XjsTypes.Local }) {
     Object.keys(config).forEach((key: string) => {
@@ -35,11 +35,15 @@ export default class Xjs {
     });
 
     // Initialize the internal methods and the view
-    this._internal = new Internal(this.type);
+    this.internal = new Internal(this.type);
 
-    this.exec = this._internal.exec.bind(this._internal);
+    this.App = new App({ internal: this.internal });
 
-    this.app = new App({ internal: this._internal });
+    this.View = new View({ internal: this.internal });
+
+    this.Scene = new Scene({ internal: this.internal });
+
+    this.Item = new Item({ internal: this.internal });
 
     // @ts-ignore
     if ([XjsTypes.Remote, XjsTypes.Proxy].includes(this.type)) {
@@ -49,16 +53,8 @@ export default class Xjs {
       });
 
       this.remote.setSender(config.sendMessage);
-      this._internal.setRemote(this.remote);
+      this.internal.setRemote(this.remote);
     }
-  }
-
-  getView(index: number) {
-    return new View({
-      app: this.app,
-      internal: this._internal,
-      index,
-    });
   }
 
   async setConfigWindow(url: string) {
@@ -66,21 +62,21 @@ export default class Xjs {
       throw new Error('can only set configuration for the current item');
     }
 
-    let browserConfig: string = await this.exec(
+    let browserConfig: string = await this.internal.exec(
       'GetLocalPropertyAsync',
       'prop:BrowserConfiguration'
     );
     let configObj: any = {};
 
     if (browserConfig === '' || browserConfig === 'null') {
-      browserConfig = await this.exec('GetConfiguration');
+      browserConfig = await this.internal.exec('GetConfiguration');
     }
 
     configObj = JSON.parse(browserConfig || '{}');
 
     configObj.configUrl = url;
 
-    await this.exec(
+    await this.internal.exec(
       'SetBrowserProperty',
       'Configuration',
       JSON.stringify(configObj)
@@ -90,26 +86,4 @@ export default class Xjs {
     return true;
   }
 
-  async getCurrentItem() {
-    if (Environment.isExtension) {
-      throw new Error('You cannot use `getCurrentItem` in an extension plugin');
-    }
-
-    const itemsString = await this.exec('GetLocalPropertyAsync', 'itemlist');
-    const srcId = await this.exec('GetLocalPropertyAsync', 'prop:srcid');
-    const items = itemsString.split(',');
-
-    if (items.length === 0) {
-      throw new Error(
-        'Cannot get current item, itemlist did not return any ID'
-      );
-    }
-
-    return new Item({
-      internal: this._internal,
-      id: items[0],
-      srcId,
-      isCurrentItem: true,
-    });
-  }
 }
