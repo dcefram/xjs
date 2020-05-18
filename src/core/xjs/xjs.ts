@@ -47,7 +47,7 @@ export default class Xjs {
     if ([XjsTypes.Remote, XjsTypes.Proxy].includes(this.type)) {
       this.remote = new Remote({
         type: this.type,
-        exec: this.internal.exec,
+        exec: this.internal.exec.bind(this.internal),
       });
 
       this.remote.setSender(config.sendMessage);
