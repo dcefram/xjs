@@ -24,6 +24,12 @@ class View {
 
     return { index: sceneIndex, id };
   }
+
+  async isSplitMode() {
+    return Boolean(
+      Number(await this.internal.exec('GetGlobalProperty', 'splitmode'))
+    );
+  }
 }
 
 export default View;

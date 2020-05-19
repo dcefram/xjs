@@ -1,6 +1,6 @@
 import App from '../app';
 import View from '../view';
-import Scene from '../Scene';
+import Scene from '../scene';
 import Environment from '../../helpers/environment';
 import Item from '../item';
 import Remote from '../remote';
@@ -44,11 +44,10 @@ export default class Xjs {
 
     this.Item = new Item({ internal: this.internal });
 
-    // @ts-ignore
     if ([XjsTypes.Remote, XjsTypes.Proxy].includes(this.type)) {
       this.remote = new Remote({
         type: this.type,
-        exec: this.internal.exec,
+        exec: this.internal.exec.bind(this.internal),
       });
 
       this.remote.setSender(config.sendMessage);
@@ -84,5 +83,4 @@ export default class Xjs {
     // @TODO: Return an instance of the config window??
     return true;
   }
-
 }

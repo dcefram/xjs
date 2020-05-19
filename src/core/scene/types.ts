@@ -8,7 +8,8 @@ export interface SceneConfig {
 export type SceneInfo = {
   index: number;
   id: string;
-}
+  name: string;
+};
 
 export type Placement = {
   defpos: string;
@@ -17,4 +18,4 @@ export type Placement = {
   preset_id: string;
   preset_trtime: string;
   trtime: string;
-}
+};

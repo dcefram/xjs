@@ -8,3 +8,5 @@ yarn.lock
 .idea/
 .vscode/
 *.sublime-*
+src/sample.ts
+src/helpers/callback.ts
