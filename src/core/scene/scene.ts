@@ -5,7 +5,7 @@ import Internal from '../../internal';
 import Item from '../item';
 import App from '../app';
 
-import { isSplitMode } from '../../helpers/feature';
+import isSplitMode from '../../helpers/is-split-mode';
 
 import { SceneConfig, SceneInfo, Placement } from './types';
 
