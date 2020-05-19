@@ -35,7 +35,7 @@ class Scene {
     );
   }
 
-  async getActive() {
+  async getActive(): Promise<SceneInfo> {
     const splitMode = await isSplitMode(this.internal);
 
     if (splitMode) {
@@ -53,7 +53,7 @@ class Scene {
     return this.getByIndex(index);
   }
 
-  async setActive(indexOrId: number | number) {
+  async setActive(indexOrId: number | number): Promise<Boolean> {
     const splitMode = await isSplitMode(this.internal);
 
     if (splitMode) {
@@ -63,14 +63,16 @@ class Scene {
         String(indexOrId)
       );
 
-      return await this.internal.exec('CallHostFunc', 'goLive');
+      await this.internal.exec('CallHostFunc', 'goLive');
+      return true;
     }
 
-    return await this.internal.exec(
+    await this.internal.exec(
       'AppSetPropertyAsync',
       'scene:0',
       String(indexOrId)
     );
+    return true;
   }
 
   async listAll() {
