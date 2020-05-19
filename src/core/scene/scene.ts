@@ -17,13 +17,29 @@ class Scene {
   async getByIndex(index: number): Promise<SceneInfo> {
     const arrayOfScenes = await this.listAll();
 
-    return arrayOfScenes.find(scene => scene.index === index);
+    return (
+      arrayOfScenes.find(scene => scene.index === index) ||
+      Promise.reject(`Scene index: ${index} not found`)
+    );
   }
 
   async getById(id: string): Promise<SceneInfo> {
     const arrayOfScenes = await this.listAll();
 
-    return arrayOfScenes.find(scene => scene.id === id);
+    return (
+      arrayOfScenes.find(scene => scene.id === id) ||
+      Promise.reject(`Scene with id: ${id} not found`)
+    );
+  }
+
+  async setActive(indexOrId: number | number) {
+    const splitMode = Boolean(
+      Number(await this.internal.exec('GetGlobalProperty', 'splitmode'))
+    );
+
+    const mode = splitMode ? 'scene:1' : 'scene:0';
+
+    return await this.internal.exec(mode, indexOrId);
   }
 
   async listAll() {
