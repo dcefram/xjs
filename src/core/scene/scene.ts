@@ -5,6 +5,8 @@ import Internal from '../../internal';
 import Item from '../item';
 import App from '../app';
 
+import { isSplitMode } from '../../helpers/feature';
+
 import { SceneConfig, SceneInfo, Placement } from './types';
 
 class Scene {
@@ -33,13 +35,23 @@ class Scene {
   }
 
   async setActive(indexOrId: number | number) {
-    const splitMode = Boolean(
-      Number(await this.internal.exec('GetGlobalProperty', 'splitmode'))
+    const splitMode = await isSplitMode(this.internal);
+
+    if (splitMode) {
+      await this.internal.exec(
+        'AppSetPropertyAsync',
+        'scene:1',
+        String(indexOrId)
+      );
+
+      return await this.internal.exec('CallHostFunc', 'goLive');
+    }
+
+    return await this.internal.exec(
+      'AppSetPropertyAsync',
+      'scene:0',
+      String(indexOrId)
     );
-
-    const mode = splitMode ? 'scene:1' : 'scene:0';
-
-    return await this.internal.exec(mode, indexOrId);
   }
 
   async listAll() {
