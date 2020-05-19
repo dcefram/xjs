@@ -6,6 +6,7 @@ import Item from '../item';
 import App from '../app';
 
 import isSplitMode from '../../helpers/is-split-mode';
+import { VIEW_PRESET } from '../../const';
 
 import { SceneConfig, SceneInfo, Placement } from './types';
 
@@ -32,6 +33,24 @@ class Scene {
       arrayOfScenes.find(scene => scene.id === id) ||
       Promise.reject(`Scene with id: ${id} not found`)
     );
+  }
+
+  async getActive() {
+    const splitMode = await isSplitMode(this.internal);
+
+    if (splitMode) {
+      const id = decodeURIComponent(
+        await this.internal.exec('AppGetPropertyAsync', 'sceneid:i12')
+      );
+
+      return this.getById(id);
+    }
+
+    const index = Number(
+      await this.internal.exec('AppGetPropertyAsync', 'scene:0')
+    );
+
+    return this.getByIndex(index);
   }
 
   async setActive(indexOrId: number | number) {
