@@ -1,11 +1,11 @@
 import parser from 'fast-xml-parser';
 
 import Internal from '../../internal';
-import Item from '../item';
 
 import isSplitMode from '../../helpers/is-split-mode';
 
-import { SceneInfo, Placement } from './types';
+import { SceneInfo, Placement, SceneId, SceneIndex, Item } from './types';
+import unescape from 'lodash/unescape';
 
 class Scene {
   private internal: Internal;
@@ -14,7 +14,7 @@ class Scene {
     this.internal = internal;
   }
 
-  async getByIndex(index: number): Promise<SceneInfo> {
+  async getByIndex(index: SceneIndex): Promise<SceneInfo> {
     const arrayOfScenes = await this.listAll();
 
     return (
@@ -23,7 +23,7 @@ class Scene {
     );
   }
 
-  async getById(id: string): Promise<SceneInfo> {
+  async getById(id: SceneId): Promise<SceneInfo> {
     const arrayOfScenes = await this.listAll();
 
     return (
@@ -50,7 +50,7 @@ class Scene {
     return this.getByIndex(index);
   }
 
-  async setActive(indexOrId: number | number): Promise<Boolean> {
+  async setActive(indexOrId: SceneId | SceneIndex): Promise<Boolean> {
     const splitMode = await isSplitMode(this.internal);
 
     if (splitMode) {
@@ -69,6 +69,11 @@ class Scene {
       'scene:0',
       String(indexOrId)
     );
+    return true;
+  }
+
+  async setName(id: SceneId, name: string): Promise<Boolean> {
+    await this.internal.exec('AppSetPropertyAsync', `scenename:${id}`, name);
     return true;
   }
 
@@ -98,7 +103,7 @@ class Scene {
     return [];
   }
 
-  async getItems(id: string): Promise<Item[]> {
+  async getItems(id: SceneId): Promise<Item[]> {
     const xmlString = await this.internal.exec(
       'AppGetPropertyAsync',
       `sceneconfig:${id}`
@@ -112,7 +117,11 @@ class Scene {
       ? sceneObject.placement.item
       : [sceneObject.placement.item];
 
-    return items.map(({ id, srcid }: any) => ({ id, srcid }));
+    return items.map(({ id, srcid, name }: any) => ({
+      id,
+      srcid,
+      name: unescape(name),
+    }));
   }
 }
 

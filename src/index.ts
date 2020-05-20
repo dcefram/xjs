@@ -1,4 +1,4 @@
-export { default } from './core/xjs';
+export { default, XjsTypes } from './core/xjs';
 export { default as Scene } from './core/scene';
 export { default as View } from './core/view';
 
