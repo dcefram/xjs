@@ -1,6 +1,4 @@
 import App from '../app';
-import View from '../view';
-import Scene from '../scene';
 import Environment from '../../helpers/environment';
 import Item from '../item';
 import Remote from '../remote';
@@ -14,15 +12,9 @@ export default class Xjs {
 
   private version: string;
 
-  private internal: Internal;
+  internal: Internal;
 
   App: App;
-
-  View: View;
-
-  Scene: Scene;
-
-  Item: Item;
 
   remote: Remote;
 
@@ -37,12 +29,6 @@ export default class Xjs {
     this.internal = new Internal(this.type);
 
     this.App = new App({ internal: this.internal });
-
-    this.View = new View({ internal: this.internal });
-
-    this.Scene = new Scene({ internal: this.internal });
-
-    this.Item = new Item({ internal: this.internal });
 
     if ([XjsTypes.Remote, XjsTypes.Proxy].includes(this.type)) {
       this.remote = new Remote({

@@ -1,20 +1,17 @@
 import parser from 'fast-xml-parser';
 
-import Xjs from '../xjs';
 import Internal from '../../internal';
 import Item from '../item';
-import App from '../app';
 
 import isSplitMode from '../../helpers/is-split-mode';
-import { VIEW_PRESET } from '../../const';
 
-import { SceneConfig, SceneInfo, Placement } from './types';
+import { SceneInfo, Placement } from './types';
 
 class Scene {
   private internal: Internal;
 
-  constructor(config: SceneConfig) {
-    this.internal = config.internal;
+  constructor({ internal }) {
+    this.internal = internal;
   }
 
   async getByIndex(index: number): Promise<SceneInfo> {
