@@ -1,20 +1,17 @@
 import parser from 'fast-xml-parser';
 
-import Xjs from '../xjs';
 import Internal from '../../internal';
 import Item from '../item';
-import App from '../app';
 
 import isSplitMode from '../../helpers/is-split-mode';
-import { VIEW_PRESET } from '../../const';
 
-import { SceneConfig, SceneInfo, Placement } from './types';
+import { SceneInfo, Placement } from './types';
 
 class Scene {
   private internal: Internal;
 
-  constructor(config: SceneConfig) {
-    this.internal = config.internal;
+  constructor({ internal }) {
+    this.internal = internal;
   }
 
   async getByIndex(index: number): Promise<SceneInfo> {
@@ -35,7 +32,7 @@ class Scene {
     );
   }
 
-  async getActive() {
+  async getActive(): Promise<SceneInfo> {
     const splitMode = await isSplitMode(this.internal);
 
     if (splitMode) {
@@ -53,7 +50,7 @@ class Scene {
     return this.getByIndex(index);
   }
 
-  async setActive(indexOrId: number | number) {
+  async setActive(indexOrId: number | number): Promise<Boolean> {
     const splitMode = await isSplitMode(this.internal);
 
     if (splitMode) {
@@ -63,14 +60,16 @@ class Scene {
         String(indexOrId)
       );
 
-      return await this.internal.exec('CallHostFunc', 'goLive');
+      await this.internal.exec('CallHostFunc', 'goLive');
+      return true;
     }
 
-    return await this.internal.exec(
+    await this.internal.exec(
       'AppSetPropertyAsync',
       'scene:0',
       String(indexOrId)
     );
+    return true;
   }
 
   async listAll() {
