@@ -1,0 +1,1 @@
+export type PresetId = string;
