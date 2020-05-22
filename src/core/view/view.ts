@@ -1,8 +1,8 @@
 import Internal from '../../internal';
 import App from '../app';
 
-import { ViewConfig } from './types';
-import { SceneInfo } from '../scene/types';
+import { ViewConfig, ViewIndex } from './types';
+import { SceneIndex } from '../scene/types';
 
 class View {
   private internal: Internal;
@@ -11,7 +11,7 @@ class View {
     this.internal = config.internal;
   }
 
-  async getCurrentScene(index: number): Promise<SceneInfo> {
+  async getCurrentSceneIndex(index: ViewIndex): Promise<SceneIndex> {
     const sceneIndex = await this.internal.exec(
       'AppGetPropertyAsync',
       `scene:${index}`
@@ -22,7 +22,7 @@ class View {
       `scene:${sceneIndex}`
     );
 
-    return { index: sceneIndex, id };
+    return Number(id);
   }
 
   async isSplitMode() {

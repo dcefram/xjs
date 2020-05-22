@@ -15,12 +15,17 @@ class Scene {
   }
 
   async getByIndex(index: SceneIndex): Promise<SceneInfo> {
-    const arrayOfScenes = await this.listAll();
-
-    return (
-      arrayOfScenes.find(scene => scene.index === index) ||
-      Promise.reject(`Scene index: ${index} not found`)
+    const xmlString = await this.internal.exec(
+      'AppGetPropertyAsync',
+      `sceneconfig:${index}`
     );
+    const result = parser.parse(xmlString, {
+      attributeNamePrefix: '',
+      ignoreAttributes: false,
+    });
+    const { placement } = result;
+
+    return { index, id: placement.id, name: placement.name };
   }
 
   async getById(id: SceneId): Promise<SceneInfo> {
