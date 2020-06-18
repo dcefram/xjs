@@ -2,8 +2,8 @@ import { stringify } from 'helpers';
 import {
   AsyncId,
   CallbackHandler,
-  RequestResult,
-  RemoteRequest,
+  IRequestResult,
+  ICreateRequest,
 } from './types';
 
 export const ASYNC_CALLBACK_TIMEOUT = 60000;
@@ -16,7 +16,7 @@ class RequestHandler {
     return this._asyncId++;
   }
 
-  register(message: RemoteRequest, sender: Function) {
+  register(message: ICreateRequest, sender: Function) {
     return new Promise((resolve, reject) => {
       const asyncId = this.getAsyncId();
 
@@ -47,7 +47,7 @@ class RequestHandler {
     return this._callbacks.hasOwnProperty(asyncId);
   }
 
-  runCallback({ asyncId, result }: RequestResult) {
+  runCallback({ asyncId, result }: IRequestResult) {
     if (this.isCallbackExisting(asyncId)) {
       const { callback, clean } = this._callbacks[asyncId];
       callback(result);
