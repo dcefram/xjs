@@ -38,6 +38,8 @@ class Internal {
       if (this.isRemote()) {
         return this.remote
           .send({
+            from: XjsTypes.Remote,
+            clientId: this.remote.clientId,
             fn,
             args,
           })

@@ -1,9 +1,12 @@
+import { v5 as uuidv5 } from 'uuid';
+
 import App from '../app';
 import Environment from '../../helpers/environment';
 import Item from '../item';
 import Remote from '../remote';
 import Internal from '../../internal';
-import { XjsTypes, XjsEnvironments, LogVerbosity, Config } from './types';
+import Event from '../events';
+import { XjsTypes, Config } from './types';
 
 export default class Xjs {
   static version = '%XJS_VERSION%';
@@ -11,6 +14,10 @@ export default class Xjs {
   private type: XjsTypes = XjsTypes.Local;
 
   private version: string;
+
+  private event: Event;
+
+  clientId = uuidv5('xjsframework.github.io', uuidv5.DNS);
 
   internal: Internal;
 
@@ -30,14 +37,33 @@ export default class Xjs {
 
     this.App = new App({ internal: this.internal });
 
+    // @ts-ignore
     if ([XjsTypes.Remote, XjsTypes.Proxy].includes(this.type)) {
       this.remote = new Remote({
+        clientId: this.clientId,
         type: this.type,
         exec: this.internal.exec.bind(this.internal),
       });
 
       this.remote.setSender(config.sendMessage);
       this.internal.setRemote(this.remote);
+    }
+
+    // initialize Event
+
+    // @ts-ignore
+    if ([XjsTypes.Proxy, XjsTypes.Local].includes(this.type)) {
+      this.event = new Event({
+        type: this.type,
+        remote: this.remote,
+      });
+      //
+      // emit(eventName, result) {
+      //   callbacks.hasOwnProperty(eventName) && callbacks[eventName](result)
+      //   if (this.type === XjsTypes.Proxy) {
+      //     this.remote.triggerEvent(eventName, result)
+      //   }
+      // }
     }
   }
 
@@ -68,5 +94,19 @@ export default class Xjs {
 
     // @TODO: Return an instance of the config window??
     return true;
+  }
+
+  on(eventName, callback) {
+    // CLIENT
+    // send to proxy with xjs
+
+    if (this.type === XjsTypes.Remote) {
+      this.remote.client.registerEvent(eventName, callback);
+      return;
+    }
+
+    if (this.type === XjsTypes.Local) {
+      this.event.subscribe(eventName, callback);
+    }
   }
 }
