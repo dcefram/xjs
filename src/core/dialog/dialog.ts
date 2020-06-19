@@ -33,9 +33,9 @@ const FLAGS = {
  *
  *   // Window flags
  *   showBorder: false,
- *   isResizable: false,
- *   isMinimizeActive: false,
- *   isMaximizeActive: false,
+ *   resizable: false,
+ *   showMinimize: false,
+ *   showMaximize: false,
  * });
  *
  * dialog.show();
@@ -65,7 +65,7 @@ export default class Dialog {
   }
 
   show() {
-    return new Promise(async resolve => {
+    return new Promise(async (resolve) => {
       const { config } = this;
 
       this.callback = (result: string) => resolve(result);
@@ -149,6 +149,10 @@ export default class Dialog {
           this.callback(result);
         }
       },
+      OnDialogBeforeNavigation: () => {},
+      OnDialogLoadStart: () => {},
+      OnDialogTitleChange: () => {},
+      OnDialogLoadEnd: () => {},
     });
   }
 }

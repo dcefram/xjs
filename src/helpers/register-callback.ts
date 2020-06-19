@@ -14,7 +14,9 @@ export default function registerCallback(callbacks: CallbackFunctions) {
     if (callbacks.hasOwnProperty(key)) {
       const prevFn = window[key];
       window[key] = (...args) => {
-        prevFn(...args);
+        if (typeof prevFn === 'function') {
+          prevFn(...args);
+        }
         callbacks[key](...args);
       };
     }
