@@ -27,21 +27,21 @@
   },
   "homepage": "https://github.com/dcefram/xjs#readme",
   "devDependencies": {
-    "prettier": "^1.18.2",
-    "rimraf": "^2.6.3",
-    "rollup": "^1.21.4",
-    "rollup-plugin-commonjs": "^10.0.2",
+    "prettier": "^2.0.5",
+    "rimraf": "^3.0.2",
+    "rollup": "^2.17.1",
+    "rollup-plugin-commonjs": "^10.1.0",
     "rollup-plugin-node-resolve": "^5.2.0",
-    "rollup-plugin-terser": "^5.1.2",
+    "rollup-plugin-terser": "^6.1.0",
     "rollup-plugin-typescript": "^1.0.1",
-    "tslib": "^1.10.0",
+    "tslib": "^2.0.0",
     "ttypescript": "^1.5.10",
-    "typescript": "^3.5.3",
+    "typescript": "^3.9.5",
     "typescript-transform-paths": "^1.1.14"
   },
   "dependencies": {
     "@types/lodash-es": "^4.17.3",
-    "fast-xml-parser": "^3.12.19",
+    "fast-xml-parser": "^3.17.4",
     "lodash-es": "^4.17.11"
   }
 }
