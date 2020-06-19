@@ -32,7 +32,7 @@ class Scene {
     const arrayOfScenes = await this.listAll();
 
     return (
-      arrayOfScenes.find(scene => scene.id === id) ||
+      arrayOfScenes.find((scene) => scene.id === id) ||
       Promise.reject(`Scene with id: ${id} not found`)
     );
   }

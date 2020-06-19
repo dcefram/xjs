@@ -3,7 +3,9 @@ export enum MODES {
   TABBED = 'embedded',
 }
 
-export default function setMode(mode: string = "embedded") {
+export default function setMode(mode: string = 'embedded') {
+  if (typeof window === 'undefined') return;
+
   const payload = {
     event: 'set-mode',
     value: mode,

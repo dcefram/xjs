@@ -11,9 +11,9 @@
     "moduleResolution": "node",
     "allowSyntheticDefaultImports": true,
     "allowUmdGlobalAccess": true,
-    "baseUrl": ".",
+    "baseUrl": "src",
     "paths": {
-      "*": ["./src/*"]
+      "*": ["./*"]
     },
     "declaration": true,
     "plugins": [
@@ -21,5 +21,5 @@
       { "transform": "typescript-transform-paths", "afterDeclarations": true }
     ]
   },
-  "exclude": ["node_modules"]
+  "exclude": ["node_modules", "tools"]
 }
