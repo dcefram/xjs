@@ -1,6 +1,5 @@
 {
   "compilerOptions": {
-    "baseUrl": "src",
     "outDir": "./dist/",
     "sourceMap": false,
     "noImplicitAny": false,
@@ -11,7 +10,16 @@
     "typeRoots": ["node_modules/@types/", "./types/"],
     "moduleResolution": "node",
     "allowSyntheticDefaultImports": true,
-    "allowUmdGlobalAccess": true
+    "allowUmdGlobalAccess": true,
+    "baseUrl": ".",
+    "paths": {
+      "*": ["./src/*"]
+    },
+    "declaration": true,
+    "plugins": [
+      { "transform": "typescript-transform-paths" },
+      { "transform": "typescript-transform-paths", "afterDeclarations": true }
+    ]
   },
   "exclude": ["node_modules"]
 }

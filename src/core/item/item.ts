@@ -1,10 +1,8 @@
 import parser from 'fast-xml-parser';
 
-import Internal from '../../internal';
-import Environment from '../../helpers/environment';
-import Xjs from '../xjs';
+import Environment from 'helpers/environment';
 
-import { ItemConfig, PropertyType, ItemInfo} from './types';
+import { ItemConfig, PropertyType, ItemInfo } from './types';
 
 class Item {
   private internal;
@@ -31,7 +29,10 @@ class Item {
   }
 
   private async isCurrentItem(srcid): Promise<boolean> {
-    const _srcid = await this.internal.exec('GetLocalPropertyAsync', 'prop:srcid');
+    const _srcid = await this.internal.exec(
+      'GetLocalPropertyAsync',
+      'prop:srcid'
+    );
     return srcid === _srcid;
   }
 
@@ -42,8 +43,8 @@ class Item {
     return placements.reduce((stack: string[], scene: any) => {
       const sceneItems: any[] = scene.item || [];
       const linkedItems: string[] = sceneItems
-        .filter((item) => item.srcid === srcid)
-        .map((item) => item.id);
+        .filter(item => item.srcid === srcid)
+        .map(item => item.id);
 
       return [...stack, ...linkedItems];
     }, []);
@@ -54,8 +55,14 @@ class Item {
       throw new Error('You cannot use `getCurrentItem` in an extension plugin');
     }
 
-    const itemsString = await this.internal.exec('GetLocalPropertyAsync', 'itemlist');
-    const srcid = await this.internal.exec('GetLocalPropertyAsync', 'prop:srcid');
+    const itemsString = await this.internal.exec(
+      'GetLocalPropertyAsync',
+      'itemlist'
+    );
+    const srcid = await this.internal.exec(
+      'GetLocalPropertyAsync',
+      'prop:srcid'
+    );
     const items = itemsString.split(',');
 
     if (items.length === 0) {
@@ -77,7 +84,7 @@ class Item {
         items = [items];
       }
 
-      const item = items.find((item) => item.srcid === srcid);
+      const item = items.find(item => item.srcid === srcid);
 
       if (item) {
         return item.id;
