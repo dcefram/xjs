@@ -62,7 +62,7 @@ class Internal {
       const ret = window.external[fn](...args);
 
       if (isNumber(ret)) {
-        this._callbacks[ret] = result => {
+        this._callbacks[ret] = (result) => {
           resolve(result);
         };
         return ret;
