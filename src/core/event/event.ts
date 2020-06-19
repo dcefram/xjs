@@ -1,25 +1,8 @@
-import { IWindowCallbacks } from './types';
-import { XjsTypes } from '../xjs';
-import Remote from '../remote';
+import Xjs from '../xjs';
 import { APP_ON_EVENT } from './const';
-/**
- * @TODO: This is currently only used for stream events
- */
+import registerCallback from '../../helpers/register-callback';
 
 const eventCallbacks = {};
-
-function wrapCallbackHandler(callbackFunc, oldCallbackFunc) {
-  return (...args: any[]) => {
-    callbackFunc(...args);
-    oldCallbackFunc && oldCallbackFunc(...args);
-  };
-}
-
-function registerCallback(callbacks: IWindowCallbacks) {
-  Object.entries(callbacks).forEach(([funcName, callback]) => {
-    window[funcName] = wrapCallbackHandler(callback, window[funcName]);
-  });
-}
 
 function parseSegments(segments: string[]): any {
   const parsed = segments.reduce((obj, current) => {
@@ -32,13 +15,12 @@ function parseSegments(segments: string[]): any {
 }
 
 export default class Events {
-  remote: Remote;
+  xjs: Xjs;
 
-  constructor({ type, remote }) {
-    if ([XjsTypes.Proxy, XjsTypes.Local].includes(type)) {
-      this.remote = remote;
-      this.initCallbackListeners();
-    }
+  constructor(xjs) {
+    this.xjs = xjs;
+
+    this.initCallbackListeners();
   }
 
   initCallbackListeners() {
@@ -62,12 +44,16 @@ export default class Events {
         //     return subscription[event](args);
         //   }
         // });
-
-        if (APP_ON_EVENT.SCENE_CHANGE) {
-          console.warn;
-        }
+        // if (APP_ON_EVENT.SCENE_CHANGE) {
+        //   const sceneInfo = this.scene.getActive();
+        //   this.emitEvent('scene-change', sceneInfo);
+        // }
       },
     });
+  }
+
+  emitEvent(eventName, result) {
+    //
   }
 
   subscribe(eventName: string, callback: Function) {

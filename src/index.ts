@@ -1,5 +1,6 @@
 export { default, XjsTypes } from './core/xjs';
 export { default as Scene } from './core/scene';
+export { default as Event } from './core/event';
 export { default as View } from './core/view';
 
 // @TODO: We might want to just do this for the UMD version, to minimize the final
