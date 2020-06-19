@@ -1,9 +1,8 @@
-import App from '../app';
-import Environment from '../../helpers/environment';
-import Item from '../item';
-import Remote from '../remote';
-import Internal from '../../internal';
-import { XjsTypes, XjsEnvironments, LogVerbosity, Config } from './types';
+import App from 'core/app';
+import Environment from 'helpers/environment';
+import Remote from 'core/remote';
+import Internal from 'internal';
+import { XjsTypes, Config } from './types';
 
 export default class Xjs {
   static version = '%XJS_VERSION%';

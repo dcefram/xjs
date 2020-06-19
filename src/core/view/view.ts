@@ -1,8 +1,7 @@
-import Internal from '../../internal';
-import App from '../app';
+import Internal from 'internal';
 
 import { ViewConfig, ViewIndex } from './types';
-import { SceneIndex } from '../scene/types';
+import { SceneIndex } from 'core/scene/types';
 
 class View {
   private internal: Internal;
