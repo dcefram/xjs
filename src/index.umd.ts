@@ -22,6 +22,7 @@ export default class Wrapper {
   static View = View;
   static ItemProps = ItemProps;
   static AppProps = AppProps;
+  static version = Xjs.version;
 
   constructor(config: any) {
     return new Xjs(config);
