@@ -1,17 +1,25 @@
 {
   "compilerOptions": {
-    "baseUrl": "src",
     "outDir": "./dist/",
     "sourceMap": false,
     "noImplicitAny": false,
-    "module": "es2015",
+    "module": "CommonJS",
     "target": "es2015",
     "lib": ["es2017", "dom"],
     "esModuleInterop": true,
     "typeRoots": ["node_modules/@types/", "./types/"],
     "moduleResolution": "node",
     "allowSyntheticDefaultImports": true,
-    "allowUmdGlobalAccess": true
+    "allowUmdGlobalAccess": true,
+    "baseUrl": ".",
+    "paths": {
+      "*": ["./src/*"]
+    },
+    "declaration": true,
+    "plugins": [
+      { "transform": "typescript-transform-paths" },
+      { "transform": "typescript-transform-paths", "afterDeclarations": true }
+    ]
   },
   "exclude": ["node_modules"]
 }

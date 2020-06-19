@@ -1,5 +1,5 @@
-import Internal from '../../internal';
-import { SceneId } from '../scene/types';
+import Internal from 'internal';
+import { SceneId } from 'core/scene/types';
 import { PresetId } from './types';
 
 class Preset {

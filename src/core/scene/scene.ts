@@ -1,8 +1,8 @@
 import parser from 'fast-xml-parser';
 
-import Internal from '../../internal';
+import Internal from 'internal';
 
-import isSplitMode from '../../helpers/is-split-mode';
+import isSplitMode from 'helpers/is-split-mode';
 
 import { SceneInfo, Placement, SceneId, SceneIndex, Item } from './types';
 import unescape from 'lodash/unescape';

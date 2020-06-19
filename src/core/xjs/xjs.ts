@@ -1,9 +1,8 @@
 import { v5 as uuidv5 } from 'uuid';
-
-import App from '../app';
-import Environment from '../../helpers/environment';
-import Remote from '../remote';
-import Internal from '../../internal';
+import App from 'core/app';
+import Environment from 'helpers/environment';
+import Remote from 'core/remote';
+import Internal from 'internal';
 import { XjsTypes, Config } from './types';
 
 export default class Xjs {

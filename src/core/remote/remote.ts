@@ -1,4 +1,4 @@
-import { XjsTypes } from '../xjs/types';
+import { XjsTypes } from 'core/xjs/types';
 import request from './request';
 import {
   IRequestResult,
@@ -8,7 +8,7 @@ import {
   ClientId,
   ICreateRequest,
 } from './types';
-import { parse } from '../../helpers';
+import { parse } from 'helpers';
 
 const EVENT = 'event';
 const isEvent = (type: string) => type === EVENT;
