@@ -1,4 +1,6 @@
 export default function setCustomTabs(tabs: string[]) {
+  if (typeof window === 'undefined') return;
+
   const payload = {
     event: 'set-custom-tabs',
     value: JSON.stringify(tabs),

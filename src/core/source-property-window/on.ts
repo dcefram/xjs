@@ -1,6 +1,9 @@
 const callbacks = {};
 
-if (typeof window.OnPropsMessageReceive === 'undefined') {
+if (
+  typeof window !== 'undefined' &&
+  typeof window.OnPropsMessageReceive === 'undefined'
+) {
   window.OnPropsMessageReceive = (message: string) => {
     try {
       const { key, payload } = JSON.parse(message);
