@@ -1,4 +1,4 @@
-import { v5 as uuidv5 } from 'uuid';
+import { v4 as uuid } from 'uuid';
 import App from 'core/app';
 import Environment from 'helpers/environment';
 import Remote from 'core/remote';
@@ -14,7 +14,7 @@ export default class Xjs {
 
   private event: Event;
 
-  clientId = uuidv5('xjsframework.github.io', uuidv5.DNS);
+  clientId = uuid();
 
   internal: Internal;
 
@@ -74,5 +74,17 @@ export default class Xjs {
 
     // @TODO: Return an instance of the config window??
     return true;
+  }
+
+  isLocal() {
+    return this.type === XjsTypes.Local;
+  }
+
+  isProxy() {
+    return this.type === XjsTypes.Proxy;
+  }
+
+  isRemote() {
+    return this.type === XjsTypes.Remote;
   }
 }

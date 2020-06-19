@@ -1,6 +1,5 @@
-import Xjs from '../xjs';
-import { APP_ON_EVENT } from './const';
-import registerCallback from '../../helpers/register-callback';
+import Xjs, { XjsTypes } from 'core/xjs';
+import registerCallback from 'helpers/register-callback';
 
 const eventCallbacks = {};
 
@@ -17,27 +16,23 @@ function parseSegments(segments: string[]): any {
 export default class Events {
   xjs: Xjs;
 
-  constructor(xjs) {
+  constructor(xjs: Xjs) {
     this.xjs = xjs;
 
-    this.initCallbackListeners();
-  }
-
-  initCallbackListeners() {
     registerCallback({
-      SetEvent(value: string) {
-        const segments = String(value).split('&');
-        const { event, info } = parseSegments(segments);
+      // SetEvent(value: string) {
+      //   const segments = String(value).split('&');
+      //   const { event, info } = parseSegments(segments);
 
-        if (Array.isArray(eventCallbacks[event])) {
-          eventCallbacks[event].forEach(callback => {
-            if (typeof callback === 'function') {
-              callback(decodeURIComponent(info));
-            }
-          });
-        }
-      },
-      AppOnEvent(_event: string, ...args: any) {
+      //   if (Array.isArray(eventCallbacks[event])) {
+      //     eventCallbacks[event].forEach(callback => {
+      //       if (typeof callback === 'function') {
+      //         callback(decodeURIComponent(info));
+      //       }
+      //     });
+      //   }
+      // },
+      AppOnEvent: (eventName: string, ...args: any) => {
         // const event = _event.toLowerCase();
         // SUBSCRIPTIONS_LIST.forEach((subscription) => {
         //   if (subscription.hasOwnProperty(event)) {
@@ -48,35 +43,38 @@ export default class Events {
         //   const sceneInfo = this.scene.getActive();
         //   this.emitEvent('scene-change', sceneInfo);
         // }
+
+        if (eventName === 'SceneChange') {
+          console.log('AppOnEvent', eventName, ...args);
+          this.emitEvent(eventName, args);
+        }
       },
     });
   }
 
-  emitEvent(eventName, result) {
-    //
+  emitEvent(eventName: string, result: string) {
+    if (eventCallbacks.hasOwnProperty(eventName)) {
+      eventCallbacks[eventName](result);
+    }
+
+    if (this.xjs.remote && this.xjs.isProxy()) {
+      this.xjs.remote.proxy.emitEvent(eventName, result);
+    }
   }
 
-  subscribe(eventName: string, callback: Function) {
+  on(eventName: string, callback: Function) {
+    if (this.xjs.isRemote()) {
+      this.xjs.remote.remote.registerEvent(eventName, callback);
+      return;
+    }
     eventCallbacks[eventName] = callback;
   }
 
-  unsubscribe(eventName: string) {
+  off(eventName: string) {
+    if (this.xjs.isRemote()) {
+      this.xjs.remote.remote.unregisterEvent(eventName);
+      return;
+    }
     delete eventCallbacks[eventName];
   }
 }
-
-/*
-export default {
-  subscribe: ({ environmentValidator, key }: EventMetaDataType, callback) => {
-    if (typeof environmentValidator === 'function' && !environmentValidator()) {
-      return;
-    }
-
-    if (typeof eventCallbacks[key] === 'undefined') {
-      eventCallbacks[key] = [];
-    }
-
-    eventCallbacks[key].push(callback);
-  },
-};
- */
