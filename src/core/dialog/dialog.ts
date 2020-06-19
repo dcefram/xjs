@@ -41,7 +41,7 @@ const FLAGS = {
  * dialog.show();
  * ```
  */
-class Dialog {
+export default class Dialog {
   private internal: Internal;
   private config: Config;
   private callback: Function;
