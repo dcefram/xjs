@@ -11,7 +11,6 @@ import {
 import { parse } from '../../helpers';
 
 const EVENT = 'event';
-
 const isEvent = (type: string) => type === EVENT;
 
 export default class Remote {
