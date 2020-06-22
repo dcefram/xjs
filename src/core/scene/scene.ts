@@ -1,7 +1,7 @@
 import parser from 'fast-xml-parser';
 
 import Internal from 'internal';
-
+import Xjs from 'core/xjs';
 import isSplitMode from 'helpers/is-split-mode';
 
 import { SceneInfo, Placement, SceneId, SceneIndex, Item } from './types';
@@ -10,7 +10,7 @@ import unescape from 'lodash/unescape';
 class Scene {
   private internal: Internal;
 
-  constructor({ internal }) {
+  constructor({ internal }: Xjs) {
     this.internal = internal;
   }
 

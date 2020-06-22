@@ -1,13 +1,14 @@
 import parser from 'fast-xml-parser';
 
+import Xjs from 'core/xjs';
 import Environment from 'helpers/environment';
 
-import { ItemConfig, PropertyType, ItemInfo } from './types';
+import { PropertyType, ItemInfo } from './types';
 
 class Item {
   private internal;
 
-  constructor(config: ItemConfig) {
+  constructor(config: Xjs) {
     this.internal = config.internal;
   }
 
@@ -43,8 +44,8 @@ class Item {
     return placements.reduce((stack: string[], scene: any) => {
       const sceneItems: any[] = scene.item || [];
       const linkedItems: string[] = sceneItems
-        .filter(item => item.srcid === srcid)
-        .map(item => item.id);
+        .filter((item) => item.srcid === srcid)
+        .map((item) => item.id);
 
       return [...stack, ...linkedItems];
     }, []);
@@ -84,7 +85,7 @@ class Item {
         items = [items];
       }
 
-      const item = items.find(item => item.srcid === srcid);
+      const item = items.find((item) => item.srcid === srcid);
 
       if (item) {
         return item.id;

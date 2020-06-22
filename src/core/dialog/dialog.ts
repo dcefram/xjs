@@ -1,7 +1,7 @@
-import Environment from '../../helpers/environment';
-import registerCallbacks from '../../helpers/register-callback';
-import Xjs from '../xjs';
-import Internal from '../../internal';
+import Environment from 'helpers/environment';
+import registerCallbacks from 'helpers/register-callback';
+import Xjs from 'core/xjs';
+import Internal from 'internal';
 import { Config } from './types';
 
 const FLAGS = {

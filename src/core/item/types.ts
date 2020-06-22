@@ -1,9 +1,5 @@
 import Internal from 'internal';
 
-export interface ItemConfig {
-  internal: Internal;
-}
-
 export interface PropertyType {
   key: string;
   setValidator: (param: any) => boolean;

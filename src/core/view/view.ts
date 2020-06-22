@@ -1,12 +1,13 @@
 import Internal from 'internal';
-
-import { ViewConfig, ViewIndex } from './types';
+import Xjs from 'core/xjs';
 import { SceneIndex } from 'core/scene/types';
+
+import { ViewIndex } from './types';
 
 class View {
   private internal: Internal;
 
-  constructor(config: ViewConfig) {
+  constructor(config: Xjs) {
     this.internal = config.internal;
   }
 

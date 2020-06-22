@@ -1,12 +1,12 @@
 import Internal from 'internal';
+import Xjs from 'core/xjs';
 import sprintf from 'helpers/sprintf';
-
-import { AppConfig, PropertyType } from './types';
+import { PropertyType } from './types';
 
 class App {
   private internal: Internal;
 
-  constructor(config: AppConfig) {
+  constructor(config: Xjs) {
     this.internal = config.internal;
   }
 

@@ -3,10 +3,6 @@ import Internal from 'internal';
 export type SceneId = string;
 export type SceneIndex = number;
 
-export interface SceneConfig {
-  internal: Internal;
-}
-
 export type SceneInfo = {
   index: SceneIndex;
   id: SceneId;
