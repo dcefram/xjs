@@ -10,7 +10,6 @@ const ItemProps = {
     },
     setTransformer: (value: any) => (value ? '1' : '0'),
     getTransformer: (value: any) => value === '1',
-    getValidator: () => true,
   },
 
   transparency: {
@@ -28,7 +27,6 @@ const ItemProps = {
     },
     setTransformer: (value: any) => String(value),
     getTransformer: (value: any) => parseInt(value),
-    getValidator: () => true,
   },
 
   browser60fps: {
@@ -41,7 +39,6 @@ const ItemProps = {
     },
     setTransformer: (value: any) => (value ? '1' : '0'),
     getTransformer: (value: any) => value === '1',
-    getValidator: () => true,
   },
 
   customName: {
@@ -53,9 +50,6 @@ const ItemProps = {
 
       return true;
     },
-    setTransformer: (name: any) => name,
-    getValidator: () => true,
-    getTransformer: (name: any) => name,
   },
 
   position: {
@@ -87,7 +81,6 @@ const ItemProps = {
 
       return `${parsed.left},${parsed.top},${parsed.right},${parsed.bottom}`;
     },
-    getValidator: () => true,
     getTransformer: (value: any) => {
       const posArray = String(value).split(',');
       const order = ['left', 'top', 'right', 'bottom'];
@@ -173,8 +166,14 @@ const ItemProps = {
     setTransformer: () => {
       throw new Error('Setting itemlist is not supported');
     },
-    getValidator: () => true,
     getTransformer: (value: string): string[] => String(value).split(','),
+  },
+
+  fileInfo: {
+    key: 'FileInfo',
+    setValidator: () => {
+      throw new Error('Setting FileInfo is not supported');
+    },
   },
 };
 
