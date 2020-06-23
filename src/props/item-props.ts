@@ -105,36 +105,33 @@ const ItemProps = {
       return true;
     },
     setTransformer: (isVisible: any) => (isVisible ? '1' : '0'),
-    getValidator: () => true,
     getTransformer: (isVisible: any) => isVisible === '1',
   },
 
   item: {
     key: 'prop:item',
-    setValidator: (value: any) => true,
-    setTransformer: (value: any) => value,
-    getValidator: () => true,
-    getTransformer: (value: any) => value,
   },
 
   srcid: {
     key: 'prop:srcid',
-    setValidator: (value: any) => true,
-    setTransformer: (value: any) => value,
-    getValidator: () => true,
-    getTransformer: (value: any) => value,
   },
 
   type: {
     key: 'prop:type',
-    // @TODO: Verify with @mikey if we would want to prevent users from setting item type...
-    setValidator: (value: any) => {
-      throw new Error('I believe we cannot set the item type...');
+    setValidator: (params: any) => {
+      if (typeof params !== 'object') {
+        throw new Error(`Expected type "object" but received type ${typeof params}`);
+      }
+
+      const { type, item } = params;
+
+      if (typeof type === 'undefined' || typeof item === 'undefined') {
+        throw new Error('`type` and `item` are required properties.');
+      }
+
+      return true;
     },
-    setTransformer: () => {
-      throw new Error('I believe we cannot set the item type...');
-    },
-    getValidator: () => true,
+    setTransformer: (params: any) => `${params.type},${params.item}`,
     getTransformer: (type: any) => {
       // @TODO: Should we just return strings???
       const types = {
