@@ -4,7 +4,7 @@ import commonjs from 'rollup-plugin-commonjs';
 import { terser } from 'rollup-plugin-terser';
 
 export default {
-  input: 'src/index.ts',
+  input: 'tools/umd.entry.ts',
   plugins: [
     typescript(),
     resolve({
@@ -17,5 +17,6 @@ export default {
     file: 'dist/xjs.umd.js',
     name: 'Xjs',
     format: 'umd',
+    exports: 'default',
   },
 };

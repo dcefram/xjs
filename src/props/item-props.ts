@@ -1,4 +1,34 @@
 const ItemProps = {
+  keepAspectRatio: {
+    key: 'prop:keep_ar',
+    setValidator: (value: any) => {
+      if (typeof value !== 'boolean') {
+        throw new Error(`${value} is not a boolean`);
+      }
+
+      return true;
+    },
+    setTransformer: (value: any) => (value ? '1' : '0'),
+    getTransformer: (value: any) => value === '1',
+  },
+
+  transparency: {
+    key: 'prop:alpha',
+    setValidator: (value: any) => {
+      if (typeof value !== 'number') {
+        throw new Error(`${value} is not a number`);
+      }
+
+      if (value < 0 || value > 255) {
+        throw new Error('Transparency may only be in the range 0-255.');
+      }
+
+      return true;
+    },
+    setTransformer: (value: any) => String(value),
+    getTransformer: (value: any) => parseInt(value),
+  },
+
   browser60fps: {
     key: 'prop:Browser60fps',
     setValidator: (value: any) => {
@@ -7,9 +37,8 @@ const ItemProps = {
       }
       return true;
     },
-    setTransformer: (value: any) => value ? '1' : '0',
+    setTransformer: (value: any) => (value ? '1' : '0'),
     getTransformer: (value: any) => value === '1',
-    getValidator: () => true,
   },
 
   customName: {
@@ -21,9 +50,6 @@ const ItemProps = {
 
       return true;
     },
-    setTransformer: (name: any) => name,
-    getValidator: () => true,
-    getTransformer: (name: any) => name,
   },
 
   position: {
@@ -55,8 +81,7 @@ const ItemProps = {
 
       return `${parsed.left},${parsed.top},${parsed.right},${parsed.bottom}`;
     },
-    getValidator: () => true,
-    gtTransformer: (value: any) => {
+    getTransformer: (value: any) => {
       const posArray = String(value).split(',');
       const order = ['left', 'top', 'right', 'bottom'];
 
@@ -80,36 +105,33 @@ const ItemProps = {
       return true;
     },
     setTransformer: (isVisible: any) => (isVisible ? '1' : '0'),
-    getValidator: () => true,
     getTransformer: (isVisible: any) => isVisible === '1',
   },
 
   item: {
     key: 'prop:item',
-    setValidator: (value: any) => true,
-    setTransformer: (value: any) => value,
-    getValidator: () => true,
-    getTransformer: (value: any) => value,
   },
 
   srcid: {
     key: 'prop:srcid',
-    setValidator: (value: any) => true,
-    setTransformer: (value: any) => value,
-    getValidator: () => true,
-    getTransformer: (value: any) => value,
   },
 
   type: {
     key: 'prop:type',
-    // @TODO: Verify with @mikey if we would want to prevent users from setting item type...
-    setValidator: (value: any) => {
-      throw new Error('I believe we cannot set the item type...');
+    setValidator: (params: any) => {
+      if (typeof params !== 'object') {
+        throw new Error(`Expected type "object" but received type ${typeof params}`);
+      }
+
+      const { type, item } = params;
+
+      if (typeof type === 'undefined' || typeof item === 'undefined') {
+        throw new Error('`type` and `item` are required properties.');
+      }
+
+      return true;
     },
-    setTransformer: () => {
-      throw new Error('I believe we cannot set the item type...');
-    },
-    getValidator: () => true,
+    setTransformer: (params: any) => `${params.type},${params.item}`,
     getTransformer: (type: any) => {
       // @TODO: Should we just return strings???
       const types = {
@@ -141,8 +163,14 @@ const ItemProps = {
     setTransformer: () => {
       throw new Error('Setting itemlist is not supported');
     },
-    getValidator: () => true,
     getTransformer: (value: string): string[] => String(value).split(','),
+  },
+
+  fileInfo: {
+    key: 'FileInfo',
+    setValidator: () => {
+      throw new Error('Setting FileInfo is not supported');
+    },
   },
 };
 

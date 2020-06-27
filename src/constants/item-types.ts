@@ -1,0 +1,19 @@
+enum ItemTypes {
+  Undefined = 0x00,
+  File = 0x1,
+  Live = 0x2,
+  Text = 0x3,
+  Bitmap = 0x4,
+  Screen = 0x5,
+  FlashFile = 0x6,
+  GameSource = 0x7,
+  HtmlFile = 0x8,
+  DSFile = 0x9,
+  PptFile = 0xa,
+  Scene = 0xb,
+  Group = 0xc,
+  Replay = 0xd,
+  DWORD = 0x7fffffff,
+}
+
+export default ItemTypes;

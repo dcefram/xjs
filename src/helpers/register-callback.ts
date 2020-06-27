@@ -1,23 +1,24 @@
-import isObject from 'lodash/isObject';
-
-const wrapCallbackHandler = (
-  callbackFunc: Function,
-  oldCallbackFunc: Function
-) => (...args: any[]) => {
-  callbackFunc(...args);
-  oldCallbackFunc && oldCallbackFunc(...args);
+type CallbackFunctions = {
+  [functionName: string]: Function;
 };
 
-const registerCallback = (callbacks: object) => {
-  if (!isObject(callbacks) || Object.keys(callbacks).length === 0) {
-    return;
-  }
-
-  for (const event in callbacks) {
-    const callback = callbacks[event];
-
-    window[event] = wrapCallbackHandler(callback, window[event]);
-  }
-};
-
-export default registerCallback;
+/**
+ * Safely define a window function that would be called by XSplit as a
+ * callback handler. In "Safely", we mean, it won't overwrite existing
+ * function definitions.
+ *
+ * @param callbacks   An object where the key is the callback function name and the value is the function definition
+ */
+export default function registerCallback(callbacks: CallbackFunctions) {
+  Object.keys(callbacks).forEach((key: string) => {
+    if (callbacks.hasOwnProperty(key)) {
+      const prevFn = window[key];
+      window[key] = (...args) => {
+        if (typeof prevFn === 'function') {
+          prevFn(...args);
+        }
+        callbacks[key](...args);
+      };
+    }
+  });
+}

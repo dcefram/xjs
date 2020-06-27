@@ -2,6 +2,7 @@ import isFunction from 'lodash/isFunction';
 import isNumber from 'lodash/isNumber';
 import { XjsTypes } from 'core/xjs/types';
 import Remote from 'core/remote';
+import registerCallback from 'helpers/register-callback';
 
 interface CallbackType {
   [asyncId: string]: any;
@@ -16,17 +17,15 @@ class Internal {
   constructor(type) {
     this.type = type;
 
-    const existingAsyncCallback = window.OnAsyncCallback;
-    window.OnAsyncCallback = (asyncId: string, result: string) => {
-      if (typeof this._callbacks[asyncId] === 'function') {
-        this._callbacks[asyncId](decodeURIComponent(result));
-        delete this._callbacks[asyncId];
+    registerCallback({
+      OnAsyncCallback:  (asyncId: string, ...responses: string[]) => {
+        if (typeof this._callbacks[asyncId] === 'function') {
+          const parsed = responses.map((response: string) => decodeURIComponent(response));
+          this._callbacks[asyncId](...parsed);
+          delete this._callbacks[asyncId];
+        }
       }
-
-      if (typeof existingAsyncCallback === 'function') {
-        existingAsyncCallback(asyncId, result);
-      }
-    };
+    });
   }
 
   setRemote(remote) {
@@ -64,7 +63,7 @@ class Internal {
       const ret = window.external[fn](...args);
 
       if (isNumber(ret)) {
-        this._callbacks[ret] = result => {
+        this._callbacks[ret] = (result) => {
           resolve(result);
         };
         return ret;

@@ -18,8 +18,6 @@ export default class Xjs {
 
   internal: Internal;
 
-  App: App;
-
   remote: Remote;
 
   constructor(config: Config = { type: XjsTypes.Local }) {
@@ -32,9 +30,6 @@ export default class Xjs {
     // Initialize the internal methods and the view
     this.internal = new Internal(this.type);
 
-    this.App = new App({ internal: this.internal });
-
-    // @ts-ignore
     if ([XjsTypes.Remote, XjsTypes.Proxy].includes(this.type)) {
       this.remote = new Remote({
         clientId: this.clientId,
