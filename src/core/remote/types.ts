@@ -1,4 +1,4 @@
-import { XjsTypes } from '../xjs/types';
+import { XjsTypes } from 'core/xjs/types';
 
 export type AsyncId = number;
 export type ClientId = string;

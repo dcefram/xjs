@@ -14,10 +14,10 @@ const EVENT = 'event';
 const isEvent = (type: string) => type === EVENT;
 
 export default class Remote {
-  private sender: Function;
-
   private type: XjsTypes;
   private exec: Function;
+
+  private sender: Function;
 
   clientId: string;
 
@@ -45,7 +45,7 @@ export default class Remote {
       if (isEvent(message.type)) {
         const { eventName, result } = message;
 
-        this.client.emitEvent(eventName, result);
+        this.remote.emitEvent(eventName, result);
         return;
       }
 
@@ -120,7 +120,7 @@ export default class Remote {
         }
       }
     },
-    emitEvent: (eventName, result) => {
+    emitEvent: (eventName: string, result: string) => {
       Object.values(this.proxy.clientEvents).forEach(events => {
         if (events.hasOwnProperty(eventName)) {
           events[eventName](result);
@@ -129,10 +129,10 @@ export default class Remote {
     },
   };
 
-  client = {
+  remote = {
     eventCallbacks: {},
     registerEvent: (eventName, callback: Function) => {
-      this.client.eventCallbacks[eventName] = callback;
+      this.remote.eventCallbacks[eventName] = callback;
 
       this.sender({
         from: XjsTypes.Remote,
@@ -156,8 +156,8 @@ export default class Remote {
       }
     },
     emitEvent: (eventName: string, result: any) => {
-      if (this.client.eventCallbacks.hasOwnProperty(eventName)) {
-        this.client.eventCallbacks[eventName](result);
+      if (this.remote.eventCallbacks.hasOwnProperty(eventName)) {
+        this.remote.eventCallbacks[eventName](result);
       }
     },
   };

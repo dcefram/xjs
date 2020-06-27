@@ -20,12 +20,10 @@ class RequestHandler {
     return new Promise((resolve, reject) => {
       const asyncId = this.getAsyncId();
 
-      sender(
-        stringify({
-          asyncId,
-          ...message,
-        })
-      );
+      sender({
+        asyncId,
+        ...message,
+      });
 
       const asyncCallbackTimeout = setTimeout(() => {
         delete this._callbacks[asyncId]; // callback clean up
