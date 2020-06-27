@@ -1,4 +1,3 @@
-import App from 'core/app';
 import Environment from 'helpers/environment';
 import Remote from 'core/remote';
 import Internal from 'internal';
@@ -36,7 +35,7 @@ export default class Xjs {
     }
   }
 
-  async setConfigWindow(url: string) {
+  async setConfigWindow(url: string): Promise<boolean> {
     if (!Environment.isSourcePlugin) {
       throw new Error('can only set configuration for the current item');
     }

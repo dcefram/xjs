@@ -24,4 +24,4 @@ export type Config = {
   sendMessage?: (arg: any) => void; // @TODO: Maybe it makes sense to define a "sendMessage" arguments structure?
   onMessageReceive?: any;
   logger?: any;
-}
+};
