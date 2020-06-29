@@ -3,6 +3,27 @@ import Remote from 'core/remote';
 import Internal from 'internal';
 import { XjsTypes, Config } from './types';
 
+/**
+ * An xjs instance holds the necessary details to
+ * know which context to run the underlying core
+ * methods.
+ *
+ * By default, creating an Xjs instance would assume
+ * that it would execute the local XSplit broadcaster's
+ * core methods unless the `type` is specified when
+ * creating the instance.
+ *
+ * Example:
+ * ```
+ * import Xjs, { XjsTypes } from '@dcefram/xjs';
+ *
+ * const localXjs = new Xjs();
+ * const remoteXjs = new Xjs({ type: XjsTypes.Remote, sendMessage });
+ * const proxyXjs = new Xjs({ type: XjsTypes.Proxy, sendMessage });
+ * ```
+ *
+ * Multiple Xjs instances are allowed to run side-by-side
+ */
 export default class Xjs {
   static version = '%XJS_VERSION%';
 
@@ -35,6 +56,11 @@ export default class Xjs {
     }
   }
 
+  /**
+   * Set a custom source property window
+   *
+   * @param url Path or address that would be rendered inside the source property window
+   */
   async setConfigWindow(url: string): Promise<boolean> {
     if (!Environment.isSourcePlugin) {
       throw new Error('can only set configuration for the current item');

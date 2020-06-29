@@ -55,7 +55,7 @@ class Scene {
     return this.getByIndex(index);
   }
 
-  async setActive(indexOrId: SceneId | SceneIndex): Promise<Boolean> {
+  async setActive(indexOrId: SceneId | SceneIndex): Promise<boolean> {
     const splitMode = await isSplitMode(this.internal);
 
     if (splitMode) {
@@ -77,12 +77,12 @@ class Scene {
     return true;
   }
 
-  async setName(id: SceneId, name: string): Promise<Boolean> {
+  async setName(id: SceneId, name: string): Promise<boolean> {
     await this.internal.exec('AppSetPropertyAsync', `scenename:${id}`, name);
     return true;
   }
 
-  async listAll() {
+  async listAll(): Promise<SceneInfo[]> {
     const xmlString = await this.internal.exec(
       'AppGetPropertyAsync',
       'sceneconfig'

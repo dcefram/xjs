@@ -1,5 +1,3 @@
-import Internal from 'internal';
-
 export type SceneId = string;
 export type SceneIndex = number;
 

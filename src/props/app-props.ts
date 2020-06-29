@@ -3,7 +3,7 @@ import Environment from 'helpers/Environment';
 const AppProps = {
   scenes: {
     key: 'sceneconfig',
-    setValidator: (xml: string) => {
+    setValidator: (xml: string): boolean => {
       if (typeof xml !== 'string') {
         throw new Error('Parameter should be a string');
       }
@@ -14,7 +14,7 @@ const AppProps = {
 
   sceneIndex: {
     key: 'scene:${view}',
-    setValidator: (param: any) => {
+    setValidator: (param: any): boolean => {
       if (
         typeof param !== 'object' ||
         typeof param.value === 'undefined' ||
@@ -28,7 +28,7 @@ const AppProps = {
       return true;
     },
     setTransformer: (value: any) => value.value,
-    getValidator: param => {
+    getValidator: (param) => {
       if (typeof param !== 'object' || typeof param.view === 'undefined') {
         throw new Error(
           'Parameter should be an object with a `value` property'
@@ -48,7 +48,7 @@ const AppProps = {
         typeof param.scene === 'undefined'
       ) {
         throw new Error(
-          'Parameter should be an object with properties `value` and `scene`. `scene` should be the scene\'s UID'
+          "Parameter should be an object with properties `value` and `scene`. `scene` should be the scene's UID"
         );
       }
 
@@ -60,7 +60,9 @@ const AppProps = {
     },
     getValidator: (param: any) => {
       if (typeof param !== 'object' || typeof param.scene === 'undefined') {
-        throw new Error('Parameter should be an object with property `scene`. `scene` should be the scene\'s UID');
+        throw new Error(
+          "Parameter should be an object with property `scene`. `scene` should be the scene's UID"
+        );
       }
 
       if (Environment.isSourcePlugin) {
@@ -77,7 +79,9 @@ const AppProps = {
     setTransformer: () => null,
     getValidator: (param: any) => {
       if (typeof param !== 'object' || typeof param.scene === 'undefined') {
-        throw new Error('Parameter should be an object with property `scene`. `scene` should be the scene\'s UID');
+        throw new Error(
+          "Parameter should be an object with property `scene`. `scene` should be the scene's UID"
+        );
       }
 
       if (Environment.isSourcePlugin) {
@@ -96,7 +100,9 @@ const AppProps = {
     },
     getValidator: (param: any) => {
       if (typeof param !== 'object' || typeof param.scene === 'undefined') {
-        throw  new Error('Parameter should be an object with property `scene`. `scene` should be the scene\'s UID');
+        throw new Error(
+          "Parameter should be an object with property `scene`. `scene` should be the scene's UID"
+        );
       }
 
       if (Environment.isSourcePlugin) {
@@ -116,7 +122,7 @@ const AppProps = {
         typeof param.scene === 'undefined'
       ) {
         throw new Error(
-          'Parameter should be an object with properties `value` and `scene`. `scene` should be the scene\'s UID'
+          "Parameter should be an object with properties `value` and `scene`. `scene` should be the scene's UID"
         );
       }
 
@@ -140,7 +146,7 @@ const AppProps = {
         typeof param.scene === 'undefined'
       ) {
         throw new Error(
-          'Parameter should be an object with properties `value` and `scene`. `scene` should be the scene\'s UID'
+          "Parameter should be an object with properties `value` and `scene`. `scene` should be the scene's UID"
         );
       }
 
@@ -150,10 +156,12 @@ const AppProps = {
 
       return true;
     },
-    setTransformer: (value: string) => value === 'none' ? '' : value,
+    setTransformer: (value: string) => (value === 'none' ? '' : value),
     getValidator: (param: any) => {
       if (typeof param !== 'object' || typeof param.scene === 'undefined') {
-        throw  new Error('Parameter should be an object with property `scene`. `scene` should be the scene\'s UID');
+        throw new Error(
+          "Parameter should be an object with property `scene`. `scene` should be the scene's UID"
+        );
       }
 
       if (Environment.isSourcePlugin) {
@@ -162,7 +170,7 @@ const AppProps = {
 
       return true;
     },
-    getTransformer: (value: string) => value === '' ? 'none' : value,
+    getTransformer: (value: string) => (value === '' ? 'none' : value),
   },
 
   scenePresetTransitionTime: {
@@ -174,7 +182,7 @@ const AppProps = {
         typeof param.scene === 'undefined'
       ) {
         throw new Error(
-          'Parameter should be an object with properties `value` of type Number and `scene` of type String. `scene` should be the scene\'s UID'
+          "Parameter should be an object with properties `value` of type Number and `scene` of type String. `scene` should be the scene's UID"
         );
       }
 
@@ -187,7 +195,9 @@ const AppProps = {
     setTransformer: (value: number) => String(value),
     getValidator: (param: any) => {
       if (typeof param !== 'object' || typeof param.scene === 'undefined') {
-        throw  new Error('Parameter should be an object with property `scene`. `scene` should be the scene\'s UID');
+        throw new Error(
+          "Parameter should be an object with property `scene`. `scene` should be the scene's UID"
+        );
       }
 
       if (Environment.isSourcePlugin) {

@@ -3,7 +3,11 @@ import parser from 'fast-xml-parser';
 import Xjs from 'core/xjs';
 import Internal from 'internal/internal';
 import Environment from 'helpers/environment';
-import { IChannel } from './types';
+import {
+  IBroadcastChannelList,
+  IBroadcastChannelDetails,
+  IChannelName,
+} from './types';
 
 class Output {
   private internal: Internal;
@@ -23,12 +27,15 @@ class Output {
       'CallHostFunc',
       'getBroadcastChannelList'
     );
-    const channelListParsed: any = parser.parse(channelListXml, {
-      attributeNamePrefix: '',
-      ignoreAttributes: false,
-    });
+    const channelListParsed: IBroadcastChannelList = parser.parse(
+      channelListXml,
+      {
+        attributeNamePrefix: '',
+        ignoreAttributes: false,
+      }
+    );
 
-    const channels: IChannel[] = channelListParsed.channels.channel;
+    const channels: IChannelName[] = channelListParsed.channels.channel;
 
     return channels.map((channel) => decodeURIComponent(channel.name));
   }
@@ -80,7 +87,7 @@ class Output {
       return '';
     }
 
-    const channelParsed: any = parser.parse(channelXml, {
+    const channelParsed: IBroadcastChannelDetails = parser.parse(channelXml, {
       attributeNamePrefix: '',
       ignoreAttributes: false,
     });
