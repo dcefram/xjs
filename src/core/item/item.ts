@@ -3,7 +3,7 @@ import parser from 'fast-xml-parser';
 import Xjs from 'core/xjs';
 import Environment from 'helpers/environment';
 
-import { PropertyType, ItemInfo } from './types';
+import { PropertyType, IItemInfo, IPlacement, IItem } from './types';
 
 class Item {
   private internal;
@@ -12,7 +12,7 @@ class Item {
     this.internal = config.internal;
   }
 
-  private async getPlacements(): Promise<any[]> {
+  private async getPlacements(): Promise<IPlacement[]> {
     const presentationXml = await this.internal.exec(
       'AppGetPropertyAsync',
       'sceneconfig'
@@ -41,8 +41,8 @@ class Item {
     const placements = await this.getPlacements();
 
     // O(n^2)
-    return placements.reduce((stack: string[], scene: any) => {
-      const sceneItems: any[] = scene.item || [];
+    return placements.reduce((stack: string[], scene: IPlacement) => {
+      const sceneItems: IItem[] = scene.item || [];
       const linkedItems: string[] = sceneItems
         .filter((item) => item.srcid === srcid)
         .map((item) => item.id);
@@ -51,7 +51,7 @@ class Item {
     }, []);
   }
 
-  async getCurrentItem() {
+  async getCurrentItem(): Promise<IItemInfo> {
     if (Environment.isExtension) {
       throw new Error('You cannot use `getCurrentItem` in an extension plugin');
     }
@@ -95,7 +95,7 @@ class Item {
     return '';
   }
 
-  async setProperty(prop: PropertyType, param: any) {
+  async setProperty(prop: PropertyType, param: any): Promise<any> {
     if (typeof prop.setValidator !== 'function' || prop.setValidator(param)) {
       const attachKey = Environment.isSourcePlugin
         ? 'AttachVideoItem1'
@@ -138,7 +138,7 @@ class Item {
     throw new Error(`Params "${param}" validation failed`);
   }
 
-  async getProperty(prop: PropertyType, param: any) {
+  async getProperty(prop: PropertyType, param: any): Promise<any> {
     if (typeof prop.getValidator !== 'function' || prop.getValidator(param)) {
       const attachKey = Environment.isSourcePlugin
         ? 'AttachVideoItem1'
@@ -177,7 +177,7 @@ class Item {
     throw new Error(`Params "${param}" validation failed`);
   }
 
-  setConfiguration(config: object, info: ItemInfo) {
+  setConfiguration(config: Record<string, unknown>, info: IItemInfo): void {
     if (!Environment.isSourcePlugin) {
       throw new Error('You can only set configuration in source plugins');
     }
@@ -193,7 +193,9 @@ class Item {
     );
   }
 
-  async getConfiguration(info: ItemInfo): Promise<object | string> {
+  async getConfiguration(
+    info: IItemInfo
+  ): Promise<Record<string, unknown> | string> {
     if (Environment.isExtension) {
       throw new Error('You cannot set configuration in extension plugins');
     }
