@@ -64,7 +64,7 @@ type IHotkey = {
   HotKey: IHotkeyDetails;
 };
 
-export interface IChannel {
+export interface IChannelDetails {
   configuration: IConfiguration;
   extra: IExtra;
   hotkey: IHotkey;
@@ -82,5 +82,25 @@ export interface IChannel {
 }
 
 export interface IBroadcastChannelDetails {
-  channel: IChannel;
+  channel: IChannelDetails;
+}
+
+export interface IRtmpStat {
+  name: string;
+  gopdrop: string;
+}
+
+export interface IChannel {
+  name: string;
+  stat: IStat;
+  rtmpstat: IRtmpStat;
+  channel: IChannelDetails;
+}
+
+export interface IStat {
+  channel: IChannel[];
+}
+
+export interface IGeneratedInterface {
+  stat: IStat;
 }

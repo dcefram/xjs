@@ -7,6 +7,7 @@ import {
   IBroadcastChannelList,
   IBroadcastChannelDetails,
   IChannelName,
+  IGeneratedInterface,
 } from './types';
 
 class Output {
@@ -22,7 +23,7 @@ class Output {
     this.internal = internal;
   }
 
-  async listServices(): Promise<string[]> {
+  async getServices(): Promise<string[]> {
     const channelListXml: string = await this.internal.exec(
       'CallHostFunc',
       'getBroadcastChannelList'
@@ -38,6 +39,20 @@ class Output {
     const channels: IChannelName[] = channelListParsed.channels.channel;
 
     return channels.map((channel) => decodeURIComponent(channel.name));
+  }
+
+  async getActiveServices(): Promise<string[]> {
+    const recStatXml: string = await this.internal.exec('recstat');
+    const recStatParsed: IGeneratedInterface = parser.parse(recStatXml, {
+      attributeNamePrefix: '',
+      ignoreAttributes: false,
+    });
+
+    const {
+      stat: { channel: channels },
+    } = recStatParsed;
+
+    return channels.map((channel) => channel.name);
   }
 
   async startBroadcast(channel: string): Promise<boolean> {
