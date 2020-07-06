@@ -1,7 +1,7 @@
 {
   "private": true,
   "name": "@dcefram/xjs",
-  "version": "0.2.3",
+  "version": "0.2.5",
   "description": "XSplit JS Framework",
   "scripts": {
     "dev": "nodemon --ext ts,js,json --watch src --exec npm run build:link",

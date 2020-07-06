@@ -104,3 +104,10 @@ export interface IStat {
 export interface IGeneratedInterface {
   stat: IStat;
 }
+
+export interface IBandwidthUsage {
+  ChannelName: string;
+  AvgBitrate: number;
+  Dropped: number;
+  NotDropped: number;
+}
