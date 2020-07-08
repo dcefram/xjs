@@ -4,10 +4,11 @@
   "version": "0.1.18",
   "description": "XSplit JS Framework",
   "scripts": {
+    "dev": "nodemon --ext ts,js,json --watch src --exec npm run build:link",
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "rimraf ./dist && tsc -p . --declaration && node tools/version.js",
     "build:umd": "rimraf ./dist && rollup -c && node tools/version.js xjs.umd.js",
-    "build:link": "npm run build && node tools/prepublish.js &&  cd dist && npm link",
+    "build:link": "npm run build && node tools/prepublish.js && cd dist && npm link",
     "pub": "npm run build && node tools/prepublish.js && cd dist && npm publish --access public",
     "docs": "cd docs && bundle exec middleman build --clean && now"
   },
@@ -27,6 +28,7 @@
   },
   "homepage": "https://github.com/dcefram/xjs#readme",
   "devDependencies": {
+    "nodemon": "^2.0.2",
     "prettier": "^1.18.2",
     "rimraf": "^2.6.3",
     "rollup": "^1.21.4",

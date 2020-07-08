@@ -1,4 +1,36 @@
 const ItemProps = {
+  keepAspectRatio: {
+    key: 'prop:keep_ar',
+    setValidator: (value: any) => {
+      if (typeof value !== 'boolean') {
+        throw new Error(`${value} is not a boolean`);
+      }
+
+      return true;
+    },
+    setTransformer: (value: any) => (value ? '1' : '0'),
+    getTransformer: (value: any) => value === '1',
+    getValidator: () => true,
+  },
+
+  transparency: {
+    key: 'prop:alpha',
+    setValidator: (value: any) => {
+      if (typeof value !== 'number') {
+        throw new Error(`${value} is not a number`);
+      }
+
+      if (value < 0 || value > 255) {
+        throw new Error('Transparency may only be in the range 0-255.');
+      }
+
+      return true;
+    },
+    setTransformer: (value: any) => String(value),
+    getTransformer: (value: any) => parseInt(value),
+    getValidator: () => true,
+  },
+
   browser60fps: {
     key: 'prop:Browser60fps',
     setValidator: (value: any) => {
@@ -7,7 +39,7 @@ const ItemProps = {
       }
       return true;
     },
-    setTransformer: (value: any) => value ? '1' : '0',
+    setTransformer: (value: any) => (value ? '1' : '0'),
     getTransformer: (value: any) => value === '1',
     getValidator: () => true,
   },
@@ -24,6 +56,46 @@ const ItemProps = {
     setTransformer: (name: any) => name,
     getValidator: () => true,
     getTransformer: (name: any) => name,
+  },
+
+  browserCustomSize: {
+    key: 'prop:BrowserSize',
+    setValidator: (dimensions: any) => {
+      if (typeof dimensions !== 'object') {
+        throw new Error(`${dimensions} is not an object`);
+      }
+      const requiredKeys = ['width', 'height'];
+
+      for (let idx = 0; idx < requiredKeys.length; idx += 1) {
+        if (!dimensions.hasOwnProperty(requiredKeys[idx])) {
+          throw new Error(`${requiredKeys[idx]} is required!`);
+        }
+        if (isNaN(+dimensions[requiredKeys[idx]])) {
+          throw new Error(`${dimensions[requiredKeys[idx]]} is not a number!`);
+        }
+      }
+      return true;
+    },
+    setTransformer: (dimensions: any) => {
+      const parsed = Object.keys(dimensions).reduce((stack: any, key: string) => {        
+        return {
+          ...stack,
+          [key]: dimensions[key],
+        };
+      }, {});
+      return `${parsed.width},${parsed.height}`;
+    },
+    getValidator: () => true,
+    getTransformer: (value: any) => (value: any) => {
+      const posArray = String(value).split(',');
+      const order = ['width', 'height'];
+      return posArray.reduce((stack: any, pos: string, index: number) => {
+        return {
+          ...stack,
+          [order[index]]: Number(pos),
+        };
+      }, {});
+    },
   },
 
   position: {
@@ -56,7 +128,7 @@ const ItemProps = {
       return `${parsed.left},${parsed.top},${parsed.right},${parsed.bottom}`;
     },
     getValidator: () => true,
-    gtTransformer: (value: any) => {
+    getTransformer: (value: any) => {
       const posArray = String(value).split(',');
       const order = ['left', 'top', 'right', 'bottom'];
 

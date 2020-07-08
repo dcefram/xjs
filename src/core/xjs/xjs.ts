@@ -2,7 +2,6 @@ import { XjsTypes, XjsEnvironments, LogVerbosity, Config } from './types';
 import Internal from '../../internal';
 import App from '../app';
 import View from '../view';
-import Enviornment from '../../helpers/environment';
 import Environment from '../../helpers/environment';
 import Item from '../item';
 
