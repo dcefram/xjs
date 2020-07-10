@@ -1,7 +1,11 @@
-export interface PropertyType {
+export interface IKeyValuePair {
+  [key: string]: unknown;
+}
+
+export interface IPropertyType {
   key: string;
-  setValidator?: (param: any) => boolean;
-  setTransformer?: (param: any) => any;
-  getValidator?: (param: any) => boolean;
-  getTransformer?: (param: any) => any;
+  setValidator?: (param: IKeyValuePair) => boolean;
+  setTransformer?: (param: IKeyValuePair) => unknown;
+  getValidator?: (param: IKeyValuePair) => boolean;
+  getTransformer?: (param: IKeyValuePair) => unknown;
 }

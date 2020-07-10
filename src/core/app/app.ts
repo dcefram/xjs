@@ -1,7 +1,7 @@
 import Internal from 'internal';
 import Xjs from 'core/xjs';
 import sprintf from 'helpers/sprintf';
-import { PropertyType } from './types';
+import { IPropertyType, IKeyValuePair } from './types';
 
 class App {
   private internal: Internal;
@@ -10,7 +10,7 @@ class App {
     this.internal = config.internal;
   }
 
-  setProperty(prop: PropertyType, param: any): Promise<any> {
+  setProperty(prop: IPropertyType, param: IKeyValuePair): Promise<string> {
     if (typeof prop.setValidator !== 'function' || prop.setValidator(param)) {
       const params = { ...param };
       const key = sprintf(prop.key, params, true);
@@ -25,7 +25,10 @@ class App {
     throw new Error(`Params "${param}" validation failed`);
   }
 
-  async getProperty(prop: PropertyType, param?: any): Promise<any> {
+  async getProperty(
+    prop: IPropertyType,
+    param?: IKeyValuePair
+  ): Promise<unknown> {
     if (typeof prop.getValidator !== 'function' || prop.getValidator(param)) {
       const key = sprintf(prop.key, param || {});
       const ret = await this.internal.exec('AppGetPropertyAsync', key);

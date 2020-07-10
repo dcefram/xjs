@@ -1,7 +1,11 @@
 /**
  * String pattern replace thingy, something like the built-in ${}
  */
-export default function(str, param, shouldPopParam = false) {
+export default function (
+  str: string,
+  param: unknown,
+  shouldPopParam = false
+): string {
   const regex = new RegExp('\\${(\\w+)}', 'g');
 
   let match = regex.exec(str);

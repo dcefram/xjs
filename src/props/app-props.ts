@@ -1,4 +1,5 @@
 import Environment from 'helpers/Environment';
+import { ReadOnlyError, InvalidParamError } from 'internal/errors';
 
 const AppProps = {
   scenes: {
@@ -279,6 +280,36 @@ const AppProps = {
         throw new Error(
           'Parameter should be an object with a `scene` property'
         );
+      }
+
+      return true;
+    },
+  },
+
+  sceneThumbnail: {
+    key: 'sceneshot:${scene}:${width},${height}',
+    setValidator: (): void => {
+      throw new ReadOnlyError();
+    },
+    getValidator: (param: {
+      scene: string;
+      width: number;
+      height: number;
+    }): boolean => {
+      if (typeof param !== 'object') {
+        throw new InvalidParamError(
+          `Expected object type, but received ${typeof param} type`
+        );
+      }
+
+      const required = ['scene', 'width', 'height'];
+      const paramKeys = Object.keys(param);
+      const missingKeys = required.filter(
+        (key) => paramKeys.indexOf(key) === -1
+      );
+
+      if (missingKeys.length > 0) {
+        throw new InvalidParamError(`Missing keys: ${missingKeys.join(', ')}`);
       }
 
       return true;
