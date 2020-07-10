@@ -1,22 +1,36 @@
+import { InvalidParamError, ReadOnlyError } from 'internal/errors';
+import hasRequiredKeys from 'helpers/has-required-keys';
+
+type KeyValuePair = {
+  [key: string]: unknown;
+};
+
+type Position = {
+  left: number;
+  top: number;
+  right: number;
+  bottom: number;
+};
+
 const ItemProps = {
   keepAspectRatio: {
     key: 'prop:keep_ar',
-    setValidator: (value: any) => {
+    setValidator: (value: boolean): boolean => {
       if (typeof value !== 'boolean') {
-        throw new Error(`${value} is not a boolean`);
+        throw new InvalidParamError(`${value} should be a boolean`);
       }
 
       return true;
     },
-    setTransformer: (value: any) => (value ? '1' : '0'),
-    getTransformer: (value: any) => value === '1',
+    setTransformer: (value: boolean): string => (value ? '1' : '0'),
+    getTransformer: (value: string): boolean => value === '1',
   },
 
   transparency: {
     key: 'prop:alpha',
-    setValidator: (value: any) => {
+    setValidator: (value: number): boolean => {
       if (typeof value !== 'number') {
-        throw new Error(`${value} is not a number`);
+        throw new InvalidParamError(`${value} should be a number`);
       }
 
       if (value < 0 || value > 255) {
@@ -25,27 +39,28 @@ const ItemProps = {
 
       return true;
     },
-    setTransformer: (value: any) => String(value),
-    getTransformer: (value: any) => parseInt(value),
+    setTransformer: (value: number): string => String(value),
+    getTransformer: (value: string): number => parseInt(value),
   },
 
   browser60fps: {
     key: 'prop:Browser60fps',
-    setValidator: (value: any) => {
+    setValidator: (value: boolean): boolean => {
       if (typeof value !== 'boolean') {
-        throw new Error(`${value} is not a boolean`);
+        throw new InvalidParamError(`${value} should be a boolean`);
       }
+
       return true;
     },
-    setTransformer: (value: any) => (value ? '1' : '0'),
-    getTransformer: (value: any) => value === '1',
+    setTransformer: (value: boolean): string => (value ? '1' : '0'),
+    getTransformer: (value: string): boolean => value === '1',
   },
 
   customName: {
     key: 'prop:cname',
-    setValidator: (name: any) => {
+    setValidator: (name: string): boolean => {
       if (typeof name !== 'string') {
-        throw new Error(`${name} is not a string`);
+        throw new InvalidParamError(`${name} should be a string`);
       }
 
       return true;
@@ -54,58 +69,60 @@ const ItemProps = {
 
   position: {
     key: 'prop:pos',
-    setValidator: (pos: any) => {
-      if (typeof pos !== 'object') {
-        throw new Error(`${pos} is not an object`);
-      }
+    setValidator: (pos: Position): boolean => {
+      const [isValidParam, missingKeys] = hasRequiredKeys(pos, [
+        'left',
+        'top',
+        'right',
+        'bottom',
+      ]);
 
-      const requiredKeys = ['left', 'top', 'right', 'bottom'];
-
-      for (let idx = 0; idx < requiredKeys.length; idx += 1) {
-        if (!pos.hasOwnProperty(requiredKeys[idx])) {
-          throw new Error(`${requiredKeys[idx]} is required!`);
-        }
+      if (isValidParam) {
+        throw new InvalidParamError(`Missing keys: ${missingKeys.join(', ')}`);
       }
 
       return true;
     },
-    setTransformer: (pos: any) => {
-      const parsed = Object.keys(pos).reduce((stack: any, key: string) => {
-        const decimal = Number(pos[key]) / 100;
+    setTransformer: (pos: Position): string => {
+      const parsed = Object.keys(pos).reduce(
+        (stack: KeyValuePair, key: string) => {
+          const decimal = Number(pos[key]) / 100;
 
-        return {
-          ...stack,
-          [key]: Math.min(Math.max(0, decimal), 1).toFixed(1),
-        };
-      }, {});
+          return {
+            ...stack,
+            [key]: Math.min(Math.max(0, decimal), 1).toFixed(1),
+          };
+        },
+        {}
+      );
 
       return `${parsed.left},${parsed.top},${parsed.right},${parsed.bottom}`;
     },
-    getTransformer: (value: any) => {
+    getTransformer: (value: string): Position => {
       const posArray = String(value).split(',');
       const order = ['left', 'top', 'right', 'bottom'];
 
       // Convert them to percents??
-      return posArray.reduce((stack: any, pos: string, index: number) => {
+      return posArray.reduce((stack: Position, pos: string, index: number) => {
         return {
           ...stack,
           [order[index]]: Number(pos) * 100,
         };
-      }, {});
+      }, {} as Position);
     },
   },
 
   visibility: {
     key: 'prop:visible',
-    setValidator: (isVisible: any) => {
-      if (typeof isVisible !== 'boolean') {
-        throw new Error(`${isVisible} should be a boolean`);
+    setValidator: (isVisible: boolean): boolean => {
+      if (isVisible) {
+        throw new InvalidParamError(`${isVisible} should be a boolean`);
       }
 
       return true;
     },
-    setTransformer: (isVisible: any) => (isVisible ? '1' : '0'),
-    getTransformer: (isVisible: any) => isVisible === '1',
+    setTransformer: (isVisible: boolean): string => (isVisible ? '1' : '0'),
+    getTransformer: (isVisible: string): boolean => isVisible === '1',
   },
 
   item: {
@@ -118,21 +135,21 @@ const ItemProps = {
 
   type: {
     key: 'prop:type',
-    setValidator: (params: any) => {
-      if (typeof params !== 'object') {
-        throw new Error(`Expected type "object" but received type ${typeof params}`);
-      }
+    setValidator: (params: { type: string; item: string }): boolean => {
+      const [isValidParam, missingKeys] = hasRequiredKeys(params, [
+        'type',
+        'item',
+      ]);
 
-      const { type, item } = params;
-
-      if (typeof type === 'undefined' || typeof item === 'undefined') {
-        throw new Error('`type` and `item` are required properties.');
+      if (isValidParam) {
+        throw new InvalidParamError(`Missing keys: ${missingKeys.join(', ')}`);
       }
 
       return true;
     },
-    setTransformer: (params: any) => `${params.type},${params.item}`,
-    getTransformer: (type: any) => {
+    setTransformer: (params: { type: string; item: string }): string =>
+      `${params.type},${params.item}`,
+    getTransformer: (type: string): string => {
       // @TODO: Should we just return strings???
       const types = {
         0x0: 'undefined',
@@ -157,19 +174,19 @@ const ItemProps = {
 
   itemList: {
     key: 'itemlist',
-    setValidator: (_: any) => {
-      throw new Error('Setting itemlist is not supported');
+    setValidator: (): void => {
+      throw new ReadOnlyError('Setting itemlist is not supported');
     },
-    setTransformer: () => {
-      throw new Error('Setting itemlist is not supported');
+    setTransformer: (): void => {
+      throw new ReadOnlyError('Setting itemlist is not supported');
     },
     getTransformer: (value: string): string[] => String(value).split(','),
   },
 
   fileInfo: {
     key: 'FileInfo',
-    setValidator: () => {
-      throw new Error('Setting FileInfo is not supported');
+    setValidator: (): void => {
+      throw new ReadOnlyError('Setting FileInfo is not supported');
     },
   },
 };
