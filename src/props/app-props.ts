@@ -1,5 +1,14 @@
 import Environment from 'helpers/Environment';
-import { ReadOnlyError, InvalidParamError } from 'internal/errors';
+import hasRequiredKeys from 'helpers/has-required-keys';
+import {
+  ReadOnlyError,
+  InvalidParamError,
+  EnvironmentError,
+  WriteOnlyError,
+} from 'internal/errors';
+
+type ViewIndex = number | string;
+type SceneIdentifier = number | string;
 
 const AppProps = {
   scenes: {
@@ -15,59 +24,69 @@ const AppProps = {
 
   sceneIndex: {
     key: 'scene:${view}',
-    setValidator: (param: any): boolean => {
-      if (
-        typeof param !== 'object' ||
-        typeof param.value === 'undefined' ||
-        typeof param.view === 'undefined'
-      ) {
-        throw new Error(
-          'Parameter should be an object with properties `value` and `view`'
-        );
+    setValidator: (param: {
+      view: ViewIndex;
+      value: SceneIdentifier;
+    }): boolean => {
+      const [isValidParam, missingKeys] = hasRequiredKeys(param, [
+        'value',
+        'view',
+      ]);
+
+      if (isValidParam) {
+        throw new InvalidParamError(`Missing keys: ${missingKeys.join(', ')}`);
       }
 
       return true;
     },
-    setTransformer: (value: any) => value.value,
-    getValidator: (param) => {
-      if (typeof param !== 'object' || typeof param.view === 'undefined') {
-        throw new Error(
-          'Parameter should be an object with a `value` property'
-        );
+    setTransformer: (value: { value: SceneIdentifier }): string =>
+      String(value.value),
+    getValidator: (param: { view: ViewIndex }): boolean => {
+      const [isValidParam, missingKeys] = hasRequiredKeys(param, ['view']);
+
+      if (isValidParam) {
+        throw new InvalidParamError(`Missing keys: ${missingKeys.join(', ')}`);
       }
 
       return true;
     },
+    getTransformer: (value: string): number => Number(value),
   },
 
   scenePreset: {
     key: 'scenepreset:${scene}',
-    setValidator: (param: any) => {
-      if (
-        typeof param !== 'object' ||
-        typeof param.value === 'undefined' ||
-        typeof param.scene === 'undefined'
-      ) {
-        throw new Error(
-          "Parameter should be an object with properties `value` and `scene`. `scene` should be the scene's UID"
-        );
+    setValidator: (param: {
+      value: string;
+      scene: SceneIdentifier;
+    }): boolean => {
+      const [isValidParam, missingKeys] = hasRequiredKeys(param, [
+        'value',
+        'scene',
+      ]);
+
+      if (isValidParam) {
+        throw new InvalidParamError(`Missing keys: ${missingKeys.join(', ')}`);
       }
 
       if (Environment.isSourcePlugin) {
-        throw new Error('Not supported on source plugins');
+        throw new EnvironmentError();
       }
 
       return true;
     },
-    getValidator: (param: any) => {
-      if (typeof param !== 'object' || typeof param.scene === 'undefined') {
-        throw new Error(
-          "Parameter should be an object with property `scene`. `scene` should be the scene's UID"
-        );
+    setTransformer: (value: { value: string }): string => value.value,
+    getValidator: (param: { scene: SceneIdentifier }): boolean => {
+      const [isValidParam, missingKeys] = hasRequiredKeys(param, [
+        'value',
+        'scene',
+      ]);
+
+      if (isValidParam) {
+        throw new InvalidParamError(`Missing keys: ${missingKeys.join(', ')}`);
       }
 
       if (Environment.isSourcePlugin) {
-        throw new Error('Not supported on source plugins');
+        throw new EnvironmentError();
       }
 
       return true;
@@ -76,38 +95,39 @@ const AppProps = {
 
   scenePresetList: {
     key: 'scenepresetlist:${scene}',
-    setValidator: () => false,
-    setTransformer: () => null,
-    getValidator: (param: any) => {
-      if (typeof param !== 'object' || typeof param.scene === 'undefined') {
-        throw new Error(
-          "Parameter should be an object with property `scene`. `scene` should be the scene's UID"
-        );
+    setValidator: (): void => {
+      throw new ReadOnlyError();
+    },
+    getValidator: (param: { scene: SceneIdentifier }): boolean => {
+      const [isValidParam, missingKeys] = hasRequiredKeys(param, ['scene']);
+
+      if (isValidParam) {
+        throw new InvalidParamError(`Missing keys: ${missingKeys.join(', ')}`);
       }
 
       if (Environment.isSourcePlugin) {
-        throw new Error('Not supported on source plugins');
+        throw new EnvironmentError();
       }
 
       return true;
     },
-    getTransformer: (value: string) => String(value).split(','),
+    getTransformer: (value: string): string[] => String(value).split(','),
   },
 
   sceneNewPreset: {
     key: 'scenenewpreset:${scene}',
-    setValidator: () => {
-      throw new Error('This method is Read-only');
+    setValidator: (): void => {
+      throw new ReadOnlyError();
     },
-    getValidator: (param: any) => {
-      if (typeof param !== 'object' || typeof param.scene === 'undefined') {
-        throw new Error(
-          "Parameter should be an object with property `scene`. `scene` should be the scene's UID"
-        );
+    getValidator: (param: { scene: SceneIdentifier }): boolean => {
+      const [isValidParam, missingKeys] = hasRequiredKeys(param, ['scene']);
+
+      if (isValidParam) {
+        throw new InvalidParamError(`Missing keys: ${missingKeys.join(', ')}`);
       }
 
       if (Environment.isSourcePlugin) {
-        throw new Error('Not supported on source plugins');
+        throw new EnvironmentError();
       }
 
       return true;
@@ -116,103 +136,114 @@ const AppProps = {
 
   sceneRemovePreset: {
     key: 'sceneremovepreset:${scene}',
-    setValidator: (param: any) => {
-      if (
-        typeof param !== 'object' ||
-        typeof param.value === 'undefined' ||
-        typeof param.scene === 'undefined'
-      ) {
-        throw new Error(
-          "Parameter should be an object with properties `value` and `scene`. `scene` should be the scene's UID"
-        );
+    setValidator: (param: {
+      value: string;
+      scene: SceneIdentifier;
+    }): boolean => {
+      const [isValidParam, missingKeys] = hasRequiredKeys(param, [
+        'scene',
+        'value',
+      ]);
+
+      if (isValidParam) {
+        throw new InvalidParamError(`Missing keys: ${missingKeys.join(', ')}`);
       }
 
       if (Environment.isSourcePlugin) {
-        throw new Error('Not supported on source plugins');
+        throw new EnvironmentError();
       }
 
       return true;
     },
-    getValidator: () => {
-      throw new Error('You can only use this method in `setProperty`');
+    setTransformer: (value: { value: string }): string => value.value,
+    getValidator: (): void => {
+      throw new WriteOnlyError();
     },
   },
 
   scenePresetTransition: {
     key: 'scenepresettransitionfunc:${scene}',
-    setValidator: (param: any) => {
-      if (
-        typeof param !== 'object' ||
-        typeof param.value === 'undefined' ||
-        typeof param.scene === 'undefined'
-      ) {
-        throw new Error(
-          "Parameter should be an object with properties `value` and `scene`. `scene` should be the scene's UID"
-        );
+    setValidator: (param: {
+      value: string;
+      scene: SceneIdentifier;
+    }): boolean => {
+      const [isValidParam, missingKeys] = hasRequiredKeys(param, [
+        'scene',
+        'value',
+      ]);
+
+      if (isValidParam) {
+        throw new InvalidParamError(`Missing keys: ${missingKeys.join(', ')}`);
       }
 
       if (Environment.isSourcePlugin) {
-        throw new Error('Not supported on source plugins');
+        throw new EnvironmentError();
       }
 
       return true;
     },
-    setTransformer: (value: string) => (value === 'none' ? '' : value),
-    getValidator: (param: any) => {
-      if (typeof param !== 'object' || typeof param.scene === 'undefined') {
-        throw new Error(
-          "Parameter should be an object with property `scene`. `scene` should be the scene's UID"
-        );
+    setTransformer: (value: { value: string }): string =>
+      value.value === 'none' ? '' : value.value,
+    getValidator: (param: { scene: SceneIdentifier }): boolean => {
+      const [isValidParam, missingKeys] = hasRequiredKeys(param, ['scene']);
+
+      if (isValidParam) {
+        throw new InvalidParamError(`Missing keys: ${missingKeys.join(', ')}`);
       }
 
       if (Environment.isSourcePlugin) {
-        throw new Error('Not supported on source plugins');
+        throw new EnvironmentError();
       }
 
       return true;
     },
-    getTransformer: (value: string) => (value === '' ? 'none' : value),
+    getTransformer: (value: string): string => (value === '' ? 'none' : value),
   },
 
   scenePresetTransitionTime: {
     key: 'scenepresettransitiontime:${scene}',
-    setValidator: (param: any) => {
-      if (
-        typeof param !== 'object' ||
-        typeof param.value !== 'number' ||
-        typeof param.scene === 'undefined'
-      ) {
-        throw new Error(
-          "Parameter should be an object with properties `value` of type Number and `scene` of type String. `scene` should be the scene's UID"
-        );
+    setValidator: (param: {
+      value: number;
+      scene: SceneIdentifier;
+    }): boolean => {
+      const [isValidParam, missingKeys] = hasRequiredKeys(param, [
+        'scene',
+        'value',
+      ]);
+
+      if (isValidParam) {
+        throw new InvalidParamError(`Missing keys: ${missingKeys.join(', ')}`);
       }
 
       if (Environment.isSourcePlugin) {
-        throw new Error('Not supported on source plugins');
+        throw new EnvironmentError();
       }
 
       return true;
     },
-    setTransformer: (value: number) => String(value),
-    getValidator: (param: any) => {
-      if (typeof param !== 'object' || typeof param.scene === 'undefined') {
-        throw new Error(
-          "Parameter should be an object with property `scene`. `scene` should be the scene's UID"
-        );
+    setTransformer: (value: { value: number }): string => String(value.value),
+    getValidator: (param: { scene: SceneIdentifier }): boolean => {
+      const [isValidParam, missingKeys] = hasRequiredKeys(param, [
+        'scene',
+        'value',
+      ]);
+
+      if (isValidParam) {
+        throw new InvalidParamError(`Missing keys: ${missingKeys.join(', ')}`);
       }
 
       if (Environment.isSourcePlugin) {
-        throw new Error('Not supported on source plugins');
+        throw new EnvironmentError();
       }
 
       return true;
     },
-    getTransformer: (value: string) => Number(value),
+    getTransformer: (value: string): number => Number(value),
   },
 
   microphoneDev2: {
     key: 'microphonedev2',
-    setValidator: (xml: string) => {
+    setValidator: (xml: string): boolean => {
       if (typeof xml !== 'string') {
         throw new Error('Parameter should be a string');
       }
@@ -223,7 +254,7 @@ const AppProps = {
 
   wasapiEnum: {
     key: 'wasapienum',
-    setValidator: (xml: string) => {
+    setValidator: (xml: string): boolean => {
       if (typeof xml !== 'string') {
         throw new Error('Parameter should be a string');
       }
@@ -234,25 +265,27 @@ const AppProps = {
 
   sceneItems: {
     key: 'sceneconfig:${scene}',
-    setValidator: (param: any) => {
-      if (
-        typeof param !== 'object' ||
-        typeof param.value === 'undefined' ||
-        typeof param.scene === 'undefined'
-      ) {
-        throw new Error(
-          'Parameter should be an object with properties `value` and `scene`'
-        );
+    setValidator: (param: {
+      value: string;
+      scene: SceneIdentifier;
+    }): boolean => {
+      const [isValidParam, missingKeys] = hasRequiredKeys(param, [
+        'scene',
+        'value',
+      ]);
+
+      if (isValidParam) {
+        throw new InvalidParamError(`Missing keys: ${missingKeys.join(', ')}`);
       }
 
       return true;
     },
-    setTransformer: (value: any) => value.value,
-    getValidator: (param: any) => {
-      if (typeof param !== 'object' || typeof param.scene === 'undefined') {
-        throw new Error(
-          'Parameter should be an object with a `scene` property'
-        );
+    setTransformer: (value: { value: string }): string => value.value,
+    getValidator: (param: { scene: SceneIdentifier }): boolean => {
+      const [isValidParam, missingKeys] = hasRequiredKeys(param, ['scene']);
+
+      if (isValidParam) {
+        throw new InvalidParamError(`Missing keys: ${missingKeys.join(', ')}`);
       }
 
       return true;
@@ -261,25 +294,27 @@ const AppProps = {
 
   sceneName: {
     key: 'scenename:${scene}',
-    setValidator: (param: any) => {
-      if (
-        typeof param !== 'object' ||
-        typeof param.value === 'undefined' ||
-        typeof param.scene === 'undefined'
-      ) {
-        throw new Error(
-          'Parameter should be an object with properties `value` and `scene`'
-        );
+    setValidator: (param: {
+      value: string;
+      scene: SceneIdentifier;
+    }): boolean => {
+      const [isValidParam, missingKeys] = hasRequiredKeys(param, [
+        'value',
+        'scene',
+      ]);
+
+      if (isValidParam) {
+        throw new InvalidParamError(`Missing keys: ${missingKeys.join(', ')}`);
       }
 
       return true;
     },
-    setTransformer: (value: any) => value.value,
-    getValidator: (param: any) => {
-      if (typeof param !== 'object' || typeof param.scene === 'undefined') {
-        throw new Error(
-          'Parameter should be an object with a `scene` property'
-        );
+    setTransformer: (value: { value: string }): string => value.value,
+    getValidator: (param: { scene: SceneIdentifier }): boolean => {
+      const [isValidParam, missingKeys] = hasRequiredKeys(param, ['scene']);
+
+      if (isValidParam) {
+        throw new InvalidParamError(`Missing keys: ${missingKeys.join(', ')}`);
       }
 
       return true;
@@ -292,23 +327,17 @@ const AppProps = {
       throw new ReadOnlyError();
     },
     getValidator: (param: {
-      scene: string;
+      scene: SceneIdentifier;
       width: number;
       height: number;
     }): boolean => {
-      if (typeof param !== 'object') {
-        throw new InvalidParamError(
-          `Expected object type, but received ${typeof param} type`
-        );
-      }
+      const [isValidParam, missingKeys] = hasRequiredKeys(param, [
+        'scene',
+        'width',
+        'height',
+      ]);
 
-      const required = ['scene', 'width', 'height'];
-      const paramKeys = Object.keys(param);
-      const missingKeys = required.filter(
-        (key) => paramKeys.indexOf(key) === -1
-      );
-
-      if (missingKeys.length > 0) {
+      if (isValidParam) {
         throw new InvalidParamError(`Missing keys: ${missingKeys.join(', ')}`);
       }
 
