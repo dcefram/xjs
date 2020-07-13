@@ -1,35 +1,19 @@
+import { v4 as uuid } from 'uuid';
 import Environment from 'helpers/environment';
 import Remote from 'core/remote';
 import Internal from 'internal';
 import { XjsTypes, Config } from './types';
 
-/**
- * An xjs instance holds the necessary details to
- * know which context to run the underlying core
- * methods.
- *
- * By default, creating an Xjs instance would assume
- * that it would execute the local XSplit broadcaster's
- * core methods unless the `type` is specified when
- * creating the instance.
- *
- * Example:
- * ```
- * import Xjs, { XjsTypes } from '@dcefram/xjs';
- *
- * const localXjs = new Xjs();
- * const remoteXjs = new Xjs({ type: XjsTypes.Remote, sendMessage });
- * const proxyXjs = new Xjs({ type: XjsTypes.Proxy, sendMessage });
- * ```
- *
- * Multiple Xjs instances are allowed to run side-by-side
- */
 export default class Xjs {
   static version = '%XJS_VERSION%';
 
   private type: XjsTypes = XjsTypes.Local;
 
   private version: string;
+
+  private event: Event;
+
+  clientId = uuid();
 
   internal: Internal;
 
@@ -45,8 +29,10 @@ export default class Xjs {
     // Initialize the internal methods and the view
     this.internal = new Internal(this.type);
 
+    // @ts-ignore
     if ([XjsTypes.Remote, XjsTypes.Proxy].includes(this.type)) {
       this.remote = new Remote({
+        clientId: this.clientId,
         type: this.type,
         exec: this.internal.exec.bind(this.internal),
       });
@@ -88,5 +74,17 @@ export default class Xjs {
 
     // @TODO: Return an instance of the config window??
     return true;
+  }
+
+  isLocal() {
+    return this.type === XjsTypes.Local;
+  }
+
+  isProxy() {
+    return this.type === XjsTypes.Proxy;
+  }
+
+  isRemote() {
+    return this.type === XjsTypes.Remote;
   }
 }
