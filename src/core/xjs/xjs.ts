@@ -1,5 +1,4 @@
 import { v4 as uuid } from 'uuid';
-import App from 'core/app';
 import Environment from 'helpers/environment';
 import Remote from 'core/remote';
 import Internal from 'internal';
@@ -29,8 +28,6 @@ export default class Xjs {
 
     // Initialize the internal methods and the view
     this.internal = new Internal(this.type);
-
-    this.App = new App({ internal: this.internal });
 
     // @ts-ignore
     if ([XjsTypes.Remote, XjsTypes.Proxy].includes(this.type)) {
