@@ -12,6 +12,9 @@ type Position = {
   bottom: number;
 };
 
+/**
+ * An object that contains commonly used item properties
+ */
 const ItemProps = {
   keepAspectRatio: {
     key: 'prop:keep_ar',
