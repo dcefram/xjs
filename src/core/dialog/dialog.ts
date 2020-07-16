@@ -44,7 +44,7 @@ const FLAGS = {
 export default class Dialog {
   private internal: Internal;
   private config: Config;
-  private callback: Function;
+  private callback: (result: string) => void;
 
   constructor({ internal }: Xjs, config?: Config) {
     if (Environment.isSourcePlugin) {
@@ -60,18 +60,28 @@ export default class Dialog {
     this.initializeCallback();
   }
 
-  setConfig(config: Config) {
+  /**
+   * Set the configuration of the dialog
+   *
+   * @param config Dialog configuration object
+   */
+  setConfig(config: Config): void {
     this.config = config;
   }
 
-  show() {
-    return new Promise(async (resolve) => {
+  /**
+   * Show the dialog
+   *
+   * @returns Promise<string> The value returned by the dialog. Useful for auth dialogs.
+   */
+  show(): Promise<string> {
+    return new Promise((resolve) => {
       const { config } = this;
 
       this.callback = (result: string) => resolve(result);
 
       if (config.autoClose) {
-        await this.internal.exec(
+        this.internal.exec(
           'NewAutoDialog',
           config.url,
           '',
@@ -81,7 +91,7 @@ export default class Dialog {
         const flags = this.calculateFlags();
         const params = this.generateWindowParams(flags);
 
-        await this.internal.exec(
+        this.internal.exec(
           'NewDialog2',
           config.url,
           '', // @TODO: Figure out what is this parameter about
@@ -96,7 +106,7 @@ export default class Dialog {
     });
   }
 
-  close() {
+  close(): Promise<unknown> {
     return this.internal.exec('CloseDialog');
   }
 
@@ -124,7 +134,7 @@ export default class Dialog {
     return flag;
   }
 
-  private generateWindowParams(flags) {
+  private generateWindowParams(flags: number) {
     const { width, height } = this.config;
     let params = '';
 
@@ -141,7 +151,7 @@ export default class Dialog {
 
   private initializeCallback() {
     registerCallbacks({
-      OnDialogResult: (result: any) => {
+      OnDialogResult: (result: string) => {
         if (
           (Environment.isSourceProps || Environment.isExtension) &&
           typeof this.callback === 'function'
@@ -149,10 +159,18 @@ export default class Dialog {
           this.callback(result);
         }
       },
-      OnDialogBeforeNavigation: () => {},
-      OnDialogLoadStart: () => {},
-      OnDialogTitleChange: () => {},
-      OnDialogLoadEnd: () => {},
+      OnDialogBeforeNavigation: () => {
+        // Do nothing
+      },
+      OnDialogLoadStart: () => {
+        // Do nothing
+      },
+      OnDialogTitleChange: () => {
+        // Do nothing
+      },
+      OnDialogLoadEnd: () => {
+        // Do nothing
+      },
     });
   }
 }
