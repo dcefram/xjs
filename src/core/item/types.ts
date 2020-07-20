@@ -1,9 +1,15 @@
-export interface PropertyType {
+export interface IPropertyParam {
+  srcid: string;
+  id: string;
+  value?: string | boolean | number;
+}
+
+export interface IPropertyType {
   key: string;
-  setValidator: (param: any) => boolean;
-  setTransformer: (param: any) => any;
-  getValidator: (param: any) => boolean;
-  getTransformer: (param: any) => any;
+  setValidator?: (param: IPropertyParam) => boolean;
+  setTransformer?: (param: IPropertyParam) => string;
+  getValidator?: (param: IPropertyParam) => boolean;
+  getTransformer?: (param: IPropertyParam) => unknown;
 }
 
 export interface IItemInfo {

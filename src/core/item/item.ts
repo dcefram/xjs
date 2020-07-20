@@ -5,6 +5,23 @@ import Environment from 'helpers/environment';
 
 import { PropertyType, IItemInfo, IPlacement, IItem } from './types';
 
+/**
+ * The Item class provides methods to get and set properties of an item
+ *
+ * @example
+ *
+ * ```ts
+ * import Xjs from '@xjsframework/xjs';
+ * import Item from '@xjsframework/xjs/core/app';
+ * import ItemProps from '@xjsframework/xjs/props/item-props';
+ *
+ * const xjs = new Xjs();
+ * const item = new Item(xjs);
+ *
+ * const { id, srcId } = await item.getCurrentItem();
+ * item.setProperty(ItemProps.customName, { id, srcId, value: 'SomeName' });
+ * ```
+ */
 class Item {
   private internal;
 
