@@ -2,8 +2,15 @@ import parser from 'fast-xml-parser';
 
 import Xjs from 'core/xjs';
 import Environment from 'helpers/environment';
+import { InvalidParamError } from 'internal/errors';
 
-import { PropertyType, IItemInfo, IPlacement, IItem } from './types';
+import {
+  IPropertyParam,
+  IPropertyType,
+  IItemInfo,
+  IPlacement,
+  IItem,
+} from './types';
 
 /**
  * The Item class provides methods to get and set properties of an item
@@ -54,20 +61,42 @@ class Item {
     return srcid === _srcid;
   }
 
+  private async getLinkedItem(srcid: string): Promise<string> {
+    const itemIds = await this.getItemList(srcid);
+
+    if (itemIds.length > 0) {
+      return itemIds[0];
+    }
+
+    return '';
+  }
+
+  /**
+   * Get the linked item ids of the specified source.
+   *
+   * @param srcid Source ID
+   */
   async getItemList(srcid: string): Promise<string[]> {
     const placements = await this.getPlacements();
 
     // O(n^2)
     return placements.reduce((stack: string[], scene: IPlacement) => {
-      const sceneItems: IItem[] = scene.item || [];
+      const placementItem = scene.item || [];
+      const sceneItems: IItem[] = Array.isArray(placementItem)
+        ? placementItem
+        : [placementItem];
+
       const linkedItems: string[] = sceneItems
-        .filter((item) => item.srcid === srcid)
-        .map((item) => item.id);
+        .filter(item => item.srcid === srcid)
+        .map(item => item.id);
 
       return [...stack, ...linkedItems];
     }, []);
   }
 
+  /**
+   * Get the source ID and the item ID of the current item
+   */
   async getCurrentItem(): Promise<IItemInfo> {
     if (Environment.isExtension) {
       throw new Error('You cannot use `getCurrentItem` in an extension plugin');
@@ -92,28 +121,26 @@ class Item {
     return { srcid, id: items[0] };
   }
 
-  async getLinkedItem(srcid: string): Promise<string> {
-    const placements = await this.getPlacements();
-
-    for (let idx = 0; idx < placements.length; idx++) {
-      let items = placements[idx].item || [];
-
-      if (!(items instanceof Array)) {
-        items = [items];
-      }
-
-      const item = items.find((item) => item.srcid === srcid);
-
-      if (item) {
-        return item.id;
-      }
+  /**
+   * Set item property
+   *
+   * @param prop Item Property object
+   * @param param Params that would be passed to the underlying core function
+   */
+  async setProperty(
+    prop: IPropertyType,
+    param: IPropertyParam
+  ): Promise<string> {
+    if (typeof param.id === 'undefined' || typeof param.srcid === 'undefined') {
+      throw new InvalidParamError(
+        'param should be an object with an `id` and `srcid` property'
+      );
     }
 
-    return '';
-  }
-
-  async setProperty(prop: PropertyType, param: any): Promise<any> {
-    if (typeof prop.setValidator !== 'function' || prop.setValidator(param)) {
+    if (
+      typeof prop.setValidator !== 'function' ||
+      prop.setValidator(param.value)
+    ) {
       const attachKey = Environment.isSourcePlugin
         ? 'AttachVideoItem1'
         : 'SearchVideoItem';
@@ -127,8 +154,8 @@ class Item {
         funcKey,
         prop.key,
         typeof prop.setTransformer !== 'function'
-          ? param
-          : prop.setTransformer(param)
+          ? param.value
+          : prop.setTransformer(param.value)
       );
 
       // deadcoldbrain noted that it is much safer if we do this comparison,
@@ -152,11 +179,30 @@ class Item {
       }
     }
 
-    throw new Error(`Params "${param}" validation failed`);
+    // Shouldn't reach here unless a custom property does not throw an error on its validator
+    throw new InvalidParamError(`Params "${param}" validation failed`);
   }
 
-  async getProperty(prop: PropertyType, param: any): Promise<any> {
-    if (typeof prop.getValidator !== 'function' || prop.getValidator(param)) {
+  /**
+   * Get item property
+   *
+   * @param prop Item Property object
+   * @param param Params that would be used to modify the property key
+   */
+  async getProperty(
+    prop: IPropertyType,
+    param: IPropertyParam
+  ): Promise<unknown> {
+    if (typeof param.id === 'undefined' || typeof param.srcid === 'undefined') {
+      throw new InvalidParamError(
+        'param should be an object with an `id` and `srcid` property'
+      );
+    }
+
+    if (
+      typeof prop.getValidator !== 'function' ||
+      prop.getValidator(param.value)
+    ) {
       const attachKey = Environment.isSourcePlugin
         ? 'AttachVideoItem1'
         : 'SearchVideoItem';
@@ -191,9 +237,16 @@ class Item {
       }
     }
 
-    throw new Error(`Params "${param}" validation failed`);
+    // Shouldn't reach here unless a custom property does not throw an error on its validator
+    throw new InvalidParamError(`Params "${param}" validation failed`);
   }
 
+  /**
+   * Set an item's configuration
+   *
+   * @param config A generic JSON object that would be persisted in the presentation
+   * @param info Item ID and Source ID
+   */
   setConfiguration(config: Record<string, unknown>, info: IItemInfo): void {
     if (!Environment.isSourcePlugin) {
       throw new Error('You can only set configuration in source plugins');
@@ -210,6 +263,11 @@ class Item {
     );
   }
 
+  /**
+   * Get an item's configuration
+   *
+   * @param info Item ID and Source ID
+   */
   async getConfiguration(
     info: IItemInfo
   ): Promise<Record<string, unknown> | string> {
