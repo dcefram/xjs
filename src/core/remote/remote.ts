@@ -7,58 +7,70 @@ import {
   SUBSCRIPTION,
   ClientId,
   ICreateRequest,
+  ExecFunc,
+  IRemoteConfig,
+  IKeyValuePair,
 } from './types';
 import { parse } from 'helpers/json';
+import pick from 'lodash/pick';
 
 const EVENT = 'event';
 const isEvent = (type: string) => type === EVENT;
 
 export default class Remote {
   private type: XjsTypes;
-  private exec: Function;
 
-  private sender: Function;
+  private exec: ExecFunc;
+
+  private sender: (...args: unknown[]) => void;
 
   clientId: string;
 
   public eventCallbacks: IEventCallbacks = {};
 
-  constructor({ clientId, type, exec }) {
+  constructor({ clientId, type, exec }: IRemoteConfig) {
     this.clientId = clientId;
     this.type = type;
     this.exec = exec;
   }
 
-  setSender(sender: Function) {
+  setSender(sender: (...args: unknown[]) => void): void {
     this.sender = sender;
   }
 
   // used only by remote
-  send(message: ICreateRequest): Promise<any> {
+  send(message: ICreateRequest): Promise<unknown> {
     return request.register(message, this.sender);
   }
 
-  receiveMessage(data: string) {
-    const message = parse(data);
+  receiveMessage(data: string): void {
+    const message = parse(data) as IKeyValuePair;
 
     if (this.isRemote()) {
-      if (isEvent(message.type)) {
+      if (isEvent(message.type as string)) {
         const { eventName, result } = message;
 
-        this.remote.emitEvent(eventName, result);
+        this.remote.emitEvent(eventName as string, result);
         return;
       }
 
-      return request.runCallback(message as IRequestResult);
+      return request.runCallback(
+        pick(message, [
+          'asyncId',
+          'result',
+          'from',
+          'clientId',
+        ]) as IRequestResult
+      );
     }
 
     // PROXY HANDLING
-    if (isEvent(message.type)) {
+    if (isEvent(message.type as string)) {
       if (message.action === SUBSCRIPTION.ON) {
         this.proxy.registerEvent(
-          message.clientId,
-          message.eventName,
-          (result: any) => {
+          message.clientId as string,
+          message.eventName as string,
+          (result: unknown) => {
             this.sender({
               from: XjsTypes.Proxy,
               clientId: message.clientId,
@@ -71,15 +83,25 @@ export default class Remote {
         return;
       }
 
-      this.proxy.unregisterEvent(message.clientId, message.eventName);
+      this.proxy.unregisterEvent(
+        message.clientId as string,
+        message.eventName as string
+      );
       return;
     }
 
-    this.processRequest(message);
+    this.processRequest(
+      pick(message, ['clientId', 'asyncId', 'fn', 'args']) as IRequest
+    );
   }
 
-  async processRequest({ clientId, asyncId, fn, args }: IRequest) {
-    const result = await this.exec(fn, ...args);
+  async processRequest({
+    clientId,
+    asyncId,
+    fn,
+    args,
+  }: IRequest): Promise<void> {
+    const result = await this.exec(fn, ...(args as (number | string)[]));
 
     this.sender({
       from: XjsTypes.Proxy,
@@ -92,7 +114,7 @@ export default class Remote {
   // EVENTS
   proxy = {
     clientEvents: {},
-    getClientEvents: (clientId: ClientId) => {
+    getClientEvents: (clientId: ClientId): unknown => {
       if (this.proxy.clientEvents.hasOwnProperty(clientId)) {
         return this.proxy.clientEvents[clientId];
       }
@@ -104,13 +126,13 @@ export default class Remote {
     registerEvent: (
       clientId: ClientId,
       eventName: string,
-      sender: Function
-    ) => {
+      sender: (...args: unknown[]) => void
+    ): void => {
       const clientEvents = this.proxy.getClientEvents(clientId);
 
       clientEvents[eventName] = sender;
     },
-    unregisterEvent(clientId: ClientId, eventName: string) {
+    unregisterEvent(clientId: ClientId, eventName: string): void {
       if (this.proxy.clientEvents.hasOwnProperty(clientId)) {
         const clientEvents = this.proxy.getClientEvents(clientId);
         delete clientEvents[eventName];
@@ -120,8 +142,8 @@ export default class Remote {
         }
       }
     },
-    emitEvent: (eventName: string, result: string) => {
-      Object.values(this.proxy.clientEvents).forEach(events => {
+    emitEvent: (eventName: string, result: string): void => {
+      Object.values(this.proxy.clientEvents).forEach((events) => {
         if (events.hasOwnProperty(eventName)) {
           events[eventName](result);
         }
@@ -131,7 +153,10 @@ export default class Remote {
 
   remote = {
     eventCallbacks: {},
-    registerEvent: (eventName, callback: Function) => {
+    registerEvent: (
+      eventName: string,
+      callback: (...args: unknown[]) => void
+    ): void => {
       this.remote.eventCallbacks[eventName] = callback;
 
       this.sender({
@@ -142,7 +167,7 @@ export default class Remote {
         eventName,
       });
     },
-    unregisterEvent: eventName => {
+    unregisterEvent: (eventName: string): void => {
       if (this.eventCallbacks.hasOwnProperty(eventName)) {
         delete this.eventCallbacks[eventName];
 
@@ -155,7 +180,7 @@ export default class Remote {
         });
       }
     },
-    emitEvent: (eventName: string, result: any) => {
+    emitEvent: (eventName: string, result: unknown): void => {
       if (this.remote.eventCallbacks.hasOwnProperty(eventName)) {
         this.remote.eventCallbacks[eventName](result);
       }

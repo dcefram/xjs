@@ -3,12 +3,7 @@ import isNumber from 'lodash/isNumber';
 import { XjsTypes } from 'core/xjs/types';
 import Remote from 'core/remote';
 import registerCallback from 'helpers/register-callback';
-
-type CallbackType = (...args: unknown[]) => void;
-type ExecArgument = string | number;
-interface IKeyValuePair {
-  [asyncId: string]: CallbackType;
-}
+import { ExecArgument, IKeyValuePair } from './types';
 
 class Internal {
   private _callbacks: IKeyValuePair = {};
@@ -67,7 +62,7 @@ class Internal {
       const ret = window.external[fn](...args);
 
       if (isNumber(ret)) {
-        this._callbacks[ret] = result => {
+        this._callbacks[ret] = (result) => {
           resolve(result as string);
         };
         return ret;

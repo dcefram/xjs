@@ -25,7 +25,7 @@ export interface IConfig {
   environment?: XjsEnvironments;
   logVerbosity?: LogVerbosity;
   version?: string;
-  sendMessage?: (arg: unknown) => void; // @TODO: Maybe it makes sense to define a "sendMessage" arguments structure?
+  sendMessage?: (...args: unknown[]) => void; // @TODO: Maybe it makes sense to define a "sendMessage" arguments structure?
   onMessageReceive?: unknown;
   logger?: unknown;
 }
