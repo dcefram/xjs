@@ -5,6 +5,7 @@
   "description": "XSplit JS Framework",
   "scripts": {
     "dev": "nodemon --ext ts,js,json --watch src --exec npm run build:link",
+    "dev:umd": "nodemon --ext ts,js,json --watch src --exec npm run build:umd",
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "rimraf ./dist && ttsc -p . && node tools/version.js core/xjs/xjs.js",
     "build:umd": "rimraf ./dist && rollup -c && node tools/version.js xjs.umd.js",
