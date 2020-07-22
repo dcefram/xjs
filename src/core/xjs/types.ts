@@ -1,3 +1,7 @@
+export interface IKeyValuePair {
+  [key: string]: unknown;
+}
+
 export enum XjsTypes {
   Local = 'local',
   Remote = 'remote',
@@ -16,12 +20,12 @@ export enum LogVerbosity {
   Debug = 'debug',
 }
 
-export type Config = {
+export interface IConfig {
   type?: XjsTypes;
   environment?: XjsEnvironments;
   logVerbosity?: LogVerbosity;
   version?: string;
-  sendMessage?: (arg: any) => void; // @TODO: Maybe it makes sense to define a "sendMessage" arguments structure?
-  onMessageReceive?: any;
-  logger?: any;
-};
+  sendMessage?: (arg: unknown) => void; // @TODO: Maybe it makes sense to define a "sendMessage" arguments structure?
+  onMessageReceive?: unknown;
+  logger?: unknown;
+}

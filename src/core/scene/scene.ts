@@ -32,7 +32,7 @@ class Scene {
     const arrayOfScenes = await this.listAll();
 
     return (
-      arrayOfScenes.find((scene) => scene.id === id) ||
+      arrayOfScenes.find(scene => scene.id === id) ||
       Promise.reject(`Scene with id: ${id} not found`)
     );
   }
@@ -122,7 +122,7 @@ class Scene {
       ? sceneObject.placement.item
       : [sceneObject.placement.item];
 
-    return items.map(({ id, srcid, name }: any) => ({
+    return items.map(({ id, srcid, name }: Item) => ({
       id,
       srcid,
       name: unescape(name),

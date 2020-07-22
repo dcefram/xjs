@@ -8,7 +8,7 @@ import {
   ClientId,
   ICreateRequest,
 } from './types';
-import { parse } from 'helpers';
+import { parse } from 'helpers/json';
 
 const EVENT = 'event';
 const isEvent = (type: string) => type === EVENT;

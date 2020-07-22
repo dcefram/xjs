@@ -9,5 +9,5 @@ export interface IPropertyType {
   setValidator?: (param: PropertyParam) => boolean;
   setTransformer?: (param: PropertyParam) => string;
   getValidator?: (param: IKeyValuePair) => boolean;
-  getTransformer?: (param: IKeyValuePair) => unknown;
+  getTransformer?: (param: string) => unknown;
 }

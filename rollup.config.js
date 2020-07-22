@@ -10,7 +10,9 @@ export default {
     resolve({
       mainFields: ['lodash-es'],
     }),
-    commonjs(),
+    commonjs({
+      namedExports: { uuid: ['v4'] },
+    }),
     terser(),
   ],
   output: {

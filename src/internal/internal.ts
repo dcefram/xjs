@@ -4,35 +4,39 @@ import { XjsTypes } from 'core/xjs/types';
 import Remote from 'core/remote';
 import registerCallback from 'helpers/register-callback';
 
-interface CallbackType {
-  [asyncId: string]: any;
+type CallbackType = (...args: unknown[]) => void;
+type ExecArgument = string | number;
+interface IKeyValuePair {
+  [asyncId: string]: CallbackType;
 }
 
 class Internal {
-  private _callbacks: CallbackType = {};
+  private _callbacks: IKeyValuePair = {};
 
   private type: XjsTypes;
   private remote: Remote;
 
-  constructor(type) {
+  constructor(type: XjsTypes) {
     this.type = type;
 
     registerCallback({
-      OnAsyncCallback:  (asyncId: string, ...responses: string[]) => {
+      OnAsyncCallback: (asyncId: string, ...responses: string[]) => {
         if (typeof this._callbacks[asyncId] === 'function') {
-          const parsed = responses.map((response: string) => decodeURIComponent(response));
+          const parsed = responses.map((response: string) =>
+            decodeURIComponent(response)
+          );
           this._callbacks[asyncId](...parsed);
           delete this._callbacks[asyncId];
         }
-      }
+      },
     });
   }
 
-  setRemote(remote) {
+  setRemote(remote: Remote): void {
     this.remote = remote;
   }
 
-  exec(fn: string, ...args: any[]): Promise<any> {
+  exec(fn: string, ...args: ExecArgument[]): Promise<string> {
     return new Promise((resolve, reject) => {
       if (this.isRemote()) {
         return this.remote
@@ -63,8 +67,8 @@ class Internal {
       const ret = window.external[fn](...args);
 
       if (isNumber(ret)) {
-        this._callbacks[ret] = (result) => {
-          resolve(result);
+        this._callbacks[ret] = result => {
+          resolve(result as string);
         };
         return ret;
       }

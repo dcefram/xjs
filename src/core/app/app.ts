@@ -36,16 +36,20 @@ class App {
     if (typeof prop.setValidator !== 'function' || prop.setValidator(param)) {
       let key = prop.key;
       let value = param;
+
       if (typeof param === 'object') {
         const params = { ...param };
         key = sprintf(prop.key, params, true);
-        value = params;
+        value =
+          typeof prop.setTransformer === 'function'
+            ? prop.setTransformer(params)
+            : String(params.value);
+      } else {
+        value =
+          typeof prop.setTransformer === 'function'
+            ? prop.setTransformer(param)
+            : String(param);
       }
-      const params = typeof param === 'object' ? { ...param } : param; // clone object
-      value =
-        typeof prop.setTransformer === 'function'
-          ? prop.setTransformer(params)
-          : params;
 
       return this.internal.exec('AppSetPropertyAsync', key, value);
     }

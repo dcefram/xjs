@@ -2,7 +2,7 @@ import { v4 as uuid } from 'uuid';
 import Environment from 'helpers/environment';
 import Remote from 'core/remote';
 import Internal from 'internal';
-import { XjsTypes, Config } from './types';
+import { XjsTypes, IConfig, IKeyValuePair } from './types';
 
 export default class Xjs {
   static version = '%XJS_VERSION%';
@@ -19,7 +19,7 @@ export default class Xjs {
 
   remote: Remote;
 
-  constructor(config: Config = { type: XjsTypes.Local }) {
+  constructor(config: IConfig = { type: XjsTypes.Local }) {
     Object.keys(config).forEach((key: string) => {
       if (this.hasOwnProperty(key)) {
         this[key] = config[key];
@@ -29,7 +29,6 @@ export default class Xjs {
     // Initialize the internal methods and the view
     this.internal = new Internal(this.type);
 
-    // @ts-ignore
     if ([XjsTypes.Remote, XjsTypes.Proxy].includes(this.type)) {
       this.remote = new Remote({
         clientId: this.clientId,
@@ -56,7 +55,7 @@ export default class Xjs {
       'GetLocalPropertyAsync',
       'prop:BrowserConfiguration'
     );
-    let configObj: any = {};
+    let configObj: IKeyValuePair = {};
 
     if (browserConfig === '' || browserConfig === 'null') {
       browserConfig = await this.internal.exec('GetConfiguration');
@@ -76,15 +75,15 @@ export default class Xjs {
     return true;
   }
 
-  isLocal() {
+  isLocal(): boolean {
     return this.type === XjsTypes.Local;
   }
 
-  isProxy() {
+  isProxy(): boolean {
     return this.type === XjsTypes.Proxy;
   }
 
-  isRemote() {
+  isRemote(): boolean {
     return this.type === XjsTypes.Remote;
   }
 }

@@ -25,7 +25,7 @@ class View {
     return Number(id);
   }
 
-  async isSplitMode() {
+  async isSplitMode(): Promise<boolean> {
     return Boolean(
       Number(await this.internal.exec('GetGlobalProperty', 'splitmode'))
     );

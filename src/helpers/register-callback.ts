@@ -2,25 +2,29 @@ import isObject from 'lodash/isObject';
 import isString from 'lodash/isString';
 import { AsyncId, CallbackHandler } from '../core/remote/types';
 
+type CallbackType = (...args: unknown[]) => void;
+
+interface IKeyValuePair {
+  [key: string]: CallbackType;
+}
+
 const wrapCallbackHandler = (
-  callbackFunc: Function,
-  oldCallbackFunc: Function
-) => (...args: any[]) => {
+  callbackFunc: CallbackType,
+  oldCallbackFunc: CallbackType
+) => (...args: unknown[]) => {
   callbackFunc(...args);
   oldCallbackFunc && oldCallbackFunc(...args);
 };
 
-const mapDecodeURIComponent = (value: any) =>
+const mapDecodeURIComponent = (value: string | unknown) =>
   isString(value) ? decodeURIComponent(value) : value;
-
-export const ASYNC_CALLBACK_TIMEOUT = 60000;
 
 const _callbacks: CallbackHandler = {};
 
 const isCallbackExisting = (asyncId: AsyncId) =>
   _callbacks.hasOwnProperty(asyncId);
 
-export const runCallback = (asyncId: AsyncId, ...asyncRes: any[]) => {
+export const runCallback = (asyncId: AsyncId, ...asyncRes: string[]): void => {
   if (isCallbackExisting(asyncId)) {
     const { callback, clean } = _callbacks[asyncId];
     callback(...asyncRes.map(mapDecodeURIComponent));
@@ -28,7 +32,7 @@ export const runCallback = (asyncId: AsyncId, ...asyncRes: any[]) => {
   }
 };
 
-const registerCallback = (callbacks: object) => {
+const registerCallback = (callbacks: IKeyValuePair): void => {
   if (!isObject(callbacks) || Object.keys(callbacks).length === 0) {
     return;
   }
