@@ -10,7 +10,7 @@
     "typeRoots": ["node_modules/@types/", "./types/"],
     "moduleResolution": "node",
     "allowSyntheticDefaultImports": true,
-    "allowUmdGlobalAccess": true,
+    "allowUmdGlobalAccess": false,
     "baseUrl": "src",
     "paths": {
       "*": ["./*"]
