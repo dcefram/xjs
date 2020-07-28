@@ -1,4 +1,4 @@
-import Environment from 'helpers/Environment';
+import Environment from 'helpers/environment';
 
 export class ReadOnlyError extends Error {
   constructor(message = '') {

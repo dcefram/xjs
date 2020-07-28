@@ -1,4 +1,4 @@
-import Environment from 'helpers/Environment';
+import Environment from 'helpers/environment';
 import hasRequiredKeys from 'helpers/has-required-keys';
 import {
   ReadOnlyError,
@@ -33,7 +33,7 @@ const AppProps = {
         'view',
       ]);
 
-      if (isValidParam) {
+      if (!isValidParam) {
         throw new InvalidParamError(`Missing keys: ${missingKeys.join(', ')}`);
       }
 
@@ -44,7 +44,7 @@ const AppProps = {
     getValidator: (param: { view: ViewIndex }): boolean => {
       const [isValidParam, missingKeys] = hasRequiredKeys(param, ['view']);
 
-      if (isValidParam) {
+      if (!isValidParam) {
         throw new InvalidParamError(`Missing keys: ${missingKeys.join(', ')}`);
       }
 
@@ -64,7 +64,7 @@ const AppProps = {
         'scene',
       ]);
 
-      if (isValidParam) {
+      if (!isValidParam) {
         throw new InvalidParamError(`Missing keys: ${missingKeys.join(', ')}`);
       }
 
@@ -81,7 +81,7 @@ const AppProps = {
         'scene',
       ]);
 
-      if (isValidParam) {
+      if (!isValidParam) {
         throw new InvalidParamError(`Missing keys: ${missingKeys.join(', ')}`);
       }
 
@@ -101,7 +101,7 @@ const AppProps = {
     getValidator: (param: { scene: SceneIdentifier }): boolean => {
       const [isValidParam, missingKeys] = hasRequiredKeys(param, ['scene']);
 
-      if (isValidParam) {
+      if (!isValidParam) {
         throw new InvalidParamError(`Missing keys: ${missingKeys.join(', ')}`);
       }
 
@@ -111,7 +111,10 @@ const AppProps = {
 
       return true;
     },
-    getTransformer: (value: string): string[] => String(value).split(','),
+    getTransformer: (value: string): string[] => [
+      '{00000000-0000-0000-0000-000000000000}',
+      ...String(value).split(',').filter(Boolean),
+    ],
   },
 
   sceneNewPreset: {
@@ -122,7 +125,7 @@ const AppProps = {
     getValidator: (param: { scene: SceneIdentifier }): boolean => {
       const [isValidParam, missingKeys] = hasRequiredKeys(param, ['scene']);
 
-      if (isValidParam) {
+      if (!isValidParam) {
         throw new InvalidParamError(`Missing keys: ${missingKeys.join(', ')}`);
       }
 
@@ -145,7 +148,7 @@ const AppProps = {
         'value',
       ]);
 
-      if (isValidParam) {
+      if (!isValidParam) {
         throw new InvalidParamError(`Missing keys: ${missingKeys.join(', ')}`);
       }
 
@@ -172,7 +175,7 @@ const AppProps = {
         'value',
       ]);
 
-      if (isValidParam) {
+      if (!isValidParam) {
         throw new InvalidParamError(`Missing keys: ${missingKeys.join(', ')}`);
       }
 
@@ -187,7 +190,7 @@ const AppProps = {
     getValidator: (param: { scene: SceneIdentifier }): boolean => {
       const [isValidParam, missingKeys] = hasRequiredKeys(param, ['scene']);
 
-      if (isValidParam) {
+      if (!isValidParam) {
         throw new InvalidParamError(`Missing keys: ${missingKeys.join(', ')}`);
       }
 
@@ -211,7 +214,7 @@ const AppProps = {
         'value',
       ]);
 
-      if (isValidParam) {
+      if (!isValidParam) {
         throw new InvalidParamError(`Missing keys: ${missingKeys.join(', ')}`);
       }
 
@@ -228,7 +231,7 @@ const AppProps = {
         'value',
       ]);
 
-      if (isValidParam) {
+      if (!isValidParam) {
         throw new InvalidParamError(`Missing keys: ${missingKeys.join(', ')}`);
       }
 
@@ -274,7 +277,7 @@ const AppProps = {
         'value',
       ]);
 
-      if (isValidParam) {
+      if (!isValidParam) {
         throw new InvalidParamError(`Missing keys: ${missingKeys.join(', ')}`);
       }
 
@@ -284,7 +287,7 @@ const AppProps = {
     getValidator: (param: { scene: SceneIdentifier }): boolean => {
       const [isValidParam, missingKeys] = hasRequiredKeys(param, ['scene']);
 
-      if (isValidParam) {
+      if (!isValidParam) {
         throw new InvalidParamError(`Missing keys: ${missingKeys.join(', ')}`);
       }
 
@@ -303,7 +306,7 @@ const AppProps = {
         'scene',
       ]);
 
-      if (isValidParam) {
+      if (!isValidParam) {
         throw new InvalidParamError(`Missing keys: ${missingKeys.join(', ')}`);
       }
 
@@ -313,7 +316,7 @@ const AppProps = {
     getValidator: (param: { scene: SceneIdentifier }): boolean => {
       const [isValidParam, missingKeys] = hasRequiredKeys(param, ['scene']);
 
-      if (isValidParam) {
+      if (!isValidParam) {
         throw new InvalidParamError(`Missing keys: ${missingKeys.join(', ')}`);
       }
 
@@ -337,7 +340,7 @@ const AppProps = {
         'height',
       ]);
 
-      if (isValidParam) {
+      if (!isValidParam) {
         throw new InvalidParamError(`Missing keys: ${missingKeys.join(', ')}`);
       }
 

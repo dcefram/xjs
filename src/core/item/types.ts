@@ -11,10 +11,10 @@ export interface IPropertyParam extends IItemInfo {
 
 export interface IPropertyType {
   key: string;
-  setValidator?: (param: ValueParam) => boolean;
-  setTransformer?: (param: ValueParam) => string;
-  getValidator?: (param: ValueParam) => boolean;
-  getTransformer?: (param: ValueParam) => unknown;
+  setValidator?: (param: any) => boolean | void;
+  setTransformer?: (param: any) => string;
+  getValidator?: (param: any) => boolean | void;
+  getTransformer?: (param: any) => unknown;
 }
 
 export interface IItem {

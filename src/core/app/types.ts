@@ -6,8 +6,8 @@ export type PropertyParam = IKeyValuePair | string | boolean | number;
 
 export interface IPropertyType {
   key: string;
-  setValidator?: (param: PropertyParam) => boolean;
-  setTransformer?: (param: PropertyParam) => string;
-  getValidator?: (param: IKeyValuePair) => boolean;
+  setValidator?: (param: any) => boolean | void;
+  setTransformer?: (param: any) => string;
+  getValidator?: (param: any) => boolean | void;
   getTransformer?: (param: string) => unknown;
 }
