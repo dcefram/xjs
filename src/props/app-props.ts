@@ -76,10 +76,7 @@ const AppProps = {
     },
     setTransformer: (value: { value: string }): string => value.value,
     getValidator: (param: { scene: SceneIdentifier }): boolean => {
-      const [isValidParam, missingKeys] = hasRequiredKeys(param, [
-        'value',
-        'scene',
-      ]);
+      const [isValidParam, missingKeys] = hasRequiredKeys(param, ['scene']);
 
       if (!isValidParam) {
         throw new InvalidParamError(`Missing keys: ${missingKeys.join(', ')}`);
