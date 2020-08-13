@@ -13,6 +13,10 @@
     "react-dom": "16.13.1"
   },
   "devDependencies": {
-    "@types/react": "^16.9.46"
+    "@types/react": "^16.9.46",
+    "@typescript-eslint/eslint-plugin": "^3.9.0",
+    "@typescript-eslint/parser": "^3.9.0",
+    "eslint": "^7.6.0",
+    "eslint-plugin-react": "^7.20.6"
   }
 }
