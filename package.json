@@ -10,7 +10,7 @@
     "build": "rimraf ./dist && ttsc -p . && node tools/version.js core/xjs/xjs.js",
     "build:umd": "rimraf ./dist && rollup -c && node tools/version.js xjs.umd.js",
     "build:link": "npm run build && node tools/prepublish.js &&  cd dist && npm link",
-    "build:yarn:link": "yarn build && node tools/prepublish.js && cd dist && yarn unlink && yarn link",
+    "build:link:yarn": "yarn build && node tools/prepublish.js && cd dist && yarn link",
     "pub": "npm run build && node tools/prepublish.js && cd dist && npm publish --access public",
     "docs": "cd docs && bundle exec middleman build --clean && now"
   },
