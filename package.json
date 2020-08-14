@@ -1,6 +1,6 @@
 {
   "private": true,
-  "name": "@dcefram/xjs",
+  "name": "@xsplit/xjs",
   "version": "0.2.5",
   "description": "XSplit JS Framework",
   "scripts": {
