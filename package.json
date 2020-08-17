@@ -1,7 +1,7 @@
 {
   "private": true,
   "name": "@xsplit/xjs",
-  "version": "0.2.5",
+  "version": "3.0.0-alpha.1",
   "description": "XSplit JS Framework",
   "scripts": {
     "dev": "nodemon --ext ts,js,json --watch src --exec npm run build:link",
@@ -51,6 +51,7 @@
     "@types/lodash-es": "^4.17.3",
     "fast-xml-parser": "^3.12.19",
     "lodash-es": "^4.17.11",
+    "rollup-plugin-node-builtins": "^2.1.2",
     "uuid": "^8.1.0"
   }
 }

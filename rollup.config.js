@@ -1,18 +1,18 @@
 import typescript from 'rollup-plugin-typescript';
 import resolve from 'rollup-plugin-node-resolve';
 import commonjs from 'rollup-plugin-commonjs';
+import builtins from 'rollup-plugin-node-builtins';
 import { terser } from 'rollup-plugin-terser';
 
 export default {
   input: 'tools/umd.entry.ts',
   plugins: [
+    builtins(),
     typescript(),
     resolve({
-      mainFields: ['lodash-es'],
+      browser: true,
     }),
-    commonjs({
-      namedExports: { uuid: ['v4'] },
-    }),
+    commonjs(),
     terser(),
   ],
   output: {

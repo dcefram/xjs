@@ -1,6 +1,6 @@
 import Xjs, { XjsTypes } from '../src/core/xjs';
 import App from '../src/core/app';
-// import Events from '../src/core/events';
+import Events from '../src/core/events';
 import Item from '../src/core/item';
 import Preset from '../src/core/preset';
 import Remote from '../src/core/remote';
@@ -13,7 +13,7 @@ import AppProps from '../src/props/app-props';
 export default class Wrapper {
   static XjsTypes = XjsTypes;
   static App = App;
-  // static Events = Events;
+  static Events = Events;
   static Item = Item;
   static Preset = Preset;
   static Remote = Remote;
