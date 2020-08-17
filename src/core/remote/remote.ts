@@ -12,7 +12,7 @@ import {
   IKeyValuePair,
 } from './types';
 import { parse } from 'helpers/json';
-import pick from 'lodash/pick';
+import pick from 'lodash-es/pick';
 
 const EVENT = 'event';
 const isEvent = (type: string) => type === EVENT;

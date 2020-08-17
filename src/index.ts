@@ -1,1 +1,11 @@
 export { default, XjsTypes } from './core/xjs';
+export { default as App } from './core/app';
+export { default as Events } from './core/events';
+export { default as Item } from './core/item';
+export { default as Preset } from './core/preset';
+export { default as Remote } from './core/remote';
+export { default as Scene } from './core/scene';
+export { default as SourceProperty } from './core/source-property-window';
+export { default as View } from './core/view';
+export { default as ItemProps } from './props/item-props';
+export { default as AppProps } from './props/app-props';

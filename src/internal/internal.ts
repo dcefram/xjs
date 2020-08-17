@@ -1,5 +1,5 @@
-import isFunction from 'lodash/isFunction';
-import isNumber from 'lodash/isNumber';
+import isFunction from 'lodash-es/isFunction';
+import isNumber from 'lodash-es/isNumber';
 import { XjsTypes } from 'core/xjs/types';
 import Remote from 'core/remote';
 import registerCallback from 'helpers/register-callback';
