@@ -9,7 +9,8 @@
 // site configuration options.
 const siteConfig = {
   title: 'XSplit JS Framework 3.0', // Title for your website.
-  tagline: 'The development framework for building awesome XSplit Broadcaster Plugins',
+  tagline:
+    'The development framework for building awesome XSplit Broadcaster Plugins',
   url: 'https://xsplit.com', // Your website URL
   baseUrl: '/', // Base URL for your project */
   // For github.io type URLs, you would set the url and baseUrl like:
@@ -25,9 +26,9 @@ const siteConfig = {
 
   // For no header links in the top nav bar -> headerLinks: [],
   headerLinks: [
-    {doc: 'quick-start', label: 'Docs'},
-    {doc: 'doc4', label: 'API'},
-    {page: 'help', label: 'Help'},
+    { doc: 'quick-start', label: 'Docs' },
+    { doc: 'doc4', label: 'API' },
+    { page: 'help', label: 'Help' },
   ],
 
   // If you have users set above, you add it here:
@@ -63,7 +64,7 @@ const siteConfig = {
 
   highlight: {
     // Highlight.js theme to use for syntax highlighting in code blocks.
-    theme: 'default',
+    theme: 'agate',
   },
 
   // Add custom scripts here that would be placed in <script> tags.

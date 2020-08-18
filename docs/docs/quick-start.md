@@ -41,4 +41,108 @@ For a sample plugin, we'll aim to create a source plugin that would display if w
 
 ![Sample Source Plugin](/img/xjs-test-app-1.gif)
 
-First of all, we'll assume that you already built and linked xjs in your dev system (See step 3 of [Building XJS section](#building-xjs)). We'll follow through the UMD version in this quickstart. Copy the xjs.umd.js to your plugin's folder, and we'll just add it up in our index.html file.
+First of all, we'll assume that you already built and linked xjs in your dev system (See step 3 of [Building XJS section](#building-xjs)). We'll follow through the UMD version in this sample plugin. Copy the xjs.umd.js to your plugin's folder, and we'll just add it up in our index.html file.
+
+Here's how our index.html should look like:
+
+```html
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Are We Live Yet</title>
+  </head>
+  <body>
+    <style>
+      div {
+        background-color: black;
+        color: white;
+        text-align: center;
+      }
+
+      body {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        margin: 0;
+        padding: 0;
+      }
+
+      p {
+        color: rgb(167, 167, 167);
+      }
+
+      .yes {
+        color: rgb(0, 255, 0);
+      }
+    </style>
+
+    <div>
+      <h1>Are We Live Yet?</h1>
+      <p id="output">No, not quite</p>
+    </div>
+
+    <script src="xjs.umd.js"></script>
+    <script src="plugin.js"></script>
+  </body>
+</html>
+```
+
+The important part of the markup above is the `<p id="output">` tag, as that's where would would output the text to inform the user if they're already streaming or not. The other 2 important parts are the script tags, one is to include the built Xjs file, and the other is a JS file that we're going to write the logic of the whole plugin.
+
+Here's the contents of our `plugin.js` file:
+
+```javascript
+const output = document.getElementById('output');
+const xjs = new window.Xjs();
+const events = new window.Xjs.Events(xjs);
+
+events.on('StreamStart', () => {
+  output.textContent = 'Yes we are!';
+  output.classList.add('yes');
+});
+
+events.on('StreamEnd', () => {
+  output.textContent = 'No, not quite';
+  output.classList.remove('yes');
+});
+```
+
+With the UMD version, the Xjs object is exposed to the window namespace.
+
+We first have to initialize an Xjs instance. For now, it's enough to know that an Xjs instance is the _interface_ you need for you to talk with XSplit Broadcaster. If you want to dig deeper, best read its [documentation here]()(TODO).
+
+Unlike the previous Xjs framework, where an xjs instance is a singleton, in 3.0, we would need to pass the xjs instance on each class that we want to make use of.
+
+In this case, we want to make use of the Events class, for us to _listen_ to events thrown by XSplit Broadcaster. You'll notice this in line 3, where we passed the xjs instance when initializing the Events instance.
+
+_Why?_ you might ask.
+
+To put it short, it's because without it, the Events' instance would not know who to _talk_ to. If you read the detailed explanation of the Xjs instance linked earlier, you would notice that the Xjs instance does not necessarily mean the current local XSplit Broadcaster where your plugin is running on.
+
+Anyways, that's not a topic for a _quick start_ document. Let's leave it for another page.
+
+To recap, when initializing a class provided by the Xjs framework, we should always pass in an xjs instance:
+
+```javascript
+const xjs = new window.Xjs();
+const events = new window.Xjs.Events(xjs);
+```
+
+With that done, you can now listen to events emitted by XSplit Broadcaster. We'll have an extensive list of possible events that XSplit Broadcaster could emit, but that is still under works. Just know that we tried to avoid too much abstraction in this end, with the objective of allowing you, the developer, on making use of all the events emitted by XSplit Broadcaster even if the Xjs team does not release a new Xjs version.
+
+We listen to events using the `on` method:
+
+```javascript
+events.on('StreamStart', () => {
+  output.textContent = 'Yes we are!';
+  output.classList.add('yes');
+});
+
+events.on('StreamEnd', () => {
+  output.textContent = 'No, not quite';
+  output.classList.remove('yes');
+});
+```
+
+Once you're done with this, you can simply drag-and-drop the index.html file to XSplit Broadcaster.

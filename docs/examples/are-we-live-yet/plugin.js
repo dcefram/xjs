@@ -1,6 +1,9 @@
+import Xjs from '@xsplit/xjs/core/xjs';
+import Events from '@xsplit/xjs/core/events';
+
 const output = document.getElementById('output');
-const xjs = new window.Xjs();
-const events = new window.Xjs.Events(xjs);
+const xjs = new Xjs();
+const events = new Events(xjs);
 
 events.on('StreamStart', () => {
   output.textContent = 'Yes we are!';
