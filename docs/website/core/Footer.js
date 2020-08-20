@@ -32,24 +32,22 @@ class Footer extends React.Component {
           <div>
             <h5>Docs</h5>
             <a href={this.docUrl('quick-start.html')}>Quick Start</a>
-            <a href={this.docUrl('doc2.html')}>Guides</a>
-            <a href={this.docUrl('doc3.html')}>API Reference</a>
+            <a href={this.docUrl('api-placeholder.html')}>API Reference</a>
           </div>
           <div>
             <h5>Community</h5>
-            <a href={`${this.props.config.baseUrl}users`}>XSplit Community</a>
             <a
               href="https://community.xsplit.com"
               target="_blank"
               rel="noreferrer noopener"
             >
-              Stack Overflow
+              XSplit Community
             </a>
-            <a href="https://discordapp.com/">Project Chat</a>
+            <a href="https://discord.gg/UdynF68">Project Chat</a>
           </div>
           <div>
             <h5>More</h5>
-            <a href="https://github.com/">GitHub</a>
+            <a href="https://github.com/xjsframework/xjs">GitHub</a>
             {this.props.config.twitterUsername && (
               <div className="social">
                 <a
