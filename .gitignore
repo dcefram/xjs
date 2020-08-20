@@ -8,3 +8,4 @@ yarn.lock
 .idea/
 .vscode/
 *.sublime-*
+docs/examples/are-we-live-yet/.cache

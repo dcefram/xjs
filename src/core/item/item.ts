@@ -245,15 +245,10 @@ class Item {
    * Set an item's configuration
    *
    * @param config A generic JSON object that would be persisted in the presentation
-   * @param info Item ID and Source ID
    */
-  setConfiguration(config: Record<string, unknown>, info: IItemInfo): void {
+  setConfiguration(config: Record<string, unknown>): void {
     if (!Environment.isSourcePlugin) {
       throw new Error('You can only set configuration in source plugins');
-    }
-
-    if (!this.isCurrentItem(info.srcid)) {
-      throw new Error('You can only set configuration for the current item');
     }
 
     this.internal.exec(
@@ -265,18 +260,10 @@ class Item {
 
   /**
    * Get an item's configuration
-   *
-   * @param info Item ID and Source ID
    */
-  async getConfiguration(
-    info: IItemInfo
-  ): Promise<Record<string, unknown> | string> {
+  async getConfiguration(): Promise<Record<string, unknown> | string> {
     if (Environment.isExtension) {
       throw new Error('You cannot set configuration in extension plugins');
-    }
-
-    if (!this.isCurrentItem(info.srcid)) {
-      throw new Error('You can only get configuration for the current item');
     }
 
     let result = await this.internal.exec(

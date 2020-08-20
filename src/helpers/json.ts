@@ -1,4 +1,4 @@
-import isString from 'lodash/isString';
+import isString from 'lodash-es/isString';
 
 export const stringify = (value: unknown): string =>
   isString(value) ? value : JSON.stringify(value);

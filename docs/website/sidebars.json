@@ -1,0 +1,6 @@
+{
+  "docs": {
+    "Getting Started": ["quick-start"],
+    "Tutorials": ["source-props", "optimize-bundle-size"]
+  }
+}

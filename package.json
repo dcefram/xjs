@@ -1,7 +1,7 @@
 {
   "private": true,
-  "name": "@dcefram/xjs",
-  "version": "0.2.5",
+  "name": "@xsplit/xjs",
+  "version": "3.0.0-alpha.1",
   "description": "XSplit JS Framework",
   "scripts": {
     "dev": "nodemon --ext ts,js,json --watch src --exec npm run build:link",
@@ -10,7 +10,7 @@
     "build": "rimraf ./dist && ttsc -p . && node tools/version.js core/xjs/xjs.js",
     "build:umd": "rimraf ./dist && rollup -c && node tools/version.js xjs.umd.js",
     "build:link": "npm run build && node tools/prepublish.js &&  cd dist && npm link",
-    "build:yarn:link": "yarn build && node tools/prepublish.js && cd dist && yarn unlink && yarn link",
+    "build:link:yarn": "yarn build && node tools/prepublish.js && cd dist && yarn link",
     "pub": "npm run build && node tools/prepublish.js && cd dist && npm publish --access public",
     "docs": "cd docs && bundle exec middleman build --clean && now"
   },
@@ -51,6 +51,7 @@
     "@types/lodash-es": "^4.17.3",
     "fast-xml-parser": "^3.12.19",
     "lodash-es": "^4.17.11",
+    "rollup-plugin-node-builtins": "^2.1.2",
     "uuid": "^8.1.0"
   }
 }

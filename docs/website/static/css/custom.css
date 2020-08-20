@@ -1,0 +1,63 @@
+/**
+ * Copyright (c) Facebook, Inc. and its affiliates.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
+/* your custom css */
+.homeLandingContainer {
+  background: url('/img/landing_bg.jpg');
+  display: flex;
+  align-items: center;
+
+}
+
+.homeContainer {
+  background: #00102a;
+  flex: 1;
+  opacity: .95;
+  height: 390px;
+}
+
+.projectTitle small {
+  color: #9ADFFF;
+  font-weight: lighter;
+}
+
+.buttonWrapper .button {
+  background: #EA8E22;
+  border: 0;
+  color: white;
+  height: 60px;
+  font-size: 20px;
+  line-height: 40px;
+  padding: 10px 30px;
+}
+
+.buttonWrapper .button:hover {
+  background: #F4A91E;
+}
+
+.docsContainer a {
+  color: #0095DE;
+}
+
+.docsContainer a:hover {
+  color: #9ADFFF;
+}
+
+@media only screen and (min-device-width: 360px) and (max-device-width: 736px) {
+}
+
+@media only screen and (min-width: 1024px) {
+}
+
+@media only screen and (max-width: 1023px) {
+}
+
+@media only screen and (min-width: 1400px) {
+}
+
+@media only screen and (min-width: 1500px) {
+}
