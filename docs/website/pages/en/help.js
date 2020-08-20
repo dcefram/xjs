@@ -22,7 +22,7 @@ function Help(props) {
   const supportLinks = [
     {
       content: `Learn more using the [documentation on this site.](${docUrl(
-        'doc1.html',
+        'quick-start.html',
       )})`,
       title: 'Browse Docs',
     },
@@ -43,8 +43,8 @@ function Help(props) {
           <header className="postHeader">
             <h1>Need help?</h1>
           </header>
-          <p>This project is maintained by a dedicated group of people.</p>
-          <GridBlock contents={supportLinks} layout="threeColumn" />
+          <p>We have an incredible community of developers who are passionate about solving problems. We recommend the following methods to get help with XSplit JS Framework.</p>
+          @TODO: No actual links available yet...
         </div>
       </Container>
     </div>
