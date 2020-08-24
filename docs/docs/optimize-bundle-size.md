@@ -13,7 +13,7 @@ When XJS 3.0 gets published to NPM, installing the ESM version of XJS should be 
 If you do not want to bother about bundle sizes, and just want to use XJS the straightforward way, but isn't a fan of UMD for whatever reason, like if you dislike polluting the window object/namespace, you can do this:
 
 ```javascript
-import Xjs, { XjsTypes, Scene } from '@xsplit/xjs';
+import Xjs, { XjsTypes, Scene } from 'xjs-framework';
 
 const xjs = new Xjs({ type: XjsTypes.Local });
 const scene = new Scene(xjs);
@@ -33,9 +33,9 @@ However, you should take note that your bundler would most likley have a hard ti
 If the final bundle size of your plugin is important to you, then you'll have to import each module individually. Similar to the example above, the optimized way would be:
 
 ```javascript
-import Xjs from '@xsplit/xjs/core/xjs';
-import XjsTypes from '@xsplit/xjs/core/xjs/types';
-import Scene from '@xsplit/xjs/core/xjs/scene';
+import Xjs from 'xjs-framework/core/xjs';
+import XjsTypes from 'xjs-framework/core/xjs/types';
+import Scene from 'xjs-framework/core/xjs/scene';
 
 const xjs = new Xjs({ type: XjsTypes.Local });
 const scene = new Scene(xjs);

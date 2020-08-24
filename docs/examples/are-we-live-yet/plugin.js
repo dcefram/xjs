@@ -1,5 +1,5 @@
-import Xjs from '@xsplit/xjs/core/xjs';
-import Events from '@xsplit/xjs/core/events';
+import Xjs from 'xjs-framework/core/xjs';
+import Events from 'xjs-framework/core/events';
 
 const output = document.getElementById('output');
 const xjs = new Xjs();

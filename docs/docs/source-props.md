@@ -14,7 +14,7 @@ Your xjs instance in your plugin's JS file has a method called `setConfigWindow`
 
 ```javascript
 // ESM
-import Xjs from '@xsplit/xjs/core/xjs';
+import Xjs from 'xjs-framework/core/xjs';
 
 const xjs = new Xjs();
 xjs.setConfigWindow('./props.html');
@@ -32,7 +32,7 @@ Xjs framework exposes an object with functions that allows the developer to conf
 
 ```javascript
 // ESM
-import propsWindow from '@xsplit/xjs/core/source-property-window';
+import propsWindow from 'xjs-framework/core/source-property-window';
 
 // In UMD, it is exposed under Xjs object
 const propsWindow = window.Xjs.SourceProperty;
@@ -195,9 +195,9 @@ For example, on the imaginary plugin we had earlier, we set the color property (
 In order for you to restore your changes, you'll have to call `getConfiguration` and apply whatever configuration you saved.
 
 ```javascript
-import Xjs from '@xsplit/xjs/core/xjs';
-import Item from '@xsplit/xjs/core/item';
-import propsWindow from '@xsplit/xjs/core/source-property-window';
+import Xjs from 'xjs-framework/core/xjs';
+import Item from 'xjs-framework/core/item';
+import propsWindow from 'xjs-framework/core/source-property-window';
 
 const xjs = new Xjs();      // In UMD: window.Xjs
 const item = new Item(xjs); // In UMD: window.Xjs.Item
