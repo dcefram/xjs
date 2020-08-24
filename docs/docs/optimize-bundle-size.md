@@ -1,7 +1,7 @@
 ---
 id: optimize-bundle-size
 title: Optimizing Bundle Size
-sidebar_title: Optimizing Bundle Size
+sidebar_label: Optimizing Bundle Size
 ---
 
 There are times that you would want to minimize the size of your plugin, specially when you plan to serve it over the network. You can trim down the XJS part of your scripts by utilizing the ESM build, and directly importing individual modules.
@@ -10,7 +10,7 @@ When XJS 3.0 gets published to NPM, installing the ESM version of XJS should be 
 
 ## The unoptimized, easy way
 
-If you do not want to bother bundle sizes, and just want to use XJS the straightforward way, but isn't a fan of UMD for whatever reason, like if you dislike polluting the window object/namespace, you can do this:
+If you do not want to bother about bundle sizes, and just want to use XJS the straightforward way, but isn't a fan of UMD for whatever reason, like if you dislike polluting the window object/namespace, you can do this:
 
 ```javascript
 import Xjs, { XjsTypes, Scene } from '@xsplit/xjs';
@@ -24,7 +24,7 @@ scene.getByIndex(0).then(({ id }) => {
 
 ```
 
-Almost all exported classes and objects are exposes through this entry file, so it should be easy to import what you need through `@xsplit/xjs`. 
+Almost all exported classes and objects are exposed through this entry file, so it should be easy to import what you need through `@xsplit/xjs`. 
 
 However, you should take note that your bundler would most likley have a hard time tree shaking unused classes, as everything is imported once you import `@xsplit/xjs`.
 

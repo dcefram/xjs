@@ -1,7 +1,7 @@
 {
   "private": true,
-  "name": "@xsplit/xjs",
-  "version": "3.0.0-alpha.1",
+  "name": "xjs-framework",
+  "version": "3.0.0-alpha.5",
   "description": "XSplit JS Framework",
   "scripts": {
     "dev": "nodemon --ext ts,js,json --watch src --exec npm run build:link",

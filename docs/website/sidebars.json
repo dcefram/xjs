@@ -1,6 +1,6 @@
 {
   "docs": {
-    "Getting Started": ["quick-start"],
+    "Getting Started": ["quick-start", "esm-vs-umd"],
     "Tutorials": ["source-props", "optimize-bundle-size"]
   }
 }
