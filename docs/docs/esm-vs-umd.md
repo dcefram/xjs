@@ -48,4 +48,4 @@ const app = new window.Xjs.App(xjs);
 app.getProperty(window.Xjs.AppProps.audioDevices).then(devices => console.log(devices));
 ```
 
-General rule is that you should just substitute the module's filename with `Xjs.<CamelCase>` format, wherein the kebab-case filenames like `app-props` and `item-props` would be exposed as `AppProps` in the UMD version.
+General rule is that you should just substitute the module's filename with `Xjs.<CamelCase>` format, wherein the kebab-case filenames like `app-props` and `item-props` would be exposed as `AppProps` and `ItemProps` in the UMD version.

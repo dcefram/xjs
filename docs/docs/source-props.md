@@ -18,10 +18,6 @@ import Xjs from 'xjs-framework/core/xjs';
 
 const xjs = new Xjs();
 xjs.setConfigWindow('./props.html');
-
-// UMD
-const xjs = new window.Xjs();
-xjs.setConfigWindow('./props.html');
 ```
 
 ## Properties window layouts
@@ -33,9 +29,6 @@ Xjs framework exposes an object with functions that allows the developer to conf
 ```javascript
 // ESM
 import propsWindow from 'xjs-framework/core/source-property-window';
-
-// In UMD, it is exposed under Xjs object
-const propsWindow = window.Xjs.SourceProperty;
 ```
 
 ### Tabbed Mode

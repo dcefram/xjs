@@ -4,13 +4,13 @@ title: Creating your First Source Plugin
 sidebar_label: Creating your First Source Plugin
 ---
 
-For a sample plugin, we'll aim to create a source plugin that would display if we're currently streaming/recording or not. Not really a useful source plugin, but that should do.
+For the sample plugin, we'll aim to create a plugin that would display if we're currently streaming/recording or not. Not really a useful source plugin, but that should do.
 
 ![Sample Source Plugin](/img/xjs-test-app-1.gif)
 
 ## Project setup
 
-Ok cool, let's get started. For this project, we'll be using [Parcel](https://parceljs.org/) as our project bundler, since it's the easiest bundler to use (it's literally a plugin-and-play bundler :D). Ok, so let's get on with the steps:
+For this project, we'll be using [Parcel](https://parceljs.org/) as our project bundler, since it's the easiest bundler to use (it's literally a plugin-and-play bundler :D). Ok, so let's get on with the steps:
 
 1. Create a folder for your project. We'll name it as `are-we-live-yet`.
 
@@ -150,3 +150,4 @@ events.on('StreamEnd', () => {
 ```
 
 Awesome, with all that done, let's build our plugin. Execute `npm run build` and that should create a new `dist` folder that contains the built files. Drag and drop the `index.html` file inside the `dist` folder to your XSplit Broadcaster, and test it out by starting/stopping a stream or recording.
+
