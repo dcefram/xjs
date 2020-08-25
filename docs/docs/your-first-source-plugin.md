@@ -45,7 +45,7 @@ For this project, we'll be using [Parcel](https://parceljs.org/) as our project 
 
 Ok, with the setup done, let's work on the plugin.
 
-## Plugin markup
+## Completing the Plugin 
 
 Here's how our index.html should look like:
 
