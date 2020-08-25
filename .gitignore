@@ -9,3 +9,4 @@ yarn.lock
 .vscode/
 *.sublime-*
 docs/examples/are-we-live-yet/.cache
+.cache/
