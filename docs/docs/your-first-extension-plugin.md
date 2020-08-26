@@ -47,7 +47,7 @@ Parcel allows use to just focus on our plugin without worrying a lot on how to b
 
 Ok, with the initial tooling out of the way, we can now focus on building our extension plugin. First, we'll layout our markup. We want our UI to look something like this:
 
-@TODO: Image here
+![Sample Source Plugin](/img/xjs-test-app-2.gif)
 
 Basically, it'll be a bunch of buttons for each scene we have in XSplit Broadcaster. Clicking on each button should cause XSplit Broadcaster to switch to the scene that the user clicked on. With that in mind, here's the initial markup of our `index.html` file:
 

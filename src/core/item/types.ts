@@ -2,7 +2,7 @@ export type ValueParam = string | boolean | number;
 
 export interface IItemInfo {
   id: string;
-  srcid: string;
+  srcId: string;
 }
 
 export interface IPropertyParam extends IItemInfo {

@@ -53,16 +53,8 @@ class Item {
     return presentationObj.configuration.placement || [];
   }
 
-  private async isCurrentItem(srcid): Promise<boolean> {
-    const _srcid = await this.internal.exec(
-      'GetLocalPropertyAsync',
-      'prop:srcid'
-    );
-    return srcid === _srcid;
-  }
-
-  private async getLinkedItem(srcid: string): Promise<string> {
-    const itemIds = await this.getItemList(srcid);
+  private async getLinkedItem(srcId: string): Promise<string> {
+    const itemIds = await this.getItemList(srcId);
 
     if (itemIds.length > 0) {
       return itemIds[0];
@@ -74,9 +66,9 @@ class Item {
   /**
    * Get the linked item ids of the specified source.
    *
-   * @param srcid Source ID
+   * @param srcId Source ID
    */
-  async getItemList(srcid: string): Promise<string[]> {
+  async getItemList(srcId: string): Promise<string[]> {
     const placements = await this.getPlacements();
 
     // O(n^2)
@@ -87,7 +79,7 @@ class Item {
         : [placementItem];
 
       const linkedItems: string[] = sceneItems
-        .filter(item => item.srcid === srcid)
+        .filter(item => item.srcid === srcId)
         .map(item => item.id);
 
       return [...stack, ...linkedItems];
@@ -106,7 +98,7 @@ class Item {
       'GetLocalPropertyAsync',
       'itemlist'
     );
-    const srcid = await this.internal.exec(
+    const srcId = await this.internal.exec(
       'GetLocalPropertyAsync',
       'prop:srcid'
     );
@@ -118,7 +110,7 @@ class Item {
       );
     }
 
-    return { srcid, id: items[0] };
+    return { srcId, id: items[0] };
   }
 
   /**
@@ -131,7 +123,7 @@ class Item {
     prop: IPropertyType,
     param: IPropertyParam
   ): Promise<string> {
-    if (typeof param.id === 'undefined' || typeof param.srcid === 'undefined') {
+    if (typeof param.id === 'undefined' || typeof param.srcId === 'undefined') {
       throw new InvalidParamError(
         'param should be an object with an `id` and `srcid` property'
       );
@@ -167,7 +159,7 @@ class Item {
           'Attached item does not exist. Attempting to attach linked item...'
         );
 
-        const id = await this.getLinkedItem(param.srcid);
+        const id = await this.getLinkedItem(param.srcId);
 
         if (id) {
           return this.setProperty(prop, { ...param, id });
@@ -193,7 +185,7 @@ class Item {
     prop: IPropertyType,
     param: IPropertyParam
   ): Promise<unknown> {
-    if (typeof param.id === 'undefined' || typeof param.srcid === 'undefined') {
+    if (typeof param.id === 'undefined' || typeof param.srcId === 'undefined') {
       throw new InvalidParamError(
         'param should be an object with an `id` and `srcid` property'
       );
@@ -223,7 +215,7 @@ class Item {
           'Attached item does not exaist. Attempting to attach linked item...'
         );
 
-        const id = await this.getLinkedItem(param.srcid);
+        const id = await this.getLinkedItem(param.srcId);
 
         if (id) {
           return this.getProperty(prop, { ...param, id });
