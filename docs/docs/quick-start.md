@@ -12,10 +12,10 @@ XJS Framework is published in NPM, so installing it to your project should be as
 
 ```bash
 # using npm
-npm i xjs-framework@3.0.0-alpha.5
+npm i xjs-framework@alpha
 
 # using yarn
-yarn add xjs-framework@3.0.0-alpha.5
+yarn add xjs-framework@alpha
 ```
 
 This assumes that you are going to use Xjs by importing it to your project as a module.

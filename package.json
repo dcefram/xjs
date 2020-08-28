@@ -1,7 +1,7 @@
 {
   "private": true,
   "name": "xjs-framework",
-  "version": "3.0.0-alpha.5",
+  "version": "3.0.0-alpha.6",
   "description": "XSplit JS Framework",
   "scripts": {
     "dev": "nodemon --ext ts,js,json --watch src --exec npm run build:link",
@@ -11,24 +11,28 @@
     "build:umd": "rimraf ./dist && rollup -c && node tools/version.js xjs.umd.js",
     "build:link": "npm run build && node tools/prepublish.js &&  cd dist && npm link",
     "build:link:yarn": "yarn build && node tools/prepublish.js && cd dist && yarn link",
-    "pub": "npm run build && node tools/prepublish.js && cd dist && npm publish --access public",
+    "pub": "npm run build && node tools/prepublish.js && cd dist && npm publish --access public --tag alpha",
     "docs": "cd docs && bundle exec middleman build --clean && now"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/dcefram/xjs.git"
+    "url": "git+https://github.com/xjsframework/xjs.git"
   },
   "keywords": [
     "xsplit",
     "plugin",
     "framework"
   ],
-  "author": "SplitmediaLabs, Ltd. <xjs@splitmedialabs.com>",
+  "author": {
+    "name": "SplitmediaLabs, Ltd.",
+    "email": "xjs@splitmedialabs.com"
+  },
   "license": "SEE LICENSE IN LICENSE",
   "bugs": {
-    "url": "https://github.com/dcefram/xjs/issues"
+    "url": "https://github.com/xjsframework/xjs/issues",
+    "email": "xjs@splitmedialabs.com"
   },
-  "homepage": "https://github.com/dcefram/xjs#readme",
+  "homepage": "https://github.com/xjsframework/xjs/issues",
   "devDependencies": {
     "@types/uuid": "^8.0.0",
     "@typescript-eslint/eslint-plugin": "^3.4.0",
