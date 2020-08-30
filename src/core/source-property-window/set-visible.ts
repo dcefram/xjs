@@ -1,4 +1,4 @@
-export default function setVisible(isVisible: boolean) {
+export default function setVisible(isVisible: boolean): void {
   if (typeof window === 'undefined') return;
 
   const payload = {

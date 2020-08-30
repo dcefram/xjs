@@ -86,10 +86,12 @@ async function main() {
     { 
       id,
       srcId,
-      left: 0,
-      top: 0,
-      right: 300,
-      bottom: 200
+      value: {
+        left: 0,
+        top: 0,
+  	    right: 300,
+        bottom: 200,
+      },
     }
   );
 }
@@ -227,10 +229,12 @@ item.setProperty(
   {
     id,
     srcId,
-    left: 0,
-    right: 0.2,
-    bottom: 1,
-    top: 0,
+    value: {
+      left: 0,
+      right: 0.2,
+      bottom: 1,
+      top: 0,
+    },
   }
 );
 ```

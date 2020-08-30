@@ -1,4 +1,4 @@
-export default function setTabsOrder(tabs: string[]) {
+export default function setTabsOrder(tabs: string[]): void {
   if (typeof window === 'undefined') return;
 
   const payload = {

@@ -1,4 +1,4 @@
-export default function setCustomTabs(tabs: string[]) {
+export default function setCustomTabs(tabs: string[]): void {
   if (typeof window === 'undefined') return;
 
   const payload = {
