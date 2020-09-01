@@ -14,11 +14,12 @@ export interface Config {
   isResizable?: boolean;
   isMinimizeActive?: boolean;
   isMaximizeActive?: boolean;
+  script?: string;
 }
 
 // TODO: Add handler for custom JS, Remote, Proxy
 
-function dialog(xjs: Xjs, config: Config) {
+function dialog(xjs: Xjs, config: Config) {  
   const exec = xjs._internal.exec;
   const url = config.url;
   const title = config.title || '';
@@ -37,6 +38,12 @@ function dialog(xjs: Xjs, config: Config) {
     config.isMaximizeActive || false
   );
   const autoClose = config.autoClose || false;
+  const script = config.script || '';
+
+  let windowParams = `cx:${config.width || 655}&cy:${config.height || 770}`;  
+  if (calculatedFlag) {
+    windowParams = `${windowParams}&flags:${calculatedFlag}`;
+  }
 
   if (autoClose) {
     if (Environment.isSourceProps) {
@@ -88,13 +95,13 @@ function dialog(xjs: Xjs, config: Config) {
         await exec('NewAutoDialog', url, '', size.toDimensionString());
       } else {
         await exec(
-          'NewDialog',
+          'NewDialog2',
           url,
           '',
-          size.toDimensionString(),
-          calculatedFlag,
+          windowParams,
           title,
-          cookiePath
+          cookiePath,
+          script
         );
       }
     });
