@@ -3,15 +3,17 @@ import isNumber from 'lodash-es/isNumber';
 import { XjsTypes } from 'core/xjs/types';
 import Remote from 'core/remote';
 import registerCallback from 'helpers/register-callback';
-import { ExecArgument, IKeyValuePair } from './types';
+import { ExecArgument, IKeyValuePair, IXSplitExternal } from './types';
 
 class Internal {
   private _callbacks: IKeyValuePair = {};
 
   private type: XjsTypes;
   private remote: Remote;
+  private external: IXSplitExternal;
 
   constructor(type: XjsTypes) {
+    this.external = (window.external as unknown) as IXSplitExternal;
     this.type = type;
 
     registerCallback({
@@ -45,12 +47,11 @@ class Internal {
           .catch(reject);
       }
 
-      // @TODO: Add condition for remote thingy
-      if (
-        !window.external ||
-        !window.external[fn] ||
-        !isFunction(window.external[fn])
-      ) {
+      if (!this.external || typeof this.external.isXSplitApp === 'undefined') {
+        resolve();
+      }
+
+      if (!window.external[fn] || !isFunction(window.external[fn])) {
         reject(
           new Error(
             `${fn} is not a valid external call, or is not supported on the target environment.`
