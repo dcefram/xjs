@@ -47,7 +47,7 @@ class Internal {
           .catch(reject);
       }
 
-      if (!this.external || typeof this.external.isXSplitApp === 'undefined') {
+      if (!this.external || typeof this.external.isXsplitShell === 'undefined') {
         resolve();
       }
 

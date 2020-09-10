@@ -9,7 +9,7 @@ export interface IKeyValuePair {
 export type ExternalAsyncResponse = string | number | null | undefined;
 
 export interface IXSplitExternal {
-  isXSplitApp(): boolean;
+  isXsplitShell: string | undefined;
   CallHost(fn: string, ...args: string[]): ExternalAsyncResponse;
   AppCallFuncAsync(fn: string, ...args: string[]): ExternalAsyncResponse;
   AppGetPropertyAsync(prop: string): ExternalAsyncResponse;
