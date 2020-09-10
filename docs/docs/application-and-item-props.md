@@ -16,6 +16,14 @@ However, issues started popping up once we started to release new versions of XS
 
 We wanted to correct that, but we cannot sacrifice the quality of our framework just to rush the new methods, thus we came up with a way to allow developers to directly use the underlying core properties, that XSplit Broadcaster has exposed to JS, even if Xjs does not release a new version.
 
+## Minimizing the library's file size
+
+Due to Xjs 2.x's approach and adherence to proper OOP, the resulting bundle size of a project that imports Xjs is larger than it should. This is because of a couple of issues with Xjs architecture:
+
+1. Xjs is a singleton, and thus simply importing the entry point would include every part of the Xjs, even the parts that you might not even use.
+2. Xjs approach on handling item properties was to have an individual *class* per item type (ie. a class for Camera items, another for HTML items, etc.). Each of this class would have unique properties, but also includes some duplicate common methods/properties due to a hack that we had to implement to prevent the TS source code from having duplicate code all over.
+3. The hack that we made to circumvent the fact that classes can only extend from a single base class was to make use of interfaces with a base class per interface, and then using a mixin utility to *inject* those common code into the target class. **This means that we won't have many duplicate code in our source code, but the resulting compiled code would have a lot of duplicate code.**
+
 ## The Solution
 
 We dumbed it down a little. Rather than exposing each individual properties through their own methods, we simply exposed a couple of methods that you can use to get or set pretty much every application or item property. This way, it would be easy to create an object that Xjs could understand and pass it to XSplit Broadcaster.
