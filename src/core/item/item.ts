@@ -31,6 +31,7 @@ import {
  */
 class Item {
   private internal;
+  private configUrl: string;
 
   constructor(config: Xjs) {
     this.internal = config.internal;
@@ -238,9 +239,21 @@ class Item {
    *
    * @param config A generic JSON object that would be persisted in the presentation
    */
-  setConfiguration(config: Record<string, unknown>): void {
+  async setConfiguration(config: Record<string, unknown>): Promise<void> {
     if (!Environment.isSourcePlugin) {
       throw new Error('You can only set configuration in source plugins');
+    }
+
+    if (!this.configUrl) {
+      const config = await this.getConfiguration();
+
+      if (typeof config !== 'string') {
+        this.configUrl = config.configUrl as string;
+      }
+    }
+
+    if (!('configUrl' in config)) {
+      config.configUrl = this.configUrl;
     }
 
     this.internal.exec(
