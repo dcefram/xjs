@@ -78,7 +78,7 @@ export default class Dialog {
     return new Promise((resolve) => {
       const { config } = this;
 
-      this.callback = (result: string) => resolve(result);
+      this.callback = (result: string) => resolve(result.replace('dialog:', ''));
 
       if (config.autoClose) {
         this.internal.exec(
@@ -101,7 +101,11 @@ export default class Dialog {
             ? ''
             : `<configuration cookiepath="${config.cookiePath}" />`,
           typeof config.script === 'undefined' ? '' : config.script
-        );
+        ).then((result) => {
+          if (typeof result !== 'string') return;
+
+          resolve(result.replace('dialog:', ''))
+        })
       }
     });
   }
