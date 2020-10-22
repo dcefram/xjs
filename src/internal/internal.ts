@@ -2,15 +2,17 @@ interface CallbackType {
   [asyncId: string]: any;
 }
 
+export const _callbacks = {};
+
 class Internal {
-  private _callbacks: CallbackType = {};
+  //private _callbacks: CallbackType = {};
 
   constructor() {
     const existingAsyncCallback = window.OnAsyncCallback;
     window.OnAsyncCallback = (asyncId: string, result: string) => {
-      if (typeof this._callbacks[asyncId] === 'function') {
-        this._callbacks[asyncId](decodeURIComponent(result));
-        delete this._callbacks[asyncId];
+      if (typeof _callbacks[asyncId] === 'function') {
+        _callbacks[asyncId](decodeURIComponent(result));
+        delete _callbacks[asyncId];
       }
 
       if (typeof existingAsyncCallback === 'function') {
@@ -37,10 +39,10 @@ class Internal {
 
       const ret = window.external[fn](...args);
 
-      if (typeof ret === 'number') {
-        this._callbacks[ret] = result => {
+      if (typeof ret === 'number') {        
+        _callbacks[ret] = result => {          
           resolve(result);
-        };
+        };        
         return ret;
       }
 

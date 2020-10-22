@@ -73,7 +73,7 @@ function dialog(xjs: Xjs, config: Config) {
 
   function show(parseJSON: boolean = true): Promise<any> {
     return new Promise(async resolve => {
-      const eventListener = (e: any) => {
+      const eventListener = (e: any) => {        
         e.target.removeEventListener(e.type, eventListener);
 
         const result = e.detail;
@@ -93,8 +93,8 @@ function dialog(xjs: Xjs, config: Config) {
 
       if (autoClose) {
         await exec('NewAutoDialog', url, '', size.toDimensionString());
-      } else {
-        await exec(
+      } else {       
+        const result = await exec(
           'NewDialog2',
           url,
           '',
@@ -103,6 +103,17 @@ function dialog(xjs: Xjs, config: Config) {
           cookiePath,
           script
         );
+
+        // parse result if a valid JSON
+        if (parseJSON) {
+          try {
+            let parseResult = JSON.parse(result);
+            resolve(parseResult);
+          } catch (e) {            
+          }
+        }
+
+        resolve(result);        
       }
     });
   }
