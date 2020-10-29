@@ -21,5 +21,9 @@
       { "transform": "typescript-transform-paths", "afterDeclarations": true }
     ]
   },
-  "exclude": ["node_modules", "tools"]
+  "exclude": ["node_modules", "tools"],
+  "typedocOptions": {
+    "mode": "file",
+    "exclude": ["**/helpers/*.ts", "**/internal/*.ts"]
+  }
 }

@@ -12,7 +12,8 @@
     "build:link": "npm run build && node tools/prepublish.js &&  cd dist && npm link",
     "build:link:yarn": "yarn build && node tools/prepublish.js && cd dist && yarn link",
     "pub": "npm run build && node tools/prepublish.js && cd dist && npm publish --access public --tag alpha",
-    "docs": "cd docs && bundle exec middleman build --clean && now"
+    "docs": "cd docs && bundle exec middleman build --clean && now",
+    "docs:api": "typedoc --out docs/api src/index.ts types"
   },
   "repository": {
     "type": "git",
@@ -48,6 +49,7 @@
     "rollup-plugin-typescript": "^1.0.1",
     "tslib": "^2.0.3",
     "ttypescript": "^1.5.12",
+    "typedoc": "^0.19.2",
     "typescript": "^4.0.5",
     "typescript-transform-paths": "^2.0.2"
   },
