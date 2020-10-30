@@ -12,8 +12,9 @@
     "build:link": "npm run build && node tools/prepublish.js &&  cd dist && npm link",
     "build:link:yarn": "yarn build && node tools/prepublish.js && cd dist && yarn link",
     "pub": "npm run build && node tools/prepublish.js && cd dist && npm publish --access public --tag alpha",
-    "docs": "cd docs && bundle exec middleman build --clean && now",
-    "docs:api": "typedoc --out docs/api src/index.ts types"
+    "docs": "cd docs/website && yarn build && cd ../.. && npm run docs:api",
+    "docs:api": "typedoc --out docs/website/build/xjs/api-reference src/index.ts types",
+    "docs:deploy": "cd docs/website/build/xjs && vercel deploy"
   },
   "repository": {
     "type": "git",

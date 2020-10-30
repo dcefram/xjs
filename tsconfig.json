@@ -23,6 +23,7 @@
   },
   "exclude": ["node_modules", "tools"],
   "typedocOptions": {
+    "name": "XJS 3.0 API Reference",
     "mode": "file",
     "exclude": ["**/helpers/*.ts", "**/internal/*.ts"]
   }
