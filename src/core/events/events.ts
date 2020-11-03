@@ -62,32 +62,19 @@ export default class Events {
     });
   }
 
-  // emitEvent(eventName: string, result: string) {
-  //   if (eventCallbacks.hasOwnProperty(eventName)) {
-  //     eventCallbacks[eventName](result);
-  //   }
-
-  //   if (this.xjs.remote && this.xjs.isProxy()) {
-  //     this.xjs.remote.proxy.emitEvent(eventName, result);
-  //   }
-  // }
-
   on(eventName: string, callback: CallbackFunction): void {
-    // if (this.xjs.isRemote()) {
-    //   this.xjs.remote.remote.registerEvent(eventName, callback);
-    //   return;
-    // }
-    this.callbacks[eventName] = this.callbacks[eventName]
-      ? [...this.callbacks[eventName], callback]
-      : [callback];
+    if (Array.isArray((this.callbacks[eventName]))) {
+      this.callbacks[eventName].push(callback);
+    } else {
+      this.callbacks[eventName] = [callback];
+    }
   }
 
-  off(eventName: string): void {
-    // if (this.xjs.isRemote()) {
-    //   this.xjs.remote.remote.unregisterEvent(eventName);
-    //   return;
-    // }
+  off(eventName: string, callback: CallbackFunction): void {
+    const index = this.callbacks[eventName]?.indexOf(callback) || -1;
 
-    delete this.callbacks[eventName];
+    if (index > -1) {
+      this.callbacks[eventName].splice(index, 1);
+    }
   }
 }
