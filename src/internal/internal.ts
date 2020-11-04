@@ -1,52 +1,31 @@
 import isFunction from 'lodash-es/isFunction';
 import isNumber from 'lodash-es/isNumber';
-import { XjsTypes } from 'core/xjs/types';
-import Remote from 'core/remote';
 import registerCallback from 'helpers/register-callback';
-import { ExecArgument, IKeyValuePair, IXSplitExternal } from './types';
+import { CallbackType, ExecArgument, IXSplitExternal } from './types';
 
 class Internal {
-  private _callbacks: IKeyValuePair = {};
+  private callbacks: Record<string, CallbackType> = {};
 
-  private type: XjsTypes;
-  private remote: Remote;
   private external: IXSplitExternal;
 
-  constructor(type: XjsTypes) {
+  constructor() {
     this.external = (window.external as unknown) as IXSplitExternal;
-    this.type = type;
 
     registerCallback({
       OnAsyncCallback: (asyncId: string, ...responses: string[]) => {
-        if (typeof this._callbacks[asyncId] === 'function') {
+        if (typeof this.callbacks[asyncId] === 'function') {
           const parsed = responses.map((response: string) =>
             decodeURIComponent(response)
           );
-          this._callbacks[asyncId](...parsed);
-          delete this._callbacks[asyncId];
+          this.callbacks[asyncId](...parsed);
+          delete this.callbacks[asyncId];
         }
       },
     });
   }
 
-  setRemote(remote: Remote): void {
-    this.remote = remote;
-  }
-
   exec(fn: string, ...args: ExecArgument[]): Promise<string> {
     return new Promise((resolve, reject) => {
-      if (this.isRemote()) {
-        return this.remote
-          .send({
-            from: XjsTypes.Remote,
-            clientId: this.remote.clientId,
-            fn,
-            args,
-          })
-          .then(resolve)
-          .catch(reject);
-      }
-
       if (!this.external || typeof this.external.isXsplitShell === 'undefined') {
         resolve();
       }
@@ -63,7 +42,7 @@ class Internal {
       const ret = window.external[fn](...args);
 
       if (isNumber(ret)) {
-        this._callbacks[ret] = (result) => {
+        this.callbacks[ret] = (result) => {
           resolve(result as string);
         };
         return ret;
@@ -71,10 +50,6 @@ class Internal {
 
       resolve(ret);
     });
-  }
-
-  private isRemote() {
-    return this.type === XjsTypes.Remote;
   }
 }
 
