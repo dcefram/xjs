@@ -9,7 +9,7 @@ export interface Config {
   tabOrder: string[];
 }
 
-export default function(config: Config) {
+export default function (config: Config): void {
   setMode(config.mode);
   setCustomTabs(config.customTabs);
   setTabsOrder(config.tabOrder);

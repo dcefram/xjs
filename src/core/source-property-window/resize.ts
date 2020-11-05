@@ -1,4 +1,4 @@
-export default function resize(width: number, height: number) {
+export default function resize(width: number, height: number): void {
   if (typeof window === 'undefined') return;
 
   const payload = {
