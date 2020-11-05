@@ -22,12 +22,21 @@ export default class Remote {
     }
 
     this.messenger = config.messenger;
+
+    this.messenger.receive((message) => {
+      if (message.type !== 'proxy') return;
+      if (message.remoteId !== this.remoteId) return;
+      if (typeof this.callbacks[message.asyncId] !== 'function') return;
+
+      this.callbacks[message.asyncId](message.result);
+    });
   }
 
   exec(fn: string, ...args: ExecArgument[]): Promise<string> {
     return new Promise((resolve, reject) => {
       this.asyncId++;
       this.messenger.send({
+        type: 'remote',
         remoteId: this.remoteId,
         asyncId: this.asyncId,
         funcName: fn,
@@ -40,7 +49,7 @@ export default class Remote {
       }, 10000);
 
       this.callbacks[this.asyncId] = (res: string) => {
-        clearTimeout(timeout)
+        clearTimeout(timeout);
         delete this.callbacks[this.asyncId];
         resolve(res);
       };
