@@ -30,7 +30,7 @@ export default class Remote {
     this.messenger.receive(this.handleMessage);
   }
 
-  exec(): void {
+  exec(): Promise<string> {
     throw new Error(
       'Illegal operation. XJS Proxy only executes commands from connected remotes'
     );

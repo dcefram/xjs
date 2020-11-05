@@ -1,8 +1,7 @@
-import { v4 as uuid } from 'uuid';
 import Environment from 'helpers/environment';
-import Remote from 'core/remote';
+import { Remote, Proxy } from 'core/remote';
 import Internal from 'internal';
-import { XjsTypes, IConfig, IKeyValuePair } from './types';
+import { IConfig, IKeyValuePair, XjsTypes } from './types';
 
 export default class Xjs {
   static version = '%XJS_VERSION%';
@@ -13,11 +12,7 @@ export default class Xjs {
 
   private event: Event;
 
-  clientId = uuid();
-
-  internal: Internal;
-
-  remote: Remote;
+  internal: Internal | Remote | Proxy;
 
   constructor(config: IConfig = { type: XjsTypes.Local }) {
     Object.keys(config).forEach((key: string) => {
@@ -26,18 +21,17 @@ export default class Xjs {
       }
     });
 
-    // Initialize the internal methods and the view
-    this.internal = new Internal(this.type);
+    switch (this.type) {
+      case XjsTypes.Remote:
+        this.internal = new Remote({ messenger: config.messenger });
+        break;
 
-    if ([XjsTypes.Remote, XjsTypes.Proxy].includes(this.type)) {
-      this.remote = new Remote({
-        clientId: this.clientId,
-        type: this.type,
-        exec: this.internal.exec.bind(this.internal),
-      });
+      case XjsTypes.Proxy:
+        this.internal = new Proxy({ messenger: config.messenger });
+        break;
 
-      this.remote.setSender(config.sendMessage);
-      this.internal.setRemote(this.remote);
+      default:
+        this.internal = new Internal();
     }
   }
 

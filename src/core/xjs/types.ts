@@ -1,11 +1,13 @@
+import { IMessenger } from 'core/remote/types';
+
 export interface IKeyValuePair {
   [key: string]: unknown;
 }
 
 export enum XjsTypes {
   Local = 'local',
-  Remote = 'remote',  // Connect to a Proxy, send commands to proxy
-  Proxy = 'proxy',    // Accept remote calls, send back responses to origin
+  Remote = 'remote', // Connect to a Proxy, send commands to proxy
+  Proxy = 'proxy', // Accept remote calls, send back responses to origin
 }
 
 export enum XjsEnvironments {
@@ -25,7 +27,10 @@ export interface IConfig {
   environment?: XjsEnvironments;
   logVerbosity?: LogVerbosity;
   version?: string;
-  sendMessage?: (...args: unknown[]) => void; // @TODO: Maybe it makes sense to define a "sendMessage" arguments structure?
-  onMessageReceive?: unknown;
   logger?: unknown;
+  messenger?: IMessenger;
+}
+
+export interface IConfigRemote extends IConfig {
+  type: XjsTypes.Remote;
 }
