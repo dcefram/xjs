@@ -4,8 +4,8 @@ export interface IKeyValuePair {
 
 export enum XjsTypes {
   Local = 'local',
-  Remote = 'remote',
-  Proxy = 'proxy',
+  Remote = 'remote',  // Connect to a Proxy, send commands to proxy
+  Proxy = 'proxy',    // Accept remote calls, send back responses to origin
 }
 
 export enum XjsEnvironments {

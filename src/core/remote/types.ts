@@ -1,68 +1,25 @@
-import { XjsTypes } from 'core/xjs/types';
-import { ExecArgument } from 'internal/types';
+export type SendMessage = (message: IRemoteMessage | IProxyMessage) => void;
+export type ReceiveMessage = (message: IRemoteMessage | IProxyMessage) => void;
 
-export type AsyncId = number;
-export type ClientId = string;
-
-export interface CallbackHandler {
-  [asyncId: number]: {
-    callback: (...args: unknown[]) => void;
-    clean: () => void;
-  };
+export interface IMessenger {
+  send: SendMessage;
+  receive: ReceiveMessage;
 }
-
-export enum SUBSCRIPTION {
-  ON = 'subscribe',
-  OFF = 'unsubscribe',
-}
-
-export type ExecFunc = (fn: string, ...args: ExecArgument[]) => Promise<string>;
 
 export interface IRemoteConfig {
-  clientId: string;
-  type: XjsTypes;
-  exec: ExecFunc;
+  messenger: IMessenger;
 }
 
-export interface IKeyValuePair {
-  [key: string]: unknown;
+export interface IRemoteMessage {
+  remoteId: string;   // A unique identifier for each XJS Remote instance
+  asyncId: number;    // A `supposedly` auto-incremented counter used to know who requested the data when proxy responds
+  funcName: string;   // The external method
+  args: string[];     // The arguments passed to the external method. I think C++ only accepts strings, so it's should be safe to do this
 }
 
-// REMOTE INTERFACES
-
-interface IRemote {
-  from: XjsTypes.Remote;
-  clientId: ClientId;
-}
-
-export interface ICreateRequest extends IRemote {
-  fn: string;
-  args: unknown[];
-}
-
-export interface IRequest extends IRemote {
-  asyncId: AsyncId;
-  fn: string;
-  args: unknown[];
-}
-
-export interface IRequestResult extends IRemote {
-  asyncId: AsyncId;
-  result: unknown;
-}
-
-// PROXY INTERFACES
-
-interface IProxy {
-  from: XjsTypes.Proxy;
-  clientId: ClientId;
-}
-
-export interface IProxyEventResult extends IProxy {
-  eventName: string;
-  result: unknown;
-}
-
-export interface IEventCallbacks {
-  [eventName: string]: (...args: unknown[]) => void;
+export interface IProxyMessage {
+  proxyId: string;    // A unique identifier for each XJS Proxy instance
+  remoteId: string;   // The ID of the XJS Remote instance that requested to execute a particular function
+  asyncId: number;    // The ID of the command that it received from supposedly a Remote XJS instance
+  result: string;     // The return value of the XSplit method
 }
