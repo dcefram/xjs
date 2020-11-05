@@ -1,6 +1,6 @@
-import Internal from 'internal';
+import { IInternal } from 'internal/types';
 
-const isSplitMode = async (internal: Internal): Promise<Boolean> =>
+const isSplitMode = async (internal: IInternal): Promise<boolean> =>
   Boolean(Number(await internal.exec('GetGlobalProperty', 'splitmode')));
 
 export default isSplitMode;

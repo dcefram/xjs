@@ -1,9 +1,14 @@
 import isFunction from 'lodash-es/isFunction';
 import isNumber from 'lodash-es/isNumber';
 import registerCallback from 'helpers/register-callback';
-import { CallbackType, ExecArgument, IXSplitExternal } from './types';
+import {
+  CallbackType,
+  ExecArgument,
+  IXSplitExternal,
+  IInternal,
+} from './types';
 
-class Internal {
+class Internal implements IInternal {
   private callbacks: Record<string, CallbackType> = {};
 
   private external: IXSplitExternal;
@@ -26,7 +31,10 @@ class Internal {
 
   exec(fn: string, ...args: ExecArgument[]): Promise<string> {
     return new Promise((resolve, reject) => {
-      if (!this.external || typeof this.external.isXsplitShell === 'undefined') {
+      if (
+        !this.external ||
+        typeof this.external.isXsplitShell === 'undefined'
+      ) {
         resolve();
       }
 

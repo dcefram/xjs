@@ -1,7 +1,7 @@
 import parser from 'fast-xml-parser';
 
 import Xjs from 'core/xjs';
-import Internal from 'internal/internal';
+import { IInternal } from 'internal/types';
 import Environment from 'helpers/environment';
 import {
   IBroadcastChannelList,
@@ -37,7 +37,7 @@ import {
  * ```
  */
 class Output {
-  private internal: Internal;
+  private internal: IInternal;
 
   constructor({ internal }: Xjs) {
     if (Environment.isSourceProps) {

@@ -10,3 +10,7 @@ export interface IXSplitExternal {
   AppSetPropertyAsync(prop: string, value: string): ExternalAsyncResponse;
   // @TODO: Complete interface structure based on https://docs.google.com/document/d/1eMBesMZB3WNs6slzG-6Mi9fWKf64cCZiE8oFgf9eTYM/edit#heading=h.14jjkkz4fk1z
 }
+
+export interface IInternal {
+  exec(fn: string, ...args: ExecArgument[]): Promise<string>;
+}

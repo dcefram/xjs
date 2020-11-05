@@ -1,6 +1,4 @@
 import isObject from 'lodash-es/isObject';
-import isString from 'lodash-es/isString';
-import { AsyncId, CallbackHandler } from '../core/remote/types';
 
 type CallbackType = (...args: unknown[]) => void;
 
@@ -14,22 +12,6 @@ const wrapCallbackHandler = (
 ) => (...args: unknown[]) => {
   callbackFunc(...args);
   oldCallbackFunc && oldCallbackFunc(...args);
-};
-
-const mapDecodeURIComponent = (value: string | unknown) =>
-  isString(value) ? decodeURIComponent(value) : value;
-
-const _callbacks: CallbackHandler = {};
-
-const isCallbackExisting = (asyncId: AsyncId) =>
-  _callbacks.hasOwnProperty(asyncId);
-
-export const runCallback = (asyncId: AsyncId, ...asyncRes: string[]): void => {
-  if (isCallbackExisting(asyncId)) {
-    const { callback, clean } = _callbacks[asyncId];
-    callback(...asyncRes.map(mapDecodeURIComponent));
-    clean();
-  }
 };
 
 const registerCallback = (callbacks: IKeyValuePair): void => {

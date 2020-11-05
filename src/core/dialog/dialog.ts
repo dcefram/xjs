@@ -1,7 +1,7 @@
 import Environment from 'helpers/environment';
 import registerCallbacks from 'helpers/register-callback';
 import Xjs from 'core/xjs';
-import Internal from 'internal';
+import { IInternal } from 'internal/types';
 import { Config } from './types';
 
 const FLAGS = {
@@ -42,7 +42,7 @@ const FLAGS = {
  * ```
  */
 export default class Dialog {
-  private internal: Internal;
+  private internal: IInternal;
   private config: Config;
   private callback: (result: string) => void;
 
@@ -78,7 +78,8 @@ export default class Dialog {
     return new Promise((resolve) => {
       const { config } = this;
 
-      this.callback = (result: string) => resolve(result.replace('dialog:', ''));
+      this.callback = (result: string) =>
+        resolve(result.replace('dialog:', ''));
 
       if (config.autoClose) {
         this.internal.exec(
@@ -91,21 +92,23 @@ export default class Dialog {
         const flags = this.calculateFlags();
         const params = this.generateWindowParams(flags);
 
-        this.internal.exec(
-          'NewDialog2',
-          config.url,
-          '', // @TODO: Figure out what is this parameter about
-          params,
-          config.title || '',
-          typeof config.cookiePath === 'undefined'
-            ? ''
-            : `<configuration cookiepath="${config.cookiePath}" />`,
-          typeof config.script === 'undefined' ? '' : config.script
-        ).then((result) => {
-          if (typeof result !== 'string') return;
+        this.internal
+          .exec(
+            'NewDialog2',
+            config.url,
+            '', // @TODO: Figure out what is this parameter about
+            params,
+            config.title || '',
+            typeof config.cookiePath === 'undefined'
+              ? ''
+              : `<configuration cookiepath="${config.cookiePath}" />`,
+            typeof config.script === 'undefined' ? '' : config.script
+          )
+          .then((result) => {
+            if (typeof result !== 'string') return;
 
-          resolve(result.replace('dialog:', ''))
-        })
+            resolve(result.replace('dialog:', ''));
+          });
       }
     });
   }

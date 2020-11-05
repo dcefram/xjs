@@ -1,4 +1,4 @@
-import Internal from 'internal';
+import { IInternal } from 'internal/types';
 import Xjs from 'core/xjs';
 import { SceneId, SceneIndex } from 'core/scene/types';
 import { PresetId } from './types';
@@ -19,7 +19,7 @@ import { PresetId } from './types';
  * ```
  */
 class Preset {
-  private internal: Internal;
+  private internal: IInternal;
 
   constructor({ internal }: Xjs) {
     this.internal = internal;

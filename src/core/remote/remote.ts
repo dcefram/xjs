@@ -1,5 +1,5 @@
 import { v4 as uuid } from 'uuid';
-import { CallbackType, ExecArgument } from 'internal/types';
+import { CallbackType, ExecArgument, IInternal } from 'internal/types';
 import { IMessenger, IRemoteConfig } from './types';
 import { InvalidParamError } from 'internal/errors';
 
@@ -7,7 +7,7 @@ import { InvalidParamError } from 'internal/errors';
  * This class is a drop-in replacement of the internal class. This will send the commands to a defined message transport
  * instead of passing it to XSplit
  */
-export default class Remote {
+export default class Remote implements IInternal {
   readonly remoteId: string = uuid();
 
   readonly messenger: IMessenger;

@@ -1,6 +1,7 @@
 import Environment from 'helpers/environment';
 import { Remote, Proxy } from 'core/remote';
 import Internal from 'internal';
+import { IInternal } from 'internal/types';
 import { IConfig, IKeyValuePair, XjsTypes } from './types';
 
 export default class Xjs {
@@ -12,7 +13,7 @@ export default class Xjs {
 
   private event: Event;
 
-  internal: Internal | Remote | Proxy;
+  internal: IInternal;
 
   constructor(config: IConfig = { type: XjsTypes.Local }) {
     Object.keys(config).forEach((key: string) => {
