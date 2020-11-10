@@ -1,4 +1,5 @@
 import Xjs from 'core/xjs';
+import { XjsTypes } from 'core/xjs/types';
 
 import registerCallback from 'helpers/register-callback';
 import parseQueryString from 'helpers/parse-query-string';
@@ -14,6 +15,12 @@ export default class Events {
   constructor(xjs: Xjs, instances?: InstanceList) {
     this.xjs = xjs;
     this.instances = instances ? instances : [];
+
+    if (this.xjs.type === XjsTypes.Remote) {
+      // Send a message to Proxy, tell Proxy what "instances" to load.
+      // const instanceNames = instances?.map((i) => i.name) || [];
+      return;
+    }
 
     registerCallback({
       SetEvent: async (value: string) => {
@@ -63,7 +70,7 @@ export default class Events {
   }
 
   on(eventName: string, callback: CallbackFunction): void {
-    if (Array.isArray((this.callbacks[eventName]))) {
+    if (Array.isArray(this.callbacks[eventName])) {
       this.callbacks[eventName].push(callback);
     } else {
       this.callbacks[eventName] = [callback];

@@ -7,11 +7,7 @@ import { IConfig, IKeyValuePair, XjsTypes } from './types';
 export default class Xjs {
   static version = '%XJS_VERSION%';
 
-  private type: XjsTypes = XjsTypes.Local;
-
-  private version: string;
-
-  private event: Event;
+  type: XjsTypes = XjsTypes.Local;
 
   internal: IInternal;
 
