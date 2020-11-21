@@ -32,6 +32,12 @@ export default class Remote implements IInternal {
     });
   }
 
+  /**
+   * Send external function call to server
+   * @param  {string}          fn      function name
+   * @param  {ExecArgument[]}  ...args optional arguments to send to function
+   * @return {Promise<string>}         function response
+   */
   exec(fn: string, ...args: ExecArgument[]): Promise<string> {
     return new Promise((resolve, reject) => {
       this.asyncId++;
@@ -54,5 +60,24 @@ export default class Remote implements IInternal {
         resolve(res);
       };
     });
+  }
+
+  /**
+   * Send message to server, but do not handle its response
+   * @param {string}         fn      function name
+   * @param {ExecArgument[]} ...args optional arguments to send along with the function name
+   */
+  send(fn: string, callback: CallbackType, ...args: ExecArgument[]): void {
+    this.asyncId++;
+
+    this.messenger.send({
+      type: 'remote',
+      remoteId: this.remoteId,
+      asyncId: -1,
+      funcName: fn,
+      args: args.map(String),
+    });
+
+    this.callbacks[this.asyncId] = callback;
   }
 }

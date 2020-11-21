@@ -1,3 +1,5 @@
+// @TODO: Remove file
+
 export const APP_ON_EVENT = {
   PROPERTY_CHANGE: 'onpropertychange',
   SCENE_DELETE: 'onscenedelete',

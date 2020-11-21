@@ -38,7 +38,7 @@ export default class Remote implements IInternal {
     );
   }
 
-  async handleMessage(message: IRemoteMessage): Promise<void> {
+  private async handleMessage(message: IRemoteMessage): Promise<void> {
     if (message.type !== 'remote') return;
 
     if (message.funcName === 'register-event') {
@@ -51,13 +51,16 @@ export default class Remote implements IInternal {
       this.eventsInstance instanceof Events
     ) {
       message.args.forEach((eventName) => {
-        this.eventsInstance.on(eventName, (...values: string[]) => {
+        this.eventsInstance.on(eventName, (...values: unknown[]) => {
           this.messenger.send({
             type: 'proxy',
             proxyId: this.proxyId,
             remoteId: message.remoteId,
-            asyncId: message.asyncId, // not sure if needed though...
-            result: JSON.stringify(values),
+            asyncId: message.asyncId,
+            result: JSON.stringify({
+              event: eventName,
+              data: values,
+            }),
           });
         });
       });
@@ -74,25 +77,25 @@ export default class Remote implements IInternal {
     });
   }
 
-  async handleRegisterEventListener(message: IRemoteMessage): Promise<void> {
-    if (message.funcName === 'init-events') {
-      const loadedMessagesLength = this.eventsLoadedInstances.length;
+  private async handleRegisterEventListener(
+    message: IRemoteMessage
+  ): Promise<void> {
+    const loadedMessagesLength = this.eventsLoadedInstances.length;
 
-      message.args.forEach((instanceToLoad) => {
-        if (!this.eventsLoadedInstances.includes(instanceToLoad)) {
-          this.eventsLoadedInstances.push(instanceToLoad);
-        }
-      });
-
-      if (loadedMessagesLength !== this.eventsLoadedInstances.length) {
-        const FakeXjs: any = { type: 'local' }; // eslint-disable-line @typescript-eslint/no-explicit-any
-        this.eventsInstance = new Events(
-          FakeXjs,
-          this.eventsLoadedInstances
-            .filter((instanceName) => SupportedTransforms[instanceName])
-            .map((instanceName) => SupportedTransforms[instanceName])
-        );
+    message.args.forEach((instanceToLoad) => {
+      if (!this.eventsLoadedInstances.includes(instanceToLoad)) {
+        this.eventsLoadedInstances.push(instanceToLoad);
       }
+    });
+
+    if (loadedMessagesLength !== this.eventsLoadedInstances.length) {
+      const FakeXjs: any = { type: 'local' }; // eslint-disable-line @typescript-eslint/no-explicit-any
+      this.eventsInstance = new Events(
+        FakeXjs,
+        this.eventsLoadedInstances
+          .filter((instanceName) => SupportedTransforms[instanceName])
+          .map((instanceName) => SupportedTransforms[instanceName])
+      );
     }
   }
 }
