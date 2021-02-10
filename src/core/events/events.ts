@@ -1,5 +1,13 @@
+// Note: Ideally, I'd prefer to modify the underlying functions that does the talking with the core
+// and "tunnel" the data accordingly (ie. if local, send to core, if remote, send to messenger). This
+// would've made this class clear of logic that the remote or proxy class "should" be responsible.
+//
+// unfortunately though, due to the requirement of auto-processing data in the proxy side, we'd
+// need to settle down with modifying Events class directly.
+
 import Xjs from 'core/xjs';
 import { XjsTypes } from 'core/xjs/types';
+import { Remote } from 'core/remote';
 
 import registerCallback from 'helpers/register-callback';
 import parseQueryString from 'helpers/parse-query-string';
@@ -16,9 +24,20 @@ export default class Events {
     this.xjs = xjs;
     this.instances = instances ? instances : [];
 
-    if (this.xjs.type === XjsTypes.Remote) {
+    if (
+      this.xjs.type === XjsTypes.Remote &&
+      this.xjs.internal instanceof Remote
+    ) {
       // Send a message to Proxy, tell Proxy what "instances" to load.
-      // const instanceNames = instances?.map((i) => i.name) || [];
+      const instanceNames = instances?.map((i) => i.name) || [];
+
+      this.xjs.internal.send(
+        'register-event',
+        () => {
+          // @TODO: Do we need to listen for register-event's response?
+        },
+        ...instanceNames
+      );
       return;
     }
 
@@ -70,6 +89,24 @@ export default class Events {
   }
 
   on(eventName: string, callback: CallbackFunction): void {
+    if (
+      this.xjs.type === XjsTypes.Remote &&
+      this.xjs.internal instanceof Remote &&
+      typeof this.callbacks[eventName] === 'undefined'
+    ) {
+      this.xjs.internal.send('listen-event', (result: string) => {
+        const { event: eventName, data } = JSON.parse(result);
+
+        if (Array.isArray(this.callbacks[eventName])) {
+          this.callbacks[eventName].forEach((cb) => {
+            if (typeof cb === 'function') {
+              cb(...data);
+            }
+          });
+        }
+      });
+    }
+
     if (Array.isArray(this.callbacks[eventName])) {
       this.callbacks[eventName].push(callback);
     } else {
