@@ -29,7 +29,7 @@ export default class Events {
       this.xjs.internal instanceof Remote
     ) {
       // Send a message to Proxy, tell Proxy what "instances" to load.
-      const instanceNames = instances?.map((i) => i.name) || [];
+      const instanceNames = instances?.map((i) => i.constructor.name) || [];
 
       this.xjs.internal.send(
         'register-event',
@@ -70,7 +70,7 @@ export default class Events {
       AppOnEvent: async (eventName: string, ...args: string[]) => {
         const data = await asyncReduce(this.instances, async (prev, cur) => {
           if (typeof cur.eventsHandler === 'function') {
-            return cur.eventsHandler(event, ...args);
+            return cur.eventsHandler(eventName, ...args);
           }
 
           return prev;
@@ -115,7 +115,7 @@ export default class Events {
   }
 
   off(eventName: string, callback: CallbackFunction): void {
-    const index = this.callbacks[eventName]?.indexOf(callback) || -1;
+    const index = this.callbacks[eventName]?.indexOf(callback);
 
     if (index > -1) {
       this.callbacks[eventName].splice(index, 1);
