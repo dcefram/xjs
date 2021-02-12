@@ -10,7 +10,7 @@ This branch is the proposed next version of XJS Framework. Further documentation
 
 # Development
 
-If you are to contribute to this project, please make sure that your editor is properly setted up to work well with the following tools:
+If you are to contribute to this project, please make sure that your editor is properly configured to work well with the following tools:
 
 - Prettier
 - ESLint

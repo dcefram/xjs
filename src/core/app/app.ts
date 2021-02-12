@@ -1,4 +1,4 @@
-import Internal from 'internal';
+import { IInternal } from 'internal/types';
 import Xjs from 'core/xjs';
 import sprintf from 'helpers/sprintf';
 import { IPropertyType, IKeyValuePair, PropertyParam } from './types';
@@ -20,7 +20,7 @@ import { IPropertyType, IKeyValuePair, PropertyParam } from './types';
  * ```
  */
 class App {
-  private internal: Internal;
+  private internal: IInternal;
 
   constructor(config: Xjs) {
     this.internal = config.internal;

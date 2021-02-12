@@ -10,7 +10,7 @@ if (
 
       if (typeof callbacks[key] === 'undefined') return;
 
-      callbacks[key].forEach(cb => {
+      callbacks[key].forEach((cb) => {
         if (typeof cb !== 'function') return;
 
         cb(payload);
@@ -21,7 +21,7 @@ if (
   };
 }
 
-export const off = (key: string, cb: any) => {
+export const off = (key: string, cb: unknown): void => {
   if (typeof callbacks[key] === 'undefined') {
     return;
   }
@@ -33,7 +33,7 @@ export const off = (key: string, cb: any) => {
   }
 };
 
-export default function(key: string, cb: any) {
+export default function (key: string, cb: unknown): void {
   if (typeof callbacks[key] === 'undefined') {
     callbacks[key] = [];
   }

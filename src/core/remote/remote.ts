@@ -1,193 +1,81 @@
-import { XjsTypes } from 'core/xjs/types';
-import request from './request';
-import {
-  IRequestResult,
-  IRequest,
-  IEventCallbacks,
-  SUBSCRIPTION,
-  ClientId,
-  ICreateRequest,
-  ExecFunc,
-  IRemoteConfig,
-  IKeyValuePair,
-} from './types';
-import { parse } from 'helpers/json';
-import pick from 'lodash-es/pick';
+import { v4 as uuid } from 'uuid';
+import { CallbackType, ExecArgument, IInternal } from 'internal/types';
+import { IMessenger, IRemoteConfig } from './types';
+import { InvalidParamError } from 'internal/errors';
 
-const EVENT = 'event';
-const isEvent = (type: string) => type === EVENT;
+/**
+ * This class is a drop-in replacement of the internal class. This will send the commands to a defined message transport
+ * instead of passing it to XSplit
+ */
+export default class Remote implements IInternal {
+  readonly remoteId: string = uuid();
 
-export default class Remote {
-  private type: XjsTypes;
+  readonly messenger: IMessenger;
 
-  private exec: ExecFunc;
+  private callbacks: Record<number, CallbackType> = {};
 
-  private sender: (...args: unknown[]) => void;
+  private asyncId = 0;
 
-  clientId: string;
-
-  public eventCallbacks: IEventCallbacks = {};
-
-  constructor({ clientId, type, exec }: IRemoteConfig) {
-    this.clientId = clientId;
-    this.type = type;
-    this.exec = exec;
-  }
-
-  setSender(sender: (...args: unknown[]) => void): void {
-    this.sender = sender;
-  }
-
-  // used only by remote
-  send(message: ICreateRequest): Promise<unknown> {
-    return request.register(message, this.sender);
-  }
-
-  receiveMessage(data: string): void {
-    const message = parse(data) as IKeyValuePair;
-
-    if (this.isRemote()) {
-      if (isEvent(message.type as string)) {
-        const { eventName, result } = message;
-
-        this.remote.emitEvent(eventName as string, result);
-        return;
-      }
-
-      return request.runCallback(
-        pick(message, [
-          'asyncId',
-          'result',
-          'from',
-          'clientId',
-        ]) as IRequestResult
-      );
+  constructor(config: IRemoteConfig) {
+    if (typeof config.messenger === 'undefined') {
+      throw new InvalidParamError('`messenger` is required');
     }
 
-    // PROXY HANDLING
-    if (isEvent(message.type as string)) {
-      if (message.action === SUBSCRIPTION.ON) {
-        this.proxy.registerEvent(
-          message.clientId as string,
-          message.eventName as string,
-          (result: unknown) => {
-            this.sender({
-              from: XjsTypes.Proxy,
-              clientId: message.clientId,
-              type: EVENT,
-              eventName: message.eventName,
-              result,
-            });
-          }
-        );
-        return;
-      }
+    this.messenger = config.messenger;
 
-      this.proxy.unregisterEvent(
-        message.clientId as string,
-        message.eventName as string
-      );
-      return;
-    }
+    this.messenger.receive((message) => {
+      if (message.type !== 'proxy') return;
+      if (message.remoteId !== this.remoteId) return;
+      if (typeof this.callbacks[message.asyncId] !== 'function') return;
 
-    this.processRequest(
-      pick(message, ['clientId', 'asyncId', 'fn', 'args']) as IRequest
-    );
-  }
-
-  async processRequest({
-    clientId,
-    asyncId,
-    fn,
-    args,
-  }: IRequest): Promise<void> {
-    const result = await this.exec(fn, ...(args as (number | string)[]));
-
-    this.sender({
-      from: XjsTypes.Proxy,
-      clientId,
-      asyncId,
-      result,
+      this.callbacks[message.asyncId](message.result);
     });
   }
 
-  // EVENTS
-  proxy = {
-    clientEvents: {},
-    getClientEvents: (clientId: ClientId): unknown => {
-      if (this.proxy.clientEvents.hasOwnProperty(clientId)) {
-        return this.proxy.clientEvents[clientId];
-      }
-
-      this.proxy.clientEvents[clientId] = {};
-
-      return this.proxy.clientEvents[clientId];
-    },
-    registerEvent: (
-      clientId: ClientId,
-      eventName: string,
-      sender: (...args: unknown[]) => void
-    ): void => {
-      const clientEvents = this.proxy.getClientEvents(clientId);
-
-      clientEvents[eventName] = sender;
-    },
-    unregisterEvent(clientId: ClientId, eventName: string): void {
-      if (this.proxy.clientEvents.hasOwnProperty(clientId)) {
-        const clientEvents = this.proxy.getClientEvents(clientId);
-        delete clientEvents[eventName];
-
-        if (Object.keys(clientEvents).length === 0) {
-          delete this.proxy.clientEvents[clientId];
-        }
-      }
-    },
-    emitEvent: (eventName: string, result: string): void => {
-      Object.values(this.proxy.clientEvents).forEach((events) => {
-        if (events.hasOwnProperty(eventName)) {
-          events[eventName](result);
-        }
+  /**
+   * Send external function call to server
+   * @param  {string}          fn      function name
+   * @param  {ExecArgument[]}  ...args optional arguments to send to function
+   * @return {Promise<string>}         function response
+   */
+  exec(fn: string, ...args: ExecArgument[]): Promise<string> {
+    return new Promise((resolve, reject) => {
+      this.asyncId++;
+      this.messenger.send({
+        type: 'remote',
+        remoteId: this.remoteId,
+        asyncId: this.asyncId,
+        funcName: fn,
+        args: args.map(String),
       });
-    },
-  };
 
-  remote = {
-    eventCallbacks: {},
-    registerEvent: (
-      eventName: string,
-      callback: (...args: unknown[]) => void
-    ): void => {
-      this.remote.eventCallbacks[eventName] = callback;
+      const timeout = setTimeout(() => {
+        delete this.callbacks[this.asyncId];
+        reject('Exec timeout. Execution exceeded 10 seconds.');
+      }, 10000);
 
-      this.sender({
-        from: XjsTypes.Remote,
-        clientId: this.clientId,
-        type: 'event',
-        action: SUBSCRIPTION.ON,
-        eventName,
-      });
-    },
-    unregisterEvent: (eventName: string): void => {
-      if (this.eventCallbacks.hasOwnProperty(eventName)) {
-        delete this.eventCallbacks[eventName];
+      this.callbacks[this.asyncId] = (res: string) => {
+        clearTimeout(timeout);
+        delete this.callbacks[this.asyncId];
+        resolve(res);
+      };
+    });
+  }
 
-        this.sender({
-          from: XjsTypes.Remote,
-          clientId: this.clientId,
-          type: 'event',
-          action: SUBSCRIPTION.OFF,
-          eventName,
-        });
-      }
-    },
-    emitEvent: (eventName: string, result: unknown): void => {
-      if (this.remote.eventCallbacks.hasOwnProperty(eventName)) {
-        this.remote.eventCallbacks[eventName](result);
-      }
-    },
-  };
+  /**
+   * Send message to server, but do not handle its response
+   * @param {string}         fn      function name
+   * @param {ExecArgument[]} ...args optional arguments to send along with the function name
+   */
+  send(fn: string, ...args: ExecArgument[]): void {
+    this.asyncId++;
 
-  private isRemote() {
-    return this.type === XjsTypes.Remote;
+    this.messenger.send({
+      type: 'remote',
+      remoteId: this.remoteId,
+      asyncId: -1,
+      funcName: fn,
+      args: args.map(String),
+    });
   }
 }
