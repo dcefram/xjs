@@ -12,9 +12,9 @@ export default class Remote implements IInternal {
 
   readonly messenger: IMessenger;
 
-  private callbacks: Record<number, CallbackType>;
+  private callbacks: Record<number, CallbackType> = {};
 
-  private asyncId: number;
+  private asyncId = 0;
 
   constructor(config: IRemoteConfig) {
     if (typeof config.messenger === 'undefined') {
@@ -50,8 +50,8 @@ export default class Remote implements IInternal {
       });
 
       const timeout = setTimeout(() => {
-        reject('Exec timeout. Execution exceeded 10 seconds.');
         delete this.callbacks[this.asyncId];
+        reject('Exec timeout. Execution exceeded 10 seconds.');
       }, 10000);
 
       this.callbacks[this.asyncId] = (res: string) => {
@@ -67,7 +67,7 @@ export default class Remote implements IInternal {
    * @param {string}         fn      function name
    * @param {ExecArgument[]} ...args optional arguments to send along with the function name
    */
-  send(fn: string, callback: CallbackType, ...args: ExecArgument[]): void {
+  send(fn: string, ...args: ExecArgument[]): void {
     this.asyncId++;
 
     this.messenger.send({
@@ -77,7 +77,5 @@ export default class Remote implements IInternal {
       funcName: fn,
       args: args.map(String),
     });
-
-    this.callbacks[this.asyncId] = callback;
   }
 }
