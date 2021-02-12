@@ -10,7 +10,7 @@ import { IMessenger, IRemoteConfig, IRemoteMessage } from './types';
  * This class is a drop-in replacement of the internal class. This will send the commands to a defined message transport
  * instead of passing it to XSplit
  */
-export default class Remote implements IInternal {
+export default class Proxy implements IInternal {
   readonly proxyId: string = uuid();
 
   readonly messenger: IMessenger;
@@ -29,7 +29,7 @@ export default class Remote implements IInternal {
     this.internal = new Internal();
     this.messenger = config.messenger;
 
-    this.messenger.receive(this.handleMessage);
+    this.messenger.receive(this.handleMessage.bind(this));
   }
 
   exec(): Promise<string> {
@@ -77,9 +77,7 @@ export default class Remote implements IInternal {
     });
   }
 
-  private async handleRegisterEventListener(
-    message: IRemoteMessage
-  ): Promise<void> {
+  private handleRegisterEventListener(message: IRemoteMessage) {
     const loadedMessagesLength = this.eventsLoadedInstances.length;
 
     message.args.forEach((instanceToLoad) => {

@@ -6,8 +6,8 @@ jest.mock('../xjs');
 describe('Events', () => {
   const xjs = new Xjs();
 
-  describe('on', function () {
-    it('should add a listener', function (done) {
+  describe('on', () => {
+    it('should add a listener', (done) => {
       const events = new Events(xjs);
       const callback = (arg) => {
         expect(arg).toBe('testing');
@@ -20,7 +20,7 @@ describe('Events', () => {
       window.AppOnEvent('SceneChange', 'testing');
     });
 
-    it('should transform events if handled by an instance handler', function (done) {
+    it('should transform events if handled by an instance handler', (done) => {
       class MockScene implements IEventsHandler {
         eventsHandler(eventName: string, ...args: string[]): string {
           return [eventName, ...args].join('|');
@@ -39,7 +39,7 @@ describe('Events', () => {
       window.AppOnEvent('SceneChange', 'dummy', 'text');
     });
 
-    it('should handle SetEvent callbacks', function (done) {
+    it('should handle SetEvent callbacks', (done) => {
       const events = new Events(xjs);
       const callback = (value) => {
         expect(value).toBe('testing');
@@ -51,7 +51,7 @@ describe('Events', () => {
       window.SetEvent('event=SceneChange&info=testing');
     });
 
-    it('should handle SetEvent callbacks processed by an instance handler', function (done) {
+    it('should handle SetEvent callbacks processed by an instance handler', (done) => {
       class MockScene implements IEventsHandler {
         eventsHandler(eventName: string, ...args: string[]): string {
           return [eventName, ...args].join('|');
@@ -71,10 +71,10 @@ describe('Events', () => {
     });
   });
 
-  describe('off', function () {
+  describe('off', () => {
     const events = new Events(xjs);
 
-    it('should remove a listener', function (done) {
+    it('should remove a listener', (done) => {
       const fail = () => done(new Error('fail'));
 
       events.on('SceneChange', fail);
