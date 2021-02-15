@@ -27,3 +27,6 @@ export interface IProxyMessage {
   asyncId: number; // The ID of the command that it received from supposedly a Remote XJS instance
   result: string; // The return value of the XSplit method
 }
+
+type GenericRemoteCallback = (res: string) => void;
+export type SendArgument = string | number | GenericRemoteCallback;

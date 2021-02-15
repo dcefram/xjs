@@ -35,7 +35,7 @@ class Internal implements IInternal {
         !this.external ||
         typeof this.external.isXsplitShell === 'undefined'
       ) {
-        resolve();
+        resolve('');
       }
 
       if (!window.external[fn] || !isFunction(window.external[fn])) {

@@ -31,13 +31,7 @@ export default class Events {
       // Send a message to Proxy, tell Proxy what "instances" to load.
       const instanceNames = instances?.map((i) => i.constructor.name) || [];
 
-      this.xjs.internal.send(
-        'register-event',
-        () => {
-          // @TODO: Do we need to listen for register-event's response?
-        },
-        ...instanceNames
-      );
+      this.xjs.internal.send('register-event', ...instanceNames);
       return;
     }
 

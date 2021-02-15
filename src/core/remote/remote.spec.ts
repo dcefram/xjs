@@ -96,7 +96,7 @@ describe('Remote', () => {
   });
 
   describe('send', () => {
-    it('should send the payload the send interface', () => {
+    it('should send the payload to the send interface', () => {
       remote.send('AppGetProperty');
       expect(mockSender).toHaveBeenCalled();
     });

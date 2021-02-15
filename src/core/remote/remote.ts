@@ -2,6 +2,7 @@ import { v4 as uuid } from 'uuid';
 import { CallbackType, ExecArgument, IInternal } from 'internal/types';
 import { IMessenger, IRemoteConfig } from './types';
 import { InvalidParamError } from 'internal/errors';
+import cloneDeep from 'lodash-es/cloneDeep';
 
 /**
  * This class is a drop-in replacement of the internal class. This will send the commands to a defined message transport
@@ -35,7 +36,7 @@ export default class Remote implements IInternal {
   /**
    * Send external function call to server
    * @param  {string}          fn      function name
-   * @param  {ExecArgument[]}  ...args optional arguments to send to function
+   * @param args
    * @return {Promise<string>}         function response
    */
   exec(fn: string, ...args: ExecArgument[]): Promise<string> {
@@ -65,17 +66,26 @@ export default class Remote implements IInternal {
   /**
    * Send message to server, but do not handle its response
    * @param {string}         fn      function name
-   * @param {ExecArgument[]} ...args optional arguments to send along with the function name
+   * @param args
    */
-  send(fn: string, ...args: ExecArgument[]): void {
+  send(fn: string, ...args: (ExecArgument | CallbackType)[]): void {
     this.asyncId++;
+
+    const payload = cloneDeep(args);
+
+    const listener =
+      typeof payload[payload.length - 1] === 'function' ? payload.pop() : null;
+
+    if (typeof listener === 'function') {
+      this.callbacks[this.asyncId] = listener;
+    }
 
     this.messenger.send({
       type: 'remote',
       remoteId: this.remoteId,
       asyncId: -1,
       funcName: fn,
-      args: args.map(String),
+      args: payload.map(String),
     });
   }
 }
