@@ -1,11 +1,12 @@
-/**
- * Extension plugin window styles, similar format with native Window Styles constants
- * https://docs.microsoft.com/en-us/windows/win32/winmsg/window-styles
- */
 import Xjs from '../xjs/xjs';
 
-// This is a naive implementation
-
+/**
+ * Specify the text that would show up in the extension plugin window's title bar
+ *
+ * @param xjs     The Xjs instance
+ * @param title   Text that would be displayed in the title bar
+ * @param id      Optional. Specify the window ID that you want to modify the title
+ */
 export default async function setWindowTitle(
   xjs: Xjs,
   title: string,
@@ -20,5 +21,6 @@ export default async function setWindowTitle(
       '8'
     )) as string;
   }
+
   xjs.internal.execSync('CallHost', `setExtensionWindowTitle:${_id}`, title);
 }
