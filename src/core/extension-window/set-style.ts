@@ -14,7 +14,6 @@ export enum WINDOW_STYLES {
 /**
  * The default window style of the extension window is usually all the available window styles enabled. This method
  * allows you to override that and only enable the styles that you want
- *
  * @param xjs     The Xjs instance
  * @param styles  Array of window styles that you want to enable. See available window styles: {@link WINDOW_STYLES}
  */
