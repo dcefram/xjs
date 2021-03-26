@@ -6,6 +6,7 @@ export { default as Preset } from './core/preset';
 export { Remote, Proxy } from './core/remote';
 export { default as Scene } from './core/scene';
 export { default as SourcePropertyWindow } from './core/source-property-window';
+export { default as ExtensionWindow } from './core/extension-window';
 export { default as View } from './core/view';
 export { default as ItemProps } from './props/item-props';
 export { default as AppProps } from './props/app-props';

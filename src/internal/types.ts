@@ -13,7 +13,10 @@ export interface IXSplitExternal {
 
 export interface IInternal {
   exec(fn: string, ...args: ExecArgument[]): Promise<string>;
-  execSync(fn: string, ...args: ExecArgument[]): string | number;
+  execSync(
+    fn: string,
+    ...args: ExecArgument[]
+  ): string | number | Promise<string>; // Promise is only used within the context of a remote/proxy approach
   execWithCallback(
     fn: string,
     callbackName: string,

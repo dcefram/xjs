@@ -9,6 +9,7 @@ import close from './close';
 import minimize from './minimize';
 import maximize from './maximize';
 import move from './move';
+export { WINDOW_STYLES } from './set-style';
 
 const extensionWindow = {
   getMode,

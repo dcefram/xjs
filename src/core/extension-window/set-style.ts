@@ -21,7 +21,7 @@ export enum WINDOW_STYLES {
  */
 export default function setWindowStyle(
   xjs: Xjs,
-  styles: WINDOW_STYLES[]
+  styles: WINDOW_STYLES[] = []
 ): void {
   const customStyles = Object.keys(WINDOW_STYLES)
     .filter((value) => !isNaN(Number(value)))
