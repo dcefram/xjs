@@ -18,6 +18,7 @@ export interface IRemoteMessage {
   asyncId: number; // A `supposedly` auto-incremented counter used to know who requested the data when proxy responds
   funcName: string; // The external method
   args: string[]; // The arguments passed to the external method. I think C++ only accepts strings, so it's should be safe to do this
+  callbackName?: string;
 }
 
 export interface IProxyMessage {

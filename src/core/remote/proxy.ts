@@ -38,6 +38,18 @@ export default class Proxy implements IInternal {
     );
   }
 
+  execSync(): string | number {
+    throw new Error(
+      'Illegal operation. XJS Proxy only executes commands from connected remotes'
+    );
+  }
+
+  execWithCallback(): Promise<unknown> {
+    throw new Error(
+      'Illegal operation. XJS Proxy only executes commands from connected remotes'
+    );
+  }
+
   private async handleMessage(message: IRemoteMessage): Promise<void> {
     if (message.type !== 'remote') return;
 
@@ -67,7 +79,17 @@ export default class Proxy implements IInternal {
       return;
     }
 
-    const result = await this.internal.exec(message.funcName, ...message.args);
+    let result;
+    if (message.callbackName) {
+      result = await this.internal.execWithCallback(
+        message.funcName,
+        message.callbackName,
+        ...message.args
+      );
+    } else {
+      result = await this.internal.exec(message.funcName, ...message.args);
+    }
+
     this.messenger.send({
       type: 'proxy',
       proxyId: this.proxyId,

@@ -63,6 +63,59 @@ export default class Remote implements IInternal {
     });
   }
 
+  execSync(fn: string, ...args: ExecArgument[]): Promise<string> {
+    return new Promise((resolve, reject) => {
+      this.asyncId++;
+      this.messenger.send({
+        type: 'remote',
+        remoteId: this.remoteId,
+        asyncId: this.asyncId,
+        funcName: fn,
+        args: args.map(String),
+      });
+
+      const timeout = setTimeout(() => {
+        delete this.callbacks[this.asyncId];
+        reject('Exec timeout. Execution exceeded 10 seconds.');
+      }, 10000);
+
+      this.callbacks[this.asyncId] = (res: string) => {
+        clearTimeout(timeout);
+        delete this.callbacks[this.asyncId];
+        resolve(res);
+      };
+    });
+  }
+
+  execWithCallback(
+    fn: string,
+    callbackName: string,
+    ...args: ExecArgument[]
+  ): Promise<unknown> {
+    return new Promise((resolve, reject) => {
+      this.asyncId++;
+      this.messenger.send({
+        type: 'remote',
+        remoteId: this.remoteId,
+        asyncId: this.asyncId,
+        funcName: fn,
+        args: args.map(String),
+        callbackName,
+      });
+
+      const timeout = setTimeout(() => {
+        delete this.callbacks[this.asyncId];
+        reject('Exec timeout. Execution exceeded 10 seconds.');
+      }, 10000);
+
+      this.callbacks[this.asyncId] = (res: string) => {
+        clearTimeout(timeout);
+        delete this.callbacks[this.asyncId];
+        resolve(res);
+      };
+    });
+  }
+
   /**
    * Send message to server, but do not handle its response
    * @param {string}         fn      function name

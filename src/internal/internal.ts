@@ -59,6 +59,55 @@ class Internal implements IInternal {
       resolve(ret);
     });
   }
+
+  execSync(fn: string, ...args: ExecArgument[]): string {
+    if (!this.external || typeof this.external.isXsplitShell === 'undefined') {
+      return '';
+    }
+
+    if (!window.external[fn] || !isFunction(window.external[fn])) {
+      throw new Error(
+        `${fn} is not a valid external call, or is not supported on the target environment.`
+      );
+    }
+
+    return window.external[fn](...args);
+  }
+
+  execWithCallback(
+    fn: string,
+    callbackName: string,
+    ...args: ExecArgument[]
+  ): Promise<unknown> {
+    return new Promise((resolve, reject) => {
+      if (
+        !this.external ||
+        typeof this.external.isXsplitShell === 'undefined'
+      ) {
+        resolve('');
+      }
+
+      if (!window.external[fn] || !isFunction(window.external[fn])) {
+        reject(
+          new Error(
+            `${fn} is not a valid external call, or is not supported on the target environment.`
+          )
+        );
+        return;
+      }
+
+      registerCallback(
+        {
+          [callbackName]: (...params) => {
+            resolve(params);
+          },
+        },
+        { cleanup: true }
+      );
+
+      window.external[fn](...args);
+    });
+  }
 }
 
 export default Internal;
