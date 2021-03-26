@@ -2,8 +2,10 @@ import Xjs from '../xjs/xjs';
 
 /**
  * Supported window styles. This is a subset of the native window styles defined in [MSDN](https://docs.microsoft.com/en-us/windows/win32/winmsg/window-styles)
+ * An additional window style flag is used for enabling/disabling the close button.
  */
 export enum WINDOW_STYLES {
+  CLOSE = -5, // This does not exist in the native window styles
   BORDER = 1,
   CAPTION = 2,
   SIZING = 4,
@@ -21,6 +23,24 @@ export default function setWindowStyle(
   xjs: Xjs,
   styles: WINDOW_STYLES[]
 ): void {
-  const computed = styles.reduce((final, style) => final + style, 0).toString();
+  const customStyles = Object.keys(WINDOW_STYLES)
+    .filter((value) => !isNaN(Number(value)))
+    .reduce((stack, value) => ({ [value]: 0 }), {});
+  const computed = styles
+    .reduce((final, style) => {
+      if (style >= 0) return final + style;
+      customStyles[style] = 1;
+      return final;
+    }, 0)
+    .toString();
+
   xjs.internal.execSync('PostMessageToParent', '4', computed);
+
+  Object.entries(customStyles).forEach(([key, value]) => {
+    xjs.internal.execSync(
+      'PostMessageToParent',
+      String(Number(key) * -1),
+      String(value)
+    );
+  });
 }
