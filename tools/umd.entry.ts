@@ -9,7 +9,8 @@ import Scene from '../src/core/scene';
 import SourcePropertyWindow from '../src/core/source-property-window';
 import View from '../src/core/view';
 import ItemProps from '../src/props/item-props';
-import AppProps from '../src/props/app-props';
+import * as AudioProps from '../src/props/audio-props';
+import * as SceneProps from '../src/props/scene-props';
 
 export default class Wrapper {
   static XjsTypes = XjsTypes;
@@ -18,11 +19,13 @@ export default class Wrapper {
   static Item = Item;
   static Preset = Preset;
   static Remote = Remote;
+  static Proxy = Proxy;
   static Scene = Scene;
   static SourcePropertyWindow = SourcePropertyWindow;
   static View = View;
   static ItemProps = ItemProps;
-  static AppProps = AppProps;
+  static AppProps = AudioProps;
+  static SceneProps = SceneProps;
   static version = Xjs.version;
 
   constructor(config: any) {

@@ -9,4 +9,5 @@ export { default as SourcePropertyWindow } from './core/source-property-window';
 export { default as ExtensionWindow } from './core/extension-window';
 export { default as View } from './core/view';
 export { default as ItemProps } from './props/item-props';
-export { default as AppProps } from './props/app-props';
+export * as AudioProps from './props/audio-props';
+export * as SceneProps from './props/scene-props';

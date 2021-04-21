@@ -1,7 +1,19 @@
 import { IInternal } from 'internal/types';
 import Xjs from 'core/xjs';
 import sprintf from 'helpers/sprintf';
-import { IPropertyType, IKeyValuePair, PropertyParam } from './types';
+import {
+  IPropertyType,
+  IKeyValuePair,
+  PropertyParam,
+  IAudioProperty,
+  ISceneProperty,
+  ISceneSceneProperty,
+  ISceneViewProperty,
+  ISceneSceneWidthHeightProperty,
+  ISceneSceneParam,
+  ISceneViewParam,
+  ISceneSceneWidthHeightParam,
+} from './types';
 
 /**
  * The App class provides methods to get and set application-related functionalities
@@ -26,6 +38,21 @@ class App {
     this.internal = config.internal;
   }
 
+  setProperty(prop: IAudioProperty, param: string): Promise<string>;
+  setProperty(prop: ISceneProperty, param: string): Promise<string>;
+  setProperty(
+    prop: ISceneSceneProperty,
+    param: ISceneSceneParam
+  ): Promise<string>;
+  setProperty(
+    prop: ISceneViewProperty,
+    param: ISceneViewParam
+  ): Promise<string>;
+  setProperty(
+    prop: ISceneSceneWidthHeightProperty,
+    param: ISceneSceneWidthHeightParam
+  ): Promise<string>;
+
   /**
    * Set application property
    *
@@ -35,7 +62,7 @@ class App {
   setProperty(prop: IPropertyType, param: PropertyParam): Promise<string> {
     if (typeof prop.setValidator !== 'function' || prop.setValidator(param)) {
       let key = prop.key;
-      let value = param;
+      let value: IKeyValuePair | string | number | boolean;
 
       if (typeof param === 'object') {
         const params = { ...param };
@@ -56,6 +83,21 @@ class App {
 
     throw new Error(`Params "${param}" validation failed`);
   }
+
+  getProperty(prop: IAudioProperty): Promise<unknown>;
+  getProperty(prop: ISceneProperty): Promise<unknown>;
+  getProperty(
+    prop: ISceneSceneProperty,
+    param: ISceneSceneParam
+  ): Promise<unknown>;
+  getProperty(
+    prop: ISceneViewProperty,
+    param: ISceneViewParam
+  ): Promise<unknown>;
+  getProperty(
+    prop: ISceneSceneWidthHeightProperty,
+    param: ISceneSceneWidthHeightParam
+  ): Promise<unknown>;
 
   /**
    * Get application property
